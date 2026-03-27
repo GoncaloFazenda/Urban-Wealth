@@ -4,7 +4,7 @@ export {
   createPropertySchema,
   type PropertyInput,
   type CreatePropertyInput,
-} from './propertySchema.js';
+} from './propertySchema';
 
 export {
   registerSchema,
@@ -13,10 +13,10 @@ export {
   userRoleSchema,
   type RegisterInput,
   type LoginInput,
-} from './userSchema.js';
+} from './userSchema';
 
 export {
   investmentSchema,
   investmentStatusSchema,
   type InvestmentInput,
-} from './investmentSchema.js';
+} from './investmentSchema';

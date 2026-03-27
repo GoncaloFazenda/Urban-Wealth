@@ -1,12 +1,12 @@
-export { getProperties, type GetPropertiesResult } from './getProperties.js';
-export { getPropertyById } from './getPropertyById.js';
+export { getProperties, type GetPropertiesResult } from './getProperties';
+export { getPropertyById } from './getPropertyById';
 export {
   investInProperty,
   InvestmentError,
   type InvestInPropertyInput,
   type InvestInPropertyResult,
-} from './investInProperty.js';
+} from './investInProperty';
 export {
   getUserPortfolio,
   type PortfolioSummary,
-} from './getUserPortfolio.js';
+} from './getUserPortfolio';

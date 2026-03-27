@@ -1,4 +1,4 @@
-import type { User, PublicUser } from '../entities/User.js';
+import type { User, PublicUser } from '../entities/User';
 
 export interface IUserRepository {
   findById(id: string): Promise<User | null>;

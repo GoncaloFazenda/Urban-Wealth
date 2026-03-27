@@ -2,6 +2,6 @@ export type {
   IPropertyRepository,
   PropertyFilters,
   PropertySortField,
-} from './IPropertyRepository.js';
-export type { IUserRepository } from './IUserRepository.js';
-export type { IInvestmentRepository } from './IInvestmentRepository.js';
+} from './IPropertyRepository';
+export type { IUserRepository } from './IUserRepository';
+export type { IInvestmentRepository } from './IInvestmentRepository';

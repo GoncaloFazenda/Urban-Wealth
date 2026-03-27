@@ -1,4 +1,4 @@
-import type { Property } from './entities/Property.js';
+import type { Property } from './entities/Property';
 
 export const PLATFORM_FEE_RATE = 0.015;
 

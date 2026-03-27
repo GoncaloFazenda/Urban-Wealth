@@ -37,7 +37,7 @@ export async function getSession(): Promise<AuthSession | null> {
 export function setAuthCookieHeaders(
   accessToken: string,
   refreshToken: string
-): HeadersInit {
+): Record<string, string> {
   const isProduction = process.env.NODE_ENV === 'production';
   const secure = isProduction ? '; Secure' : '';
 
@@ -52,7 +52,7 @@ export function setAuthCookieHeaders(
 /**
  * Clear auth cookies by setting Max-Age=0.
  */
-export function clearAuthCookieHeaders(): HeadersInit {
+export function clearAuthCookieHeaders(): Record<string, string> {
   return {
     'Set-Cookie': [
       `${AUTH_CONSTANTS.COOKIE_ACCESS_TOKEN}=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0`,

@@ -3,7 +3,6 @@ import { AUTH_CONSTANTS, REDIRECT_ALLOWLIST } from '@/lib/constants';
 
 // Paths that require authentication
 const PROTECTED_PATHS = ['/dashboard', '/admin'];
-const ADMIN_PATHS = ['/admin'];
 const AUTH_PAGES = ['/login', '/register'];
 
 export function middleware(request: NextRequest) {
@@ -42,7 +41,6 @@ export function middleware(request: NextRequest) {
   const isProtected = PROTECTED_PATHS.some((p) =>
     pathname.startsWith(p)
   );
-  const isAdminPath = ADMIN_PATHS.some((p) => pathname.startsWith(p));
   const isAuthPage = AUTH_PAGES.some((p) => pathname.startsWith(p));
 
   // Redirect unauthenticated users from protected pages

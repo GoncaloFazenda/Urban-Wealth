@@ -1,8 +1,8 @@
-import type { Investment } from '../entities/Investment.js';
-import type { IPropertyRepository } from '../repositories/IPropertyRepository.js';
-import type { IInvestmentRepository } from '../repositories/IInvestmentRepository.js';
-import { investmentSchema } from '../validators/investmentSchema.js';
-import { PLATFORM_FEE_RATE } from '../mockData.js';
+import type { Investment } from '../entities/Investment';
+import type { IPropertyRepository } from '../repositories/IPropertyRepository';
+import type { IInvestmentRepository } from '../repositories/IInvestmentRepository';
+import { investmentSchema } from '../validators/investmentSchema';
+import { PLATFORM_FEE_RATE } from '../mockData';
 
 export interface InvestInPropertyInput {
   userId: string;

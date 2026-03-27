@@ -1,5 +1,5 @@
-import type { Property } from '../entities/Property.js';
-import type { IPropertyRepository } from '../repositories/IPropertyRepository.js';
+import type { Property } from '../entities/Property';
+import type { IPropertyRepository } from '../repositories/IPropertyRepository';
 
 export async function getPropertyById(
   repo: IPropertyRepository,

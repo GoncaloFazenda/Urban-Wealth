@@ -1,4 +1,4 @@
-import type { Property, PropertyStatus } from '../entities/Property.js';
+import type { Property, PropertyStatus } from '../entities/Property';
 
 export interface PropertyFilters {
   status?: PropertyStatus;

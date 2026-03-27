@@ -1,5 +1,5 @@
-import type { InvestmentWithProperty } from '../entities/Investment.js';
-import type { IInvestmentRepository } from '../repositories/IInvestmentRepository.js';
+import type { InvestmentWithProperty } from '../entities/Investment';
+import type { IInvestmentRepository } from '../repositories/IInvestmentRepository';
 
 export interface PortfolioSummary {
   totalInvested: number;

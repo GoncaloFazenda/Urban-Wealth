@@ -1,9 +1,9 @@
-import type { Property } from '../entities/Property.js';
+import type { Property } from '../entities/Property';
 import type {
   IPropertyRepository,
   PropertyFilters,
   PropertySortField,
-} from '../repositories/IPropertyRepository.js';
+} from '../repositories/IPropertyRepository';
 
 export interface GetPropertiesResult {
   properties: Property[];

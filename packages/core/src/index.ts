@@ -1,6 +1,6 @@
 // @urban-wealth/core — barrel export
-export * from './entities/index.js';
-export * from './validators/index.js';
-export * from './repositories/index.js';
-export * from './use-cases/index.js';
-export * from './mockData.js';
+export * from './entities/index';
+export * from './validators/index';
+export * from './repositories/index';
+export * from './use-cases/index';
+export * from './mockData';

@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { QueryProvider } from '@/providers/QueryProvider';
+import { AuthProvider } from '@/providers/AuthProvider';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Urban Wealth — Fractional Real Estate Investment',
@@ -34,7 +38,15 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-surface-900 text-white antialiased">
-        {children}
+        <QueryProvider>
+          <AuthProvider>
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

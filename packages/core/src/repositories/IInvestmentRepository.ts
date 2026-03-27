@@ -1,4 +1,4 @@
-import type { Investment, InvestmentWithProperty } from '../entities/Investment.js';
+import type { Investment, InvestmentWithProperty } from '../entities/Investment';
 
 export interface IInvestmentRepository {
   create(
