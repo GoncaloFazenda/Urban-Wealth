@@ -6,7 +6,7 @@ export const propertySchema = z.object({
   id: z.string().uuid(),
   title: z.string().min(1).max(200),
   location: z.string().min(1).max(200),
-  photoUrls: z.array(z.string().url()).min(1),
+  photoUrls: z.array(z.string().min(1)).min(1),
   totalValue: z.number().positive(),
   funded: z.number().min(0).max(100),
   annualYield: z.number().min(0).max(100),
