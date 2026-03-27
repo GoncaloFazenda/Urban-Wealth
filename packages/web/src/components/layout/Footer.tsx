@@ -2,28 +2,25 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-surface-900">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-4">
-          {/* Brand */}
-          <div className="md:col-span-1">
+    <footer className="border-t border-white/[0.06] mt-auto">
+      <div className="mx-auto max-w-6xl px-5 sm:px-6 py-10">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 text-xs font-bold text-white">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary-500 text-[10px] font-bold text-white">
                 UW
               </div>
-              <span className="font-display text-lg font-semibold text-white">
+              <span className="font-display text-sm font-semibold text-white tracking-tight">
                 Urban Wealth
               </span>
             </Link>
-            <p className="mt-3 text-sm leading-relaxed text-white/40">
-              Fractional real estate investment made accessible. Invest in
-              premium European properties starting from €50.
+            <p className="mt-3 text-[13px] leading-relaxed text-surface-500">
+              Fractional real estate investment. Invest in premium European properties starting from €50.
             </p>
           </div>
 
-          {/* Platform */}
           <div>
-            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/30">
+            <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-surface-500">
               Platform
             </h4>
             <ul className="space-y-2">
@@ -33,9 +30,8 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
           <div>
-            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/30">
+            <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-surface-500">
               Legal
             </h4>
             <ul className="space-y-2">
@@ -45,25 +41,23 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/30">
+            <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-surface-500">
               Contact
             </h4>
             <ul className="space-y-2">
-              <FooterLink href="#">Support</FooterLink>
+              <FooterLink href="#">Support Centre</FooterLink>
               <FooterLink href="#">hello@urbanwealth.io</FooterLink>
             </ul>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
-          <p className="text-xs text-white/30">
-            © {new Date().getFullYear()} Urban Wealth. This is a
-            simulated platform — no real investments are made.
+        <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-[12px] text-surface-600">
+            © {new Date().getFullYear()} Urban Wealth. Simulated platform — no real investments.
           </p>
-          <p className="text-xs text-white/20">
-            Built with Next.js, Tailwind CSS & Prisma
+          <p className="text-[11px] text-surface-600">
+            Next.js · Tailwind · Prisma
           </p>
         </div>
       </div>
@@ -71,19 +65,10 @@ export function Footer() {
   );
 }
 
-function FooterLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link
-        href={href}
-        className="text-sm text-white/40 transition-colors hover:text-white/70"
-      >
+      <Link href={href} className="text-[13px] text-surface-500 transition-colors hover:text-surface-300">
         {children}
       </Link>
     </li>

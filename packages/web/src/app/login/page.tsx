@@ -19,111 +19,86 @@ function LoginPageContent() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
-  });
+  } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = async (data: LoginInput) => {
     setIsSubmitting(true);
     setServerError('');
     try {
       await login(data.email, data.password);
-      const redirect = searchParams.get('redirect') ?? '/';
-      router.push(redirect);
+      router.push(searchParams.get('redirect') ?? '/');
     } catch (err) {
-      setServerError(
-        err instanceof Error ? err.message : 'Login failed'
-      );
+      setServerError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md animate-scale-in">
-        <div className="mb-8 text-center">
-          <h1 className="font-display text-3xl font-bold text-white">
+    <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-5 py-12">
+      <div className="w-full max-w-[380px] animate-fade-in">
+        <div className="mb-6">
+          <h1 className="font-display text-[22px] font-bold text-white tracking-tight">
             Welcome back
           </h1>
-          <p className="mt-2 text-sm text-white/50">
+          <p className="mt-1 text-[13px] text-surface-400">
             Log in to manage your investments
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 rounded-2xl border border-white/5 bg-surface-800 p-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {serverError && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+            <div className="rounded-md bg-destructive-400/[0.08] border border-destructive-400/[0.15] px-3 py-2.5 text-[13px] text-destructive-400">
               {serverError}
             </div>
           )}
 
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1.5 block text-sm font-medium text-white/70"
-            >
-              Email
-            </label>
+          <Field label="Email" error={errors.email?.message}>
             <input
               id="email"
               type="email"
               {...register('email')}
-              className="w-full rounded-lg border border-white/10 bg-surface-700 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
-              placeholder="john@example.com"
+              className="input-field"
+              placeholder="you@company.com"
             />
-            {errors.email && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+          </Field>
 
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-1.5 block text-sm font-medium text-white/70"
-            >
-              Password
-            </label>
+          <Field label="Password" error={errors.password?.message}>
             <input
               id="password"
               type="password"
               {...register('password')}
-              className="w-full rounded-lg border border-white/10 bg-surface-700 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
+              className="input-field"
               placeholder="••••••••"
             />
-            {errors.password && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+          </Field>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-500/20 transition-all hover:shadow-primary-500/40 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-md bg-primary-500 px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
           >
-            {isSubmitting ? 'Logging in...' : 'Log In'}
+            {isSubmitting ? 'Logging in…' : 'Log in'}
           </button>
-
-          <p className="text-center text-sm text-white/40">
-            Don&apos;t have an account?{' '}
-            <Link
-              href="/register"
-              className="text-primary-400 hover:text-primary-300 transition-colors"
-            >
-              Create one
-            </Link>
-          </p>
         </form>
+
+        <p className="mt-5 text-center text-[13px] text-surface-500">
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="text-primary-400 hover:text-primary-300 transition-colors">
+            Create one
+          </Link>
+        </p>
       </div>
+    </div>
+  );
+}
+
+function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-[12px] font-medium text-surface-400">{label}</label>
+      {children}
+      {error && <p className="mt-1 text-[11px] text-destructive-400">{error}</p>}
     </div>
   );
 }

@@ -22,24 +22,24 @@ export function PropertyFilters({
   onSortChange,
 }: PropertyFiltersProps) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-wrap gap-2">
-        {/* Status filter pills */}
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {/* Status tabs */}
+      <div className="flex gap-1 rounded-lg bg-surface-900 border border-white/[0.06] p-0.5">
         {(
           [
             { value: 'all', label: 'All' },
-            { value: 'open', label: '🟢 Open' },
-            { value: 'coming_soon', label: '🟡 Coming Soon' },
-            { value: 'funded', label: '🔴 Funded' },
+            { value: 'open', label: 'Open' },
+            { value: 'coming_soon', label: 'Coming Soon' },
+            { value: 'funded', label: 'Funded' },
           ] as const
         ).map((option) => (
           <button
             key={option.value}
             onClick={() => onStatusChange(option.value)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+            className={`rounded-md px-3 py-1.5 text-[12px] font-medium transition-all ${
               status === option.value
-                ? 'bg-primary-500/20 text-primary-300 ring-1 ring-primary-500/30'
-                : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70'
+                ? 'bg-white/[0.08] text-white shadow-sm'
+                : 'text-surface-400 hover:text-surface-300'
             }`}
           >
             {option.label}
@@ -47,31 +47,27 @@ export function PropertyFilters({
         ))}
       </div>
 
-      <div className="flex gap-3">
-        {/* Location dropdown */}
+      <div className="flex gap-2">
         <select
           value={location}
           onChange={(e) => onLocationChange(e.target.value)}
-          className="rounded-lg border border-white/10 bg-surface-800 px-3 py-2 text-sm text-white/70 outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
+          className="rounded-md border border-white/[0.08] bg-surface-900 px-3 py-1.5 text-[12px] text-surface-300 outline-none focus:border-primary-500/40 transition-colors"
         >
-          <option value="">All Locations</option>
+          <option value="">All locations</option>
           {locations.map((loc) => (
-            <option key={loc} value={loc}>
-              {loc}
-            </option>
+            <option key={loc} value={loc}>{loc}</option>
           ))}
         </select>
 
-        {/* Sort dropdown */}
         <select
           value={sort}
           onChange={(e) => onSortChange(e.target.value as PropertySortField)}
-          className="rounded-lg border border-white/10 bg-surface-800 px-3 py-2 text-sm text-white/70 outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
+          className="rounded-md border border-white/[0.08] bg-surface-900 px-3 py-1.5 text-[12px] text-surface-300 outline-none focus:border-primary-500/40 transition-colors"
         >
-          <option value="newest">Newest First</option>
-          <option value="yield">Highest Yield</option>
-          <option value="appreciation">Highest Growth</option>
-          <option value="funded">Most Funded</option>
+          <option value="newest">Newest</option>
+          <option value="yield">Highest yield</option>
+          <option value="appreciation">Highest growth</option>
+          <option value="funded">Most funded</option>
         </select>
       </div>
     </div>

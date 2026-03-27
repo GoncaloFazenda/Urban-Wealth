@@ -20,9 +20,7 @@ function PropertiesPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const status = (searchParams.get('status') ?? 'all') as
-    | PropertyStatus
-    | 'all';
+  const status = (searchParams.get('status') ?? 'all') as PropertyStatus | 'all';
   const location = searchParams.get('location') ?? '';
   const sort = (searchParams.get('sort') ?? 'newest') as PropertySortField;
 
@@ -39,10 +37,7 @@ function PropertiesPageContent() {
     },
   });
 
-  const updateParams = (
-    key: string,
-    value: string
-  ) => {
+  const updateParams = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (value && value !== 'all' && value !== 'newest') {
       params.set(key, value);
@@ -53,23 +48,19 @@ function PropertiesPageContent() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Hero */}
-      <div className="mb-10 text-center animate-fade-in">
-        <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-          <span className="gradient-text">Invest in Real Estate</span>
-          <br />
-          <span className="text-white/90">Starting from €50</span>
+    <div className="mx-auto max-w-6xl px-5 sm:px-6 py-8">
+      {/* Header */}
+      <div className="mb-8 animate-fade-in">
+        <h1 className="font-display text-[28px] sm:text-[32px] font-bold text-white tracking-tight">
+          Investment Properties
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-white/50">
-          Own fractions of premium European properties. Earn rental yield
-          and benefit from property appreciation — all without the
-          complexity of traditional real estate.
+        <p className="mt-1.5 text-[14px] text-surface-400 max-w-xl">
+          Browse curated European real estate opportunities. Invest from €50 and earn rental yield plus property appreciation.
         </p>
       </div>
 
       {/* Filters */}
-      <div className="mb-8 animate-slide-up">
+      <div className="mb-6">
         <PropertyFilters
           status={status}
           location={location}
@@ -81,9 +72,9 @@ function PropertiesPageContent() {
         />
       </div>
 
-      {/* Content with all 4 states */}
+      {/* Grid */}
       {isLoading ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <PropertyCardSkeleton key={i} />
           ))}
@@ -97,22 +88,20 @@ function PropertiesPageContent() {
       ) : !data?.properties.length ? (
         <EmptyState
           title="No properties found"
-          message="No properties match your current filters. Try adjusting your search criteria."
-          action={{ label: 'Clear Filters', href: '/' }}
+          message="No properties match your current filters. Try adjusting your search."
+          action={{ label: 'Clear filters', href: '/' }}
         />
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in">
-          {data.properties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </div>
-      )}
-
-      {/* Results count */}
-      {data && data.properties.length > 0 && (
-        <p className="mt-6 text-center text-sm text-white/30">
-          Showing {data.properties.length} of {data.total} properties
-        </p>
+        <>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in">
+            {data.properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+          <p className="mt-5 text-center text-[12px] text-surface-600">
+            {data.properties.length} of {data.total} properties
+          </p>
+        </>
       )}
     </div>
   );
@@ -122,8 +111,8 @@ export default function HomePage() {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6 py-8">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <PropertyCardSkeleton key={i} />
             ))}

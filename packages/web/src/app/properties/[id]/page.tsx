@@ -10,33 +10,35 @@ import { useAuth } from '@/providers/AuthProvider';
 import { PropertyDetailSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
 
+/* ===== Status Badge ===== */
+function StatusBadge({ status }: { status: Property['status'] }) {
+  const config = {
+    open: { label: 'Open', dot: 'bg-positive-400', text: 'text-positive-400', bg: 'bg-positive-400/[0.08]' },
+    coming_soon: { label: 'Coming Soon', dot: 'bg-warning-400', text: 'text-warning-400', bg: 'bg-warning-400/[0.08]' },
+    funded: { label: 'Fully Funded', dot: 'bg-surface-500', text: 'text-surface-400', bg: 'bg-surface-500/[0.12]' },
+  };
+  const c = config[status];
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${c.bg} ${c.text}`}>
+      <span className={`h-[5px] w-[5px] rounded-full ${c.dot}`} />
+      {c.label}
+    </span>
+  );
+}
+
+/* ===== Risk Disclaimer ===== */
 function RiskDisclaimer() {
   return (
-    <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 px-5 py-4">
-      <div className="flex gap-3">
-        <svg
-          className="h-5 w-5 flex-shrink-0 text-amber-400 mt-0.5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.962-.833-2.732 0L4.07 16.5c-.77.833.192 2.5 1.732 2.5z"
-          />
-        </svg>
-        <p className="text-xs leading-relaxed text-amber-400/80">
-          Investing in real estate involves risk, including the possible loss
-          of principal. Past performance is not indicative of future results.
-          Urban Wealth is a simulated platform — no real investments are made.
-        </p>
-      </div>
+    <div className="rounded-md border border-warning-400/[0.12] bg-warning-400/[0.04] px-3 py-2.5">
+      <p className="text-[11px] leading-relaxed text-warning-500/80">
+        <span className="font-medium text-warning-400">Risk notice:</span>{' '}
+        Investing involves risk including possible loss of principal. Past performance is not indicative of future results. This is a simulated platform.
+      </p>
     </div>
   );
 }
 
+/* ===== Investment Calculator ===== */
 function InvestmentCalculator({
   property,
   onInvest,
@@ -44,70 +46,45 @@ function InvestmentCalculator({
   property: Property;
   onInvest: (amount: number) => void;
 }) {
-  const [amount, setAmount] = useState<string>('');
-  const numAmount = parseFloat(amount) || 0;
-
-  const remainingValue =
-    property.totalValue * ((100 - property.funded) / 100);
-  const ownership = numAmount > 0 ? (numAmount / property.totalValue) * 100 : 0;
-  const annualIncome =
-    property.totalValue *
-    (property.annualYield / 100) *
-    (ownership / 100);
-  const appreciationGain =
-    property.totalValue *
-    (property.projectedAppreciation / 100) *
-    (ownership / 100);
-  const fee = numAmount * PLATFORM_FEE_RATE;
-  const isValid = numAmount > 0 && numAmount <= remainingValue;
+  const [amount, setAmount] = useState('');
+  const num = parseFloat(amount) || 0;
+  const remaining = property.totalValue * ((100 - property.funded) / 100);
+  const ownership = num > 0 ? (num / property.totalValue) * 100 : 0;
+  const annualIncome = property.totalValue * (property.annualYield / 100) * (ownership / 100);
+  const appreciation = property.totalValue * (property.projectedAppreciation / 100) * (ownership / 100);
+  const fee = num * PLATFORM_FEE_RATE;
+  const isValid = num > 0 && num <= remaining;
 
   return (
-    <div className="rounded-2xl border border-white/5 bg-surface-800 p-6">
-      <h3 className="mb-4 font-display text-lg font-semibold text-white">
-        Investment Calculator
-      </h3>
+    <div className="rounded-xl border border-white/[0.06] bg-surface-900 p-5">
+      <h3 className="text-[14px] font-semibold text-white mb-4">Investment Calculator</h3>
 
-      <div className="mb-5">
-        <label className="mb-1.5 block text-sm text-white/50">
-          Investment Amount (€)
+      <div className="mb-4">
+        <label className="mb-1.5 block text-[12px] font-medium text-surface-400">
+          Amount (€)
         </label>
         <input
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           min={0}
-          max={remainingValue}
-          className="w-full rounded-lg border border-white/10 bg-surface-700 px-4 py-3 text-lg font-semibold text-white placeholder-white/20 outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
-          placeholder="e.g. 5000"
+          max={remaining}
+          className="input-field text-[16px] font-semibold"
+          placeholder="5,000"
         />
-        <p className="mt-1 text-xs text-white/30">
-          Max: €{remainingValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+        <p className="mt-1 text-[11px] text-surface-600">
+          Remaining: €{remaining.toLocaleString(undefined, { maximumFractionDigits: 0 })}
         </p>
       </div>
 
-      {numAmount > 0 && (
-        <div className="mb-5 space-y-3 animate-fade-in">
+      {num > 0 && (
+        <div className="mb-4 space-y-2.5 animate-fade-in">
           <CalcRow label="Ownership" value={`${ownership.toFixed(2)}%`} />
-          <CalcRow
-            label="Est. Annual Income"
-            value={`€${annualIncome.toFixed(2)}`}
-            accent
-          />
-          <CalcRow
-            label="Est. Appreciation Gain"
-            value={`€${appreciationGain.toFixed(2)}`}
-            accent
-          />
-          <CalcRow
-            label="Platform Fee (1.5%)"
-            value={`€${fee.toFixed(2)}`}
-          />
-          <div className="border-t border-white/5 pt-3">
-            <CalcRow
-              label="Total Annual Return"
-              value={`€${(annualIncome + appreciationGain).toFixed(2)}`}
-              bold
-            />
+          <CalcRow label="Est. annual income" value={`€${annualIncome.toFixed(0)}`} positive />
+          <CalcRow label="Est. appreciation" value={`€${appreciation.toFixed(0)}`} positive />
+          <CalcRow label="Platform fee (1.5%)" value={`€${fee.toFixed(0)}`} />
+          <div className="border-t border-white/[0.06] pt-2.5">
+            <CalcRow label="Total annual return" value={`€${(annualIncome + appreciation).toFixed(0)}`} bold />
           </div>
         </div>
       )}
@@ -115,52 +92,29 @@ function InvestmentCalculator({
       <RiskDisclaimer />
 
       <button
-        onClick={() => onInvest(numAmount)}
+        onClick={() => onInvest(num)}
         disabled={!isValid || property.status !== 'open'}
-        className="mt-5 w-full rounded-xl bg-gradient-to-r from-primary-500 to-accent-500 px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary-500/20 transition-all hover:shadow-primary-500/40 hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="mt-4 w-full rounded-md bg-primary-500 px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-primary-400 disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {property.status !== 'open'
-          ? 'Not Available for Investment'
-          : 'Invest Now'}
+        {property.status !== 'open' ? 'Not available' : 'Invest now'}
       </button>
     </div>
   );
 }
 
-function CalcRow({
-  label,
-  value,
-  accent = false,
-  bold = false,
-}: {
-  label: string;
-  value: string;
-  accent?: boolean;
-  bold?: boolean;
-}) {
+function CalcRow({ label, value, positive = false, bold = false }: { label: string; value: string; positive?: boolean; bold?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span
-        className={`text-sm ${bold ? 'font-semibold text-white' : 'text-white/50'}`}
-      >
-        {label}
-      </span>
-      <span
-        className={`text-sm font-medium ${
-          bold
-            ? 'text-gold-400 text-base font-bold'
-            : accent
-              ? 'text-accent-400'
-              : 'text-white/70'
-        }`}
-      >
+      <span className={`text-[12px] ${bold ? 'font-medium text-white' : 'text-surface-400'}`}>{label}</span>
+      <span className={`text-[12px] font-medium ${bold ? 'text-white text-[13px] font-semibold' : positive ? 'text-positive-400' : 'text-surface-300'}`}>
         {value}
       </span>
     </div>
   );
 }
 
-function InvestmentModal({
+/* ===== Confirmation Modal ===== */
+function ConfirmModal({
   property,
   amount,
   onClose,
@@ -174,75 +128,39 @@ function InvestmentModal({
   isSubmitting: boolean;
 }) {
   const ownership = (amount / property.totalValue) * 100;
-  const annualIncome =
-    property.totalValue *
-    (property.annualYield / 100) *
-    (ownership / 100);
-  const appreciationGain =
-    property.totalValue *
-    (property.projectedAppreciation / 100) *
-    (ownership / 100);
+  const annualIncome = property.totalValue * (property.annualYield / 100) * (ownership / 100);
+  const appreciation = property.totalValue * (property.projectedAppreciation / 100) * (ownership / 100);
   const fee = amount * PLATFORM_FEE_RATE;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-surface-800 p-6 animate-scale-in">
-        <h3 className="mb-4 font-display text-xl font-bold text-white">
-          Confirm Investment
-        </h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="w-full max-w-sm rounded-xl border border-white/[0.08] bg-surface-900 p-5 shadow-modal animate-scale-in">
+        <h3 className="text-[16px] font-semibold text-white mb-4">Confirm investment</h3>
 
-        <div className="space-y-3 mb-5">
-          <div className="flex justify-between text-sm">
-            <span className="text-white/50">Property</span>
-            <span className="text-white font-medium">{property.title}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-white/50">Amount</span>
-            <span className="text-white font-medium">
-              €{amount.toLocaleString()}
-            </span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-white/50">Ownership</span>
-            <span className="text-primary-400 font-medium">
-              {ownership.toFixed(2)}%
-            </span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-white/50">Est. Annual Income</span>
-            <span className="text-accent-400 font-medium">
-              €{annualIncome.toFixed(2)}
-            </span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-white/50">Est. Appreciation</span>
-            <span className="text-accent-400 font-medium">
-              €{appreciationGain.toFixed(2)}
-            </span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-white/50">Platform Fee</span>
-            <span className="text-white/70 font-medium">
-              €{fee.toFixed(2)}
-            </span>
-          </div>
+        <div className="space-y-2 mb-4 text-[12px]">
+          <div className="flex justify-between"><span className="text-surface-400">Property</span><span className="text-white font-medium max-w-[180px] text-right truncate">{property.title}</span></div>
+          <div className="flex justify-between"><span className="text-surface-400">Amount</span><span className="text-white font-medium">€{amount.toLocaleString()}</span></div>
+          <div className="flex justify-between"><span className="text-surface-400">Ownership</span><span className="text-white font-medium">{ownership.toFixed(2)}%</span></div>
+          <div className="flex justify-between"><span className="text-surface-400">Est. annual income</span><span className="text-positive-400 font-medium">€{annualIncome.toFixed(0)}</span></div>
+          <div className="flex justify-between"><span className="text-surface-400">Est. appreciation</span><span className="text-positive-400 font-medium">€{appreciation.toFixed(0)}</span></div>
+          <div className="flex justify-between"><span className="text-surface-400">Platform fee</span><span className="text-surface-300 font-medium">€{fee.toFixed(0)}</span></div>
         </div>
 
         <RiskDisclaimer />
 
-        <div className="mt-5 flex gap-3">
+        <div className="mt-4 flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl border border-white/10 py-3 text-sm font-medium text-white/70 hover:bg-white/5"
+            className="flex-1 rounded-md border border-white/[0.08] py-2 text-[13px] font-medium text-surface-300 hover:bg-white/[0.04] transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={isSubmitting}
-            className="flex-1 rounded-xl bg-gradient-to-r from-primary-500 to-accent-500 py-3 text-sm font-bold text-white transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-md bg-primary-500 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Processing...' : 'Confirm Investment'}
+            {isSubmitting ? 'Processing…' : 'Confirm'}
           </button>
         </div>
       </div>
@@ -250,6 +168,7 @@ function InvestmentModal({
   );
 }
 
+/* ===== Page ===== */
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -257,11 +176,9 @@ export default function PropertyDetailPage() {
   const [showModal, setShowModal] = useState(false);
   const [investAmount, setInvestAmount] = useState(0);
   const [isInvesting, setIsInvesting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [toast, setToast] = useState('');
 
-  const { data, isLoading, isError, refetch } = useQuery<{
-    property: Property;
-  }>({
+  const { data, isLoading, isError, refetch } = useQuery<{ property: Property }>({
     queryKey: ['property', params.id],
     queryFn: async () => {
       const res = await fetch(`/api/properties/${params.id}`);
@@ -279,154 +196,112 @@ export default function PropertyDetailPage() {
     setShowModal(true);
   };
 
-  const handleConfirmInvest = async () => {
+  const handleConfirm = async () => {
     setIsInvesting(true);
     try {
       const res = await fetch('/api/investments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          propertyId: params.id,
-          amount: investAmount,
-        }),
+        body: JSON.stringify({ propertyId: params.id, amount: investAmount }),
       });
-
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error ?? 'Investment failed');
+        const d = await res.json();
+        throw new Error(d.error ?? 'Investment failed');
       }
-
       setShowModal(false);
-      setSuccessMessage(
-        `Successfully invested €${investAmount.toLocaleString()}!`
-      );
-      setTimeout(() => setSuccessMessage(''), 5000);
-    } catch (error) {
-      alert(
-        error instanceof Error ? error.message : 'Investment failed'
-      );
+      setToast(`Successfully invested €${investAmount.toLocaleString()}`);
+      setTimeout(() => setToast(''), 4000);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Investment failed');
     } finally {
       setIsInvesting(false);
     }
   };
 
-  if (isLoading) return <div className="mx-auto max-w-6xl px-4 py-8"><PropertyDetailSkeleton /></div>;
-  if (isError) return <div className="mx-auto max-w-6xl px-4 py-8"><ErrorState onRetry={() => refetch()} /></div>;
-  if (!data?.property) return <div className="mx-auto max-w-6xl px-4 py-8"><ErrorState title="Property not found" /></div>;
+  if (isLoading) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-8"><PropertyDetailSkeleton /></div>;
+  if (isError) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-8"><ErrorState onRetry={() => refetch()} /></div>;
+  if (!data?.property) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-8"><ErrorState title="Property not found" /></div>;
 
-  const property = data.property;
-  const totalReturn = property.annualYield + property.projectedAppreciation;
+  const p = data.property;
+  const totalReturn = p.annualYield + p.projectedAppreciation;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
-      {/* Success toast */}
-      {successMessage && (
-        <div className="fixed top-20 right-4 z-50 rounded-xl bg-accent-500/20 border border-accent-500/30 px-5 py-3 text-sm font-medium text-accent-400 shadow-lg animate-slide-up">
-          ✅ {successMessage}
+    <div className="mx-auto max-w-5xl px-5 sm:px-6 py-8 animate-fade-in">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-16 right-4 z-50 rounded-md bg-positive-400/[0.12] border border-positive-400/[0.2] px-4 py-2.5 text-[13px] font-medium text-positive-400 shadow-elevated animate-slide-up">
+          {toast}
         </div>
       )}
 
-      {/* Hero image gallery */}
-      <div className="grid gap-2 rounded-2xl overflow-hidden mb-8 h-[300px] sm:h-[400px] lg:h-[450px] grid-cols-3">
-        {property.photoUrls.slice(0, 3).map((url, i) => (
-          <div
-            key={i}
-            className={`relative ${i === 0 ? 'col-span-2 row-span-1' : ''} overflow-hidden`}
-          >
-            <Image
-              src={url}
-              alt={`${property.title} - Photo ${i + 1}`}
-              fill
-              className="object-cover"
-              sizes={i === 0 ? '66vw' : '33vw'}
-              priority={i === 0}
-            />
+      {/* Image grid */}
+      <div className="grid gap-1.5 rounded-xl overflow-hidden mb-6 h-[260px] sm:h-[340px] lg:h-[380px] grid-cols-3">
+        {p.photoUrls.slice(0, 3).map((url, i) => (
+          <div key={i} className={`relative overflow-hidden ${i === 0 ? 'col-span-2' : ''} bg-surface-800`}>
+            <Image src={url} alt={`${p.title} — ${i + 1}`} fill className="object-cover" sizes={i === 0 ? '66vw' : '33vw'} priority={i === 0} />
           </div>
         ))}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Left column — details */}
-        <div className="lg:col-span-2">
-          <div className="mb-2 flex items-center gap-3">
-            <StatusBadge status={property.status} />
-            <span className="text-sm text-white/40">{property.location}</span>
+      <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        {/* Left — details */}
+        <div>
+          <div className="flex items-center gap-2.5 mb-2">
+            <StatusBadge status={p.status} />
+            <span className="text-[12px] text-surface-500">{p.location}</span>
           </div>
 
-          <h1 className="font-display text-3xl font-bold text-white mb-2">
-            {property.title}
+          <h1 className="font-display text-[24px] sm:text-[28px] font-bold text-white tracking-tight mb-1">
+            {p.title}
           </h1>
-          <p className="text-2xl font-semibold text-primary-400 mb-6">
-            €{property.totalValue.toLocaleString()}
+          <p className="text-[20px] font-semibold text-white/90 tracking-tight mb-5">
+            €{p.totalValue.toLocaleString()}
           </p>
 
-          <p className="text-sm leading-relaxed text-white/60 mb-8">
-            {property.description}
+          <p className="text-[13px] leading-relaxed text-surface-400 mb-6">
+            {p.description}
           </p>
 
-          {/* Financials grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <FinancialCard
-              label="Annual Yield"
-              value={`${property.annualYield}%`}
-              color="text-accent-400"
-            />
-            <FinancialCard
-              label="Appreciation"
-              value={`${property.projectedAppreciation}%`}
-              color="text-primary-400"
-            />
-            <FinancialCard
-              label="Total Return"
-              value={`${totalReturn.toFixed(1)}%`}
-              color="text-gold-400"
-            />
-            <FinancialCard
-              label="Platform Fee"
-              value="1.5%"
-              color="text-white/60"
-            />
+          {/* Financial metrics — clean table style */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-xl overflow-hidden border border-white/[0.06] mb-6">
+            <Metric label="Annual Yield" value={`${p.annualYield}%`} positive />
+            <Metric label="Appreciation" value={`${p.projectedAppreciation}%`} />
+            <Metric label="Total Return" value={`${totalReturn.toFixed(1)}%`} positive />
+            <Metric label="Platform Fee" value="1.5%" />
           </div>
 
-          {/* Funded progress */}
-          <div className="rounded-xl border border-white/5 bg-surface-800 p-5">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-sm font-medium text-white">
-                Funding Progress
-              </span>
-              <span className="text-sm font-bold text-primary-400">
-                {property.funded}%
-              </span>
+          {/* Funding progress */}
+          <div className="rounded-xl border border-white/[0.06] bg-surface-900 p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[13px] font-medium text-white">Funding progress</span>
+              <span className="text-[13px] font-semibold text-white">{p.funded}%</span>
             </div>
-            <div className="h-3 overflow-hidden rounded-full bg-white/5">
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-700"
-                style={{ width: `${Math.min(property.funded, 100)}%` }}
+                className="h-full rounded-full bg-primary-500 transition-all duration-500"
+                style={{ width: `${Math.min(p.funded, 100)}%` }}
               />
             </div>
-            <p className="mt-2 text-xs text-white/30">
-              {property.availableShares.toLocaleString()} shares remaining
+            <p className="mt-1.5 text-[11px] text-surface-500">
+              {p.availableShares.toLocaleString()} shares remaining
             </p>
           </div>
         </div>
 
-        {/* Right column — calculator */}
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <InvestmentCalculator
-            property={property}
-            onInvest={handleInvest}
-          />
+        {/* Right — calculator (sticky) */}
+        <div className="lg:sticky lg:top-20 lg:self-start">
+          <InvestmentCalculator property={p} onInvest={handleInvest} />
         </div>
       </div>
 
-      {/* Investment modal */}
+      {/* Modal */}
       {showModal && (
-        <InvestmentModal
-          property={property}
+        <ConfirmModal
+          property={p}
           amount={investAmount}
           onClose={() => setShowModal(false)}
-          onConfirm={handleConfirmInvest}
+          onConfirm={handleConfirm}
           isSubmitting={isInvesting}
         />
       )}
@@ -434,39 +309,13 @@ export default function PropertyDetailPage() {
   );
 }
 
-function StatusBadge({ status }: { status: Property['status'] }) {
-  const config = {
-    open: { label: '🟢 Open', cls: 'bg-status-open/15 text-status-open' },
-    coming_soon: {
-      label: '🟡 Coming Soon',
-      cls: 'bg-status-coming/15 text-status-coming',
-    },
-    funded: {
-      label: '🔴 Funded',
-      cls: 'bg-status-funded/15 text-status-funded',
-    },
-  };
-  const c = config[status];
+function Metric({ label, value, positive = false }: { label: string; value: string; positive?: boolean }) {
   return (
-    <span className={`rounded-full px-3 py-1 text-xs font-medium ${c.cls}`}>
-      {c.label}
-    </span>
-  );
-}
-
-function FinancialCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div className="rounded-xl border border-white/5 bg-surface-800 p-4 text-center">
-      <p className="text-xs text-white/40 mb-1">{label}</p>
-      <p className={`text-xl font-bold ${color}`}>{value}</p>
+    <div className="bg-surface-900 p-3.5 text-center">
+      <p className="text-[11px] text-surface-500 mb-0.5">{label}</p>
+      <p className={`text-[18px] font-semibold tracking-tight ${positive ? 'text-positive-400' : 'text-white/80'}`}>
+        {value}
+      </p>
     </div>
   );
 }

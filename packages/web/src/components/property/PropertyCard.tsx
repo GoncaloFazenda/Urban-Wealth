@@ -10,126 +10,99 @@ function StatusBadge({ status }: { status: Property['status'] }) {
   const config = {
     open: {
       label: 'Open',
-      bg: 'bg-status-open/15',
-      text: 'text-status-open',
-      dot: 'bg-status-open',
+      dot: 'bg-positive-400',
+      bg: 'bg-positive-400/[0.08]',
+      text: 'text-positive-400',
     },
     coming_soon: {
       label: 'Coming Soon',
-      bg: 'bg-status-coming/15',
-      text: 'text-status-coming',
-      dot: 'bg-status-coming',
+      dot: 'bg-warning-400',
+      bg: 'bg-warning-400/[0.08]',
+      text: 'text-warning-400',
     },
     funded: {
-      label: 'Funded',
-      bg: 'bg-status-funded/15',
-      text: 'text-status-funded',
-      dot: 'bg-status-funded',
+      label: 'Fully Funded',
+      dot: 'bg-surface-500',
+      bg: 'bg-surface-500/[0.12]',
+      text: 'text-surface-400',
     },
   };
-
   const c = config[status];
-
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${c.bg} ${c.text}`}
-    >
-      <span className={`h-1.5 w-1.5 rounded-full ${c.dot}`} />
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${c.bg} ${c.text}`}>
+      <span className={`h-[5px] w-[5px] rounded-full ${c.dot}`} />
       {c.label}
     </span>
   );
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
-  const totalReturn =
-    property.annualYield + property.projectedAppreciation;
-
   return (
     <Link
       href={`/properties/${property.id}`}
-      className="group overflow-hidden rounded-2xl border border-white/5 bg-surface-800 transition-all duration-300 hover:border-white/10 hover:shadow-card-hover hover:-translate-y-1"
+      className="group block overflow-hidden rounded-xl border border-white/[0.06] bg-surface-900 transition-all duration-200 hover:border-white/[0.10] hover:shadow-card-hover"
     >
       {/* Image */}
-      <div className="relative aspect-[16/10] overflow-hidden">
+      <div className="relative aspect-[16/10] overflow-hidden bg-surface-800">
         <Image
           src={property.photoUrls[0] ?? ''}
           alt={property.title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-surface-900/60 to-transparent" />
-        <div className="absolute top-3 left-3">
+        <div className="absolute inset-0 bg-gradient-to-t from-surface-950/50 via-transparent to-transparent" />
+        <div className="absolute bottom-3 left-3">
           <StatusBadge status={property.status} />
-        </div>
-        <div className="absolute bottom-3 right-3">
-          <span className="rounded-lg glass px-2.5 py-1 text-xs font-semibold text-white">
-            €{property.totalValue.toLocaleString()}
-          </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <h3 className="mb-1 text-base font-semibold text-white line-clamp-1 group-hover:text-primary-300 transition-colors">
+      <div className="p-4">
+        {/* Title + Location */}
+        <h3 className="text-[15px] font-semibold text-white leading-tight line-clamp-1 mb-1">
           {property.title}
         </h3>
-        <p className="mb-4 text-sm text-white/40 flex items-center gap-1">
-          <svg
-            className="h-3.5 w-3.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
+        <p className="text-[12px] text-surface-500 mb-3.5">
           {property.location}
         </p>
 
-        {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
-            <p className="text-xs text-white/40 mb-0.5">Yield</p>
-            <p className="text-sm font-semibold text-accent-400">
-              {property.annualYield}%
-            </p>
+        {/* Price */}
+        <p className="text-[18px] font-semibold text-white mb-3.5 tracking-tight">
+          €{property.totalValue.toLocaleString()}
+        </p>
+
+        {/* Key metrics — clean horizontal row */}
+        <div className="flex items-center gap-4 mb-3.5 text-[12px]">
+          <div>
+            <span className="text-surface-500">Yield </span>
+            <span className="font-semibold text-positive-400">{property.annualYield}%</span>
           </div>
-          <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
-            <p className="text-xs text-white/40 mb-0.5">Growth</p>
-            <p className="text-sm font-semibold text-primary-400">
-              {property.projectedAppreciation}%
-            </p>
+          <div className="h-3 w-px bg-white/[0.06]" />
+          <div>
+            <span className="text-surface-500">Growth </span>
+            <span className="font-semibold text-white/80">{property.projectedAppreciation}%</span>
           </div>
-          <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
-            <p className="text-xs text-white/40 mb-0.5">Total</p>
-            <p className="text-sm font-semibold text-gold-400">
-              {totalReturn.toFixed(1)}%
-            </p>
+          <div className="h-3 w-px bg-white/[0.06]" />
+          <div>
+            <span className="text-surface-500">Total </span>
+            <span className="font-semibold text-white">
+              {(property.annualYield + property.projectedAppreciation).toFixed(1)}%
+            </span>
           </div>
         </div>
 
         {/* Funded progress */}
         <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <span className="text-xs text-white/40">Funded</span>
-            <span className="text-xs font-medium text-white/60">
-              {property.funded}%
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[11px] text-surface-500">{property.funded}% funded</span>
+            <span className="text-[11px] text-surface-600">
+              {property.availableShares.toLocaleString()} shares left
             </span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
+          <div className="h-1 overflow-hidden rounded-full bg-white/[0.06]">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-500"
+              className="h-full rounded-full bg-primary-500 transition-all duration-500"
               style={{ width: `${Math.min(property.funded, 100)}%` }}
             />
           </div>

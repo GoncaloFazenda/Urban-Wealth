@@ -8,25 +8,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
 
-function PasswordRequirement({
-  met,
-  label,
-}: {
-  met: boolean;
-  label: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 text-xs">
-      <div
-        className={`h-1.5 w-1.5 rounded-full transition-colors ${met ? 'bg-accent-400' : 'bg-white/20'}`}
-      />
-      <span className={met ? 'text-accent-400' : 'text-white/30'}>
-        {label}
-      </span>
-    </div>
-  );
-}
-
 function RegisterPageContent() {
   const { register: authRegister } = useAuth();
   const router = useRouter();
@@ -50,171 +31,122 @@ function RegisterPageContent() {
     setIsSubmitting(true);
     setServerError('');
     try {
-      await authRegister(
-        data.fullName,
-        data.email,
-        data.password,
-        data.confirmPassword
-      );
-      const redirect = searchParams.get('redirect') ?? '/';
-      router.push(redirect);
+      await authRegister(data.fullName, data.email, data.password, data.confirmPassword);
+      router.push(searchParams.get('redirect') ?? '/');
     } catch (err) {
-      setServerError(
-        err instanceof Error ? err.message : 'Registration failed'
-      );
+      setServerError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const requirements = [
+    { met: password.length >= 8, label: '8+ characters' },
+    { met: /[A-Z]/.test(password), label: 'Uppercase' },
+    { met: /[0-9]/.test(password), label: 'Number' },
+    { met: /[^a-zA-Z0-9]/.test(password), label: 'Symbol' },
+  ];
+
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md animate-scale-in">
-        <div className="mb-8 text-center">
-          <h1 className="font-display text-3xl font-bold text-white">
+    <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-5 py-12">
+      <div className="w-full max-w-[380px] animate-fade-in">
+        <div className="mb-6">
+          <h1 className="font-display text-[22px] font-bold text-white tracking-tight">
             Create your account
           </h1>
-          <p className="mt-2 text-sm text-white/50">
-            Start investing in fractional real estate today
+          <p className="mt-1 text-[13px] text-surface-400">
+            Start investing in fractional real estate
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 rounded-2xl border border-white/5 bg-surface-800 p-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {serverError && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+            <div className="rounded-md bg-destructive-400/[0.08] border border-destructive-400/[0.15] px-3 py-2.5 text-[13px] text-destructive-400">
               {serverError}
             </div>
           )}
 
-          {/* Full Name */}
-          <div>
-            <label
-              htmlFor="fullName"
-              className="mb-1.5 block text-sm font-medium text-white/70"
-            >
-              Full Name
-            </label>
+          <Field label="Full name" error={errors.fullName?.message}>
             <input
               id="fullName"
               type="text"
               {...register('fullName')}
-              className="w-full rounded-lg border border-white/10 bg-surface-700 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
-              placeholder="John Doe"
+              className="input-field"
+              placeholder="Jane Smith"
             />
-            {errors.fullName && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.fullName.message}
-              </p>
-            )}
-          </div>
+          </Field>
 
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1.5 block text-sm font-medium text-white/70"
-            >
-              Email
-            </label>
+          <Field label="Email" error={errors.email?.message}>
             <input
               id="email"
               type="email"
               {...register('email')}
-              className="w-full rounded-lg border border-white/10 bg-surface-700 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
-              placeholder="john@example.com"
+              className="input-field"
+              placeholder="you@company.com"
             />
-            {errors.email && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+          </Field>
 
-          {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="mb-1.5 block text-sm font-medium text-white/70"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              {...register('password')}
-              className="w-full rounded-lg border border-white/10 bg-surface-700 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
-              placeholder="••••••••"
-            />
-            {errors.password && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.password.message}
-              </p>
-            )}
-            {/* Inline password requirements */}
-            <div className="mt-3 grid grid-cols-2 gap-1.5">
-              <PasswordRequirement
-                met={password.length >= 8}
-                label="8+ characters"
+            <Field label="Password" error={errors.password?.message}>
+              <input
+                id="password"
+                type="password"
+                {...register('password')}
+                className="input-field"
+                placeholder="••••••••"
               />
-              <PasswordRequirement
-                met={/[A-Z]/.test(password)}
-                label="Uppercase letter"
-              />
-              <PasswordRequirement
-                met={/[0-9]/.test(password)}
-                label="Number"
-              />
-              <PasswordRequirement
-                met={/[^a-zA-Z0-9]/.test(password)}
-                label="Special character"
-              />
+            </Field>
+            {/* Password requirements — minimal inline checks */}
+            <div className="mt-2 flex gap-3">
+              {requirements.map((req) => (
+                <span
+                  key={req.label}
+                  className={`text-[11px] transition-colors ${
+                    req.met ? 'text-positive-400' : 'text-surface-600'
+                  }`}
+                >
+                  {req.met ? '✓' : '·'} {req.label}
+                </span>
+              ))}
             </div>
           </div>
 
-          {/* Confirm Password */}
-          <div>
-            <label
-              htmlFor="confirmPassword"
-              className="mb-1.5 block text-sm font-medium text-white/70"
-            >
-              Confirm Password
-            </label>
+          <Field label="Confirm password" error={errors.confirmPassword?.message}>
             <input
               id="confirmPassword"
               type="password"
               {...register('confirmPassword')}
-              className="w-full rounded-lg border border-white/10 bg-surface-700 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
+              className="input-field"
               placeholder="••••••••"
             />
-            {errors.confirmPassword && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
+          </Field>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-500/20 transition-all hover:shadow-primary-500/40 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-md bg-primary-500 px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
           >
-            {isSubmitting ? 'Creating account...' : 'Create Account'}
+            {isSubmitting ? 'Creating account…' : 'Create account'}
           </button>
-
-          <p className="text-center text-sm text-white/40">
-            Already have an account?{' '}
-            <Link
-              href="/login"
-              className="text-primary-400 hover:text-primary-300 transition-colors"
-            >
-              Log in
-            </Link>
-          </p>
         </form>
+
+        <p className="mt-5 text-center text-[13px] text-surface-500">
+          Already have an account?{' '}
+          <Link href="/login" className="text-primary-400 hover:text-primary-300 transition-colors">
+            Log in
+          </Link>
+        </p>
       </div>
+    </div>
+  );
+}
+
+function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-[12px] font-medium text-surface-400">{label}</label>
+      {children}
+      {error && <p className="mt-1 text-[11px] text-destructive-400">{error}</p>}
     </div>
   );
 }
