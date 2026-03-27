@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  fullName     String       @map("full_name")
+  email        String       @unique
+  passwordHash String       @map("password_hash")
+  role         UserRole     @default(USER)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  investments  Investment[]
+
+  @@map("users")
+}
+
+model Property {
+  id                    String         @id @default(uuid())
+  title                 String
+  location              String
+  photoUrls             String[]       @map("photo_urls")
+  totalValue            Float          @map("total_value")
+  funded                Float          @default(0)
+  annualYield           Float          @map("annual_yield")
+  projectedAppreciation Float          @map("projected_appreciation")
+  status                PropertyStatus @default(OPEN)
+  description           String
+  availableShares       Int            @map("available_shares")
+  platformFee           Float          @default(0.015) @map("platform_fee")
+  createdAt             DateTime       @default(now()) @map("created_at")
+  investments           Investment[]
+
+  @@map("properties")
+}
+
+model Investment {
+  id                     String           @id @default(uuid())
+  userId                 String           @map("user_id")
+  propertyId             String           @map("property_id")
+  amount                 Float
+  ownershipPercentage    Float            @map("ownership_percentage")
+  estimatedAnnualIncome  Float            @map("estimated_annual_income")
+  estimatedAppreciationGain Float         @map("estimated_appreciation_gain")
+  platformFee            Float            @map("platform_fee")
+  status                 InvestmentStatus @default(COMPLETED)
+  createdAt              DateTime         @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@map("investments")
+}
+
+model RefreshTokenDenylist {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([token])
+  @@map("refresh_token_denylist")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum PropertyStatus {
+  OPEN
+  COMING_SOON
+  FUNDED
+}
+
+enum InvestmentStatus {
+  COMPLETED
+  PENDING
+}
