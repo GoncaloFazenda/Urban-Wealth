@@ -1,0 +1,170 @@
+import type { Property } from './entities/Property';
+
+export const PLATFORM_FEE_RATE = 0.015;
+
+export const mockProperties: Property[] = [
+  {
+    id: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
+    title: 'Riverside Luxury Apartments',
+    location: 'Lisbon, Portugal',
+    photoUrls: [
+      '/properties/lisbon-apartments.png',
+      '/properties/lisbon-apartments.png',
+      '/properties/lisbon-apartments.png',
+    ],
+    totalValue: 320000,
+    funded: 72,
+    annualYield: 6.8,
+    projectedAppreciation: 4.2,
+    status: 'open',
+    description:
+      'Premium waterfront apartments in the heart of Lisbon. Located in the vibrant Alfama district, these fully renovated units offer stunning Tagus River views. Currently generating strong rental income from a mix of long-term tenants and licensed short-term holiday lets.',
+    availableShares: 280,
+    createdAt: '2026-01-15T10:30:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+  {
+    id: 'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e',
+    title: 'Porto Historic Quarter Townhouse',
+    location: 'Porto, Portugal',
+    photoUrls: [
+      '/properties/porto-townhouse.png',
+      '/properties/porto-townhouse.png',
+      '/properties/porto-townhouse.png',
+    ],
+    totalValue: 185000,
+    funded: 45,
+    annualYield: 7.1,
+    projectedAppreciation: 3.8,
+    status: 'open',
+    description:
+      'Charming townhouse in Porto\'s UNESCO-listed Ribeira district. Three residential units, all currently leased with stable tenants. Walking distance to iconic São Bento Station and the famous Dom Luís I Bridge.',
+    availableShares: 550,
+    createdAt: '2026-02-01T14:00:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+  {
+    id: 'c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f',
+    title: 'Berlin Mitte Studio Collection',
+    location: 'Berlin, Germany',
+    photoUrls: [
+      '/properties/berlin-studios.png',
+      '/properties/berlin-studios.png',
+      '/properties/berlin-studios.png',
+    ],
+    totalValue: 450000,
+    funded: 100,
+    annualYield: 5.4,
+    projectedAppreciation: 3.1,
+    status: 'funded',
+    description:
+      'Collection of 6 modern studios in Berlin\'s central Mitte neighbourhood. Fully occupied with young professionals on long-term contracts. Located near Alexanderplatz with excellent public transport links.',
+    availableShares: 0,
+    createdAt: '2025-11-20T09:00:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+  {
+    id: 'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a',
+    title: 'Amsterdam Canal-Side Flat',
+    location: 'Amsterdam, Netherlands',
+    photoUrls: [
+      '/properties/amsterdam-canal.png',
+      '/properties/amsterdam-canal.png',
+      '/properties/amsterdam-canal.png',
+    ],
+    totalValue: 520000,
+    funded: 33,
+    annualYield: 5.9,
+    projectedAppreciation: 4.5,
+    status: 'open',
+    description:
+      'Elegant 2-bedroom flat overlooking the Prinsengracht canal. Recently renovated with premium finishes. Strong demand from expat professionals in the Amsterdam market ensures low vacancy rates.',
+    availableShares: 670,
+    createdAt: '2026-02-20T11:15:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+  {
+    id: 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b',
+    title: 'Barcelona Eixample Duplex',
+    location: 'Barcelona, Spain',
+    photoUrls: [
+      '/properties/barcelona-duplex.png',
+      '/properties/barcelona-duplex.png',
+      '/properties/barcelona-duplex.png',
+    ],
+    totalValue: 380000,
+    funded: 0,
+    annualYield: 6.3,
+    projectedAppreciation: 5.0,
+    status: 'coming_soon',
+    description:
+      'Stunning duplex in Barcelona\'s iconic Eixample district. High ceilings, original mosaic floors, and a private terrace with city views. Ideal for premium mid-term rental strategy targeting digital nomads.',
+    availableShares: 1000,
+    createdAt: '2026-03-10T08:45:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+  {
+    id: 'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c',
+    title: 'Dublin Docklands Apartment',
+    location: 'Dublin, Ireland',
+    photoUrls: [
+      '/properties/dublin-docklands.png',
+      '/properties/dublin-docklands.png',
+      '/properties/dublin-docklands.png',
+    ],
+    totalValue: 295000,
+    funded: 88,
+    annualYield: 7.5,
+    projectedAppreciation: 3.2,
+    status: 'open',
+    description:
+      'Modern 1-bedroom apartment in Dublin\'s Silicon Docks area, surrounded by tech headquarters. Strong rental demand from tech professionals. Building includes gym, concierge, and underground parking.',
+    availableShares: 120,
+    createdAt: '2025-12-05T16:30:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+  {
+    id: 'a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d',
+    title: 'Milan Fashion District Loft',
+    location: 'Milan, Italy',
+    photoUrls: [
+      '/properties/milan-loft.png',
+      '/properties/milan-loft.png',
+      '/properties/milan-loft.png',
+    ],
+    totalValue: 410000,
+    funded: 100,
+    annualYield: 5.7,
+    projectedAppreciation: 4.8,
+    status: 'funded',
+    description:
+      'Industrial-chic loft conversion in Milan\'s Quadrilatero della Moda. Open-plan living with exposed brick and steel beams. Premium short-term rental market driven by fashion industry events.',
+    availableShares: 0,
+    createdAt: '2025-10-12T13:00:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+  {
+    id: 'b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e',
+    title: 'Vienna Ringstrasse Residence',
+    location: 'Vienna, Austria',
+    photoUrls: [
+      '/properties/vienna-residence.png',
+      '/properties/vienna-residence.png',
+      '/properties/vienna-residence.png',
+    ],
+    totalValue: 275000,
+    funded: 15,
+    annualYield: 8.2,
+    projectedAppreciation: 2.9,
+    status: 'open',
+    description:
+      'Elegant 3-bedroom residence near Vienna\'s famous Ringstrasse boulevard. Fully furnished and leased to OPEC employees on a 2-year contract. Exceptional yield driven by triple-net lease structure.',
+    availableShares: 850,
+    createdAt: '2026-03-20T07:00:00.000Z',
+    platformFee: PLATFORM_FEE_RATE,
+  },
+];
+
+export const mockLocations = [
+  ...new Set(mockProperties.map((p) => p.location)),
+];
