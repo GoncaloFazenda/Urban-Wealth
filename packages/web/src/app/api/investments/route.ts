@@ -7,6 +7,8 @@ import {
 import { getSession } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { AUTH_CONSTANTS } from '@/lib/constants';
+import { prisma } from '@/lib/prisma';
+import type { PropertyStatus } from '@prisma/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -90,22 +92,44 @@ export async function POST(request: NextRequest) {
       (ownershipPercentage / 100);
     const platformFee = amount * PLATFORM_FEE_RATE;
 
-    // In production, this would be a Prisma transaction.
-    // For mock data, we just return the calculated result.
-    const investment = {
-      id: crypto.randomUUID(),
-      userId: session.userId,
-      propertyId,
-      amount,
-      ownershipPercentage,
-      estimatedAnnualIncome,
-      estimatedAppreciationGain,
-      platformFee,
-      status: 'completed' as const,
-      createdAt: new Date().toISOString(),
-      propertyTitle: property.title,
-      propertyPhotoUrl: property.photoUrls[0] ?? '',
+    const statusMap: Record<string, PropertyStatus> = {
+      open: 'OPEN',
+      coming_soon: 'COMING_SOON',
+      funded: 'FUNDED',
     };
+
+    // Upsert the property so the FK constraint is satisfied
+    await prisma.property.upsert({
+      where: { id: property.id },
+      create: {
+        id: property.id,
+        title: property.title,
+        location: property.location,
+        photoUrls: property.photoUrls,
+        totalValue: property.totalValue,
+        funded: property.funded,
+        annualYield: property.annualYield,
+        projectedAppreciation: property.projectedAppreciation,
+        status: statusMap[property.status] ?? 'OPEN',
+        description: property.description,
+        availableShares: property.availableShares,
+        platformFee: property.platformFee,
+      },
+      update: {},
+    });
+
+    const investment = await prisma.investment.create({
+      data: {
+        userId: session.userId,
+        propertyId: property.id,
+        amount,
+        ownershipPercentage,
+        estimatedAnnualIncome,
+        estimatedAppreciationGain,
+        platformFee,
+        status: 'COMPLETED',
+      },
+    });
 
     return NextResponse.json({ investment }, { status: 201 });
   } catch (error) {

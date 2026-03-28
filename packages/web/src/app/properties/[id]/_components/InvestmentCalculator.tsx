@@ -46,7 +46,8 @@ export function InvestmentCalculator({ property, onInvest }: InvestmentCalculato
             onChange={(e) => setAmount(e.target.value)}
             min={0}
             max={remaining}
-            className="input-field pl-8 text-[18px] font-semibold py-3"
+            className="input-field text-[18px] font-semibold py-3"
+            style={{ paddingLeft: '2.25rem' }}
             placeholder="5,000"
           />
         </div>

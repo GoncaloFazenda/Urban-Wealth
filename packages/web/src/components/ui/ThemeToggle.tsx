@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function ThemeToggle() {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -17,15 +18,30 @@ export function ThemeToggle() {
   }
 
   const currentTheme = theme === 'system' ? resolvedTheme : theme;
+  const isDark = currentTheme === 'dark';
 
   return (
     <button
-      onClick={() => setTheme(currentTheme === 'dark' ? 'light' : 'dark')}
-      className="relative w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background text-foreground hover:bg-surface-hover hover:text-primary-500 transition-colors focus-ring"
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      className="relative w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background text-foreground hover:bg-surface-hover hover:text-primary-500 transition-colors focus-ring overflow-hidden"
       aria-label="Toggle theme"
     >
-      <Sun className="h-[1.1rem] w-[1.1rem] scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.1rem] w-[1.1rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={isDark ? 'moon' : 'sun'}
+          initial={{ opacity: 0, rotate: -45, scale: 0.7 }}
+          animate={{ opacity: 1, rotate: 0, scale: 1 }}
+          exit={{ opacity: 0, rotate: 45, scale: 0.7 }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
+          className="flex items-center justify-center"
+        >
+          {isDark ? (
+            <Moon className="h-[1.1rem] w-[1.1rem]" />
+          ) : (
+            <Sun className="h-[1.1rem] w-[1.1rem]" />
+          )}
+        </motion.span>
+      </AnimatePresence>
     </button>
   );
 }
