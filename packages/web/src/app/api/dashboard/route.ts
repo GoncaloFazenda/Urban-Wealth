@@ -32,20 +32,11 @@ export async function GET() {
       createdAt: inv.createdAt.toISOString(),
     }));
 
-    const transactions = dbInvestments.map((inv) => ({
-      id: inv.id,
-      propertyTitle: inv.property.title,
-      amount: inv.amount,
-      status: inv.status === 'COMPLETED' ? 'Completed' : 'Pending',
-      createdAt: inv.createdAt.toISOString(),
-    }));
-
     return NextResponse.json({
       totalInvested,
       totalProperties,
       estimatedAnnualIncome,
       investments,
-      transactions,
     });
   } catch (error) {
     console.error('Dashboard error:', error instanceof Error ? error.message : 'Unknown error');

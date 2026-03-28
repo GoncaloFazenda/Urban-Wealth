@@ -21,13 +21,6 @@ interface DashboardData {
     status: string;
     createdAt: string;
   }>;
-  transactions: Array<{
-    id: string;
-    propertyTitle?: string;
-    amount: number;
-    status: string;
-    createdAt: string;
-  }>;
 }
 
 export default function DashboardPage() {
@@ -104,7 +97,7 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {data.transactions.length > 0 && (
+            {data.investments.length > 0 && (
               <>
                 <h2 className="text-[18px] font-display font-bold text-foreground mb-4">Transaction History</h2>
                 <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
@@ -118,16 +111,16 @@ export default function DashboardPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                      {data.transactions.map((tx) => (
-                        <tr key={tx.id} className="hover:bg-surface-hover/50 transition-colors">
-                          <td className="px-5 py-3.5 text-muted font-medium">{new Date(tx.createdAt).toLocaleDateString()}</td>
-                          <td className="px-5 py-3.5 text-foreground font-semibold">{tx.propertyTitle ?? 'Property'}</td>
-                          <td className="px-5 py-3.5 text-right text-foreground font-bold">€{tx.amount.toLocaleString()}</td>
+                      {data.investments.map((inv) => (
+                        <tr key={inv.id} className="hover:bg-surface-hover/50 transition-colors">
+                          <td className="px-5 py-3.5 text-muted font-medium">{new Date(inv.createdAt).toLocaleDateString()}</td>
+                          <td className="px-5 py-3.5 text-foreground font-semibold">{inv.propertyTitle ?? 'Property'}</td>
+                          <td className="px-5 py-3.5 text-right text-foreground font-bold">€{inv.amount.toLocaleString()}</td>
                           <td className="px-5 py-3.5 text-right">
                             <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold tracking-widest uppercase ${
-                              tx.status === 'Completed' ? 'bg-positive-400/10 text-positive-400 border border-positive-400/20' : 'bg-warning-400/10 text-warning-400 border border-warning-400/20'
+                              inv.status === 'Completed' ? 'bg-positive-400/10 text-positive-400 border border-positive-400/20' : 'bg-warning-400/10 text-warning-400 border border-warning-400/20'
                             }`}>
-                              {tx.status}
+                              {inv.status}
                             </span>
                           </td>
                         </tr>

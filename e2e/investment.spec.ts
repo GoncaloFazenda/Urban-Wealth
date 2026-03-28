@@ -91,7 +91,7 @@ test.describe('Investment Flow', () => {
     await expect(holdingsGrid.getByText(propertyTitle!, { exact: true }).first()).toBeVisible({ timeout: 5_000 });
 
     // The investment amount must be shown in the holdings row
-    await expect(page.locator(`text=€${investAmount.toLocaleString()}`).first()).toBeVisible();
+    await expect(page.locator(`text=€${investAmount.toLocaleString('en-GB')}`).first()).toBeVisible();
   });
 
   test('should redirect unauthenticated user to login when investing', async ({ page, context }) => {

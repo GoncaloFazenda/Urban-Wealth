@@ -70,9 +70,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check remaining value
-    const remainingValue =
-      property.totalValue * ((100 - property.funded) / 100);
+    // Check remaining value against actual DB investments
+    const { _sum } = await prisma.investment.aggregate({
+      where: { propertyId },
+      _sum: { amount: true },
+    });
+    const alreadyInvested = _sum.amount ?? 0;
+    const remainingValue = property.totalValue - alreadyInvested;
     if (amount > remainingValue) {
       return NextResponse.json(
         { error: 'Investment amount exceeds remaining available value' },
@@ -98,38 +102,40 @@ export async function POST(request: NextRequest) {
       funded: 'FUNDED',
     };
 
-    // Upsert the property so the FK constraint is satisfied
-    await prisma.property.upsert({
-      where: { id: property.id },
-      create: {
-        id: property.id,
-        title: property.title,
-        location: property.location,
-        photoUrls: property.photoUrls,
-        totalValue: property.totalValue,
-        funded: property.funded,
-        annualYield: property.annualYield,
-        projectedAppreciation: property.projectedAppreciation,
-        status: statusMap[property.status] ?? 'OPEN',
-        description: property.description,
-        availableShares: property.availableShares,
-        platformFee: property.platformFee,
-      },
-      update: {},
-    });
+    const newFunded = ((alreadyInvested + amount) / property.totalValue) * 100;
 
-    const investment = await prisma.investment.create({
-      data: {
-        userId: session.userId,
-        propertyId: property.id,
-        amount,
-        ownershipPercentage,
-        estimatedAnnualIncome,
-        estimatedAppreciationGain,
-        platformFee,
-        status: 'COMPLETED',
-      },
-    });
+    const [investment] = await prisma.$transaction([
+      prisma.investment.create({
+        data: {
+          userId: session.userId,
+          propertyId: property.id,
+          amount,
+          ownershipPercentage,
+          estimatedAnnualIncome,
+          estimatedAppreciationGain,
+          platformFee,
+          status: 'COMPLETED',
+        },
+      }),
+      prisma.property.upsert({
+        where: { id: property.id },
+        create: {
+          id: property.id,
+          title: property.title,
+          location: property.location,
+          photoUrls: property.photoUrls,
+          totalValue: property.totalValue,
+          funded: newFunded,
+          annualYield: property.annualYield,
+          projectedAppreciation: property.projectedAppreciation,
+          status: statusMap[property.status] ?? 'OPEN',
+          description: property.description,
+          availableShares: property.availableShares,
+          platformFee: property.platformFee,
+        },
+        update: { funded: newFunded },
+      }),
+    ]);
 
     return NextResponse.json({ investment }, { status: 201 });
   } catch (error) {
