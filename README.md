@@ -17,7 +17,7 @@ Fractional real estate investment platform. Browse curated European properties, 
 | Validation | Zod |
 | Forms | React Hook Form |
 | Data | TanStack Query v5 |
-| Testing | Jest + React Testing Library |
+| Testing | Jest (unit) + Playwright (E2E) |
 
 ## Architecture
 
@@ -29,11 +29,20 @@ urban-wealth/
 │   ├── src/repositories/   # Interface contracts
 │   ├── src/use-cases/      # Business operations
 │   └── src/mockData.ts     # 8 European properties
-└── packages/web/           # Next.js application
-    ├── src/app/            # Pages + API routes
-    ├── src/lib/            # Auth, JWT, rate-limit, CSRF
-    ├── src/components/     # UI components
-    └── prisma/             # Schema + seed
+├── packages/ui/            # Platform-agnostic shared logic (hooks, types)
+├── packages/web/           # Next.js application
+│   ├── src/app/            # Pages + API routes
+│   │   ├── (home)/         # Homepage route group
+│   │   │   └── _components/ # Colocated homepage components
+│   │   ├── properties/[id]/
+│   │   │   └── _components/ # Colocated detail components
+│   │   ├── dashboard/_components/
+│   │   └── how-it-works/_components/
+│   ├── src/components/     # Shared UI components
+│   ├── src/lib/            # Auth, JWT, rate-limit, CSRF
+│   └── prisma/             # Schema + seed
+├── e2e/                    # Playwright E2E tests
+└── docs/                   # Test coverage & documentation
 ```
 
 ## Getting Started
@@ -92,7 +101,9 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 |---|---|
 | `yarn workspace @urban-wealth/web dev` | Start dev server |
 | `yarn workspace @urban-wealth/web build` | Production build |
-| `yarn workspace @urban-wealth/core test` | Run core tests (44) |
+| `yarn workspace @urban-wealth/core test` | Run unit tests (44) |
+| `yarn test:e2e` | Run E2E tests (20, Playwright) |
+| `yarn test:all` | Run all tests (unit + E2E) |
 | `yarn workspace @urban-wealth/web prisma:generate` | Generate Prisma client |
 | `yarn workspace @urban-wealth/web prisma:push` | Sync schema to DB |
 | `yarn workspace @urban-wealth/web prisma:seed` | Seed database |
@@ -107,6 +118,17 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 | `/login` | Authentication with redirect support |
 | `/dashboard` | Portfolio summary and transaction history |
 | `/how-it-works` | 4-step guide and FAQ |
+
+## Testing
+
+**64 tests** across two layers:
+
+| Layer | Runner | Tests | What it covers |
+|---|---|---|---|
+| Unit | Jest | 44 | Zod validators, use-cases, mock data integrity |
+| E2E | Playwright | 20 | Auth flows, property browsing, investment flow, theme toggle, dashboard |
+
+See [`docs/TESTING.md`](docs/TESTING.md) for full test-by-test documentation.
 
 ## Security
 

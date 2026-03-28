@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { FormField } from '@/components/ui/FormField';
 
 function LoginPageContent() {
   const { login } = useAuth();
@@ -59,7 +60,7 @@ function LoginPageContent() {
             </div>
           )}
 
-          <Field label="Email Address" error={errors.email?.message}>
+          <FormField label="Email Address" error={errors.email?.message}>
             <input
               id="email"
               type="email"
@@ -67,9 +68,9 @@ function LoginPageContent() {
               className="input-field"
               placeholder="you@company.com"
             />
-          </Field>
+          </FormField>
 
-          <Field label="Password" error={errors.password?.message}>
+          <FormField label="Password" error={errors.password?.message}>
             <input
               id="password"
               type="password"
@@ -77,7 +78,7 @@ function LoginPageContent() {
               className="input-field"
               placeholder="••••••••"
             />
-          </Field>
+          </FormField>
 
           <button
             type="submit"
@@ -99,15 +100,6 @@ function LoginPageContent() {
   );
 }
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="mb-2 block text-[13px] font-semibold text-muted uppercase tracking-wider">{label}</label>
-      {children}
-      {error && <p className="mt-1.5 text-[12px] font-medium text-destructive-400">{error}</p>}
-    </div>
-  );
-}
 
 export default function LoginPage() {
   return (

@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { FormField } from '@/components/ui/FormField';
 
 function RegisterPageContent() {
   const { register: authRegister } = useAuth();
@@ -72,7 +73,7 @@ function RegisterPageContent() {
             </div>
           )}
 
-          <Field label="Full Legal Name" error={errors.fullName?.message}>
+          <FormField label="Full Legal Name" error={errors.fullName?.message}>
             <input
               id="fullName"
               type="text"
@@ -80,9 +81,9 @@ function RegisterPageContent() {
               className="input-field"
               placeholder="Jane Smith"
             />
-          </Field>
+          </FormField>
 
-          <Field label="Email Address" error={errors.email?.message}>
+          <FormField label="Email Address" error={errors.email?.message}>
             <input
               id="email"
               type="email"
@@ -90,10 +91,10 @@ function RegisterPageContent() {
               className="input-field"
               placeholder="you@company.com"
             />
-          </Field>
+          </FormField>
 
           <div>
-            <Field label="Password" error={errors.password?.message}>
+            <FormField label="Password" error={errors.password?.message}>
               <input
                 id="password"
                 type="password"
@@ -101,7 +102,7 @@ function RegisterPageContent() {
                 className="input-field"
                 placeholder="••••••••"
               />
-            </Field>
+            </FormField>
             {/* Password requirements */}
             <div className="mt-3 grid grid-cols-2 gap-2">
               {requirements.map((req) => (
@@ -118,7 +119,7 @@ function RegisterPageContent() {
             </div>
           </div>
 
-          <Field label="Confirm Password" error={errors.confirmPassword?.message}>
+          <FormField label="Confirm Password" error={errors.confirmPassword?.message}>
             <input
               id="confirmPassword"
               type="password"
@@ -126,7 +127,7 @@ function RegisterPageContent() {
               className="input-field"
               placeholder="••••••••"
             />
-          </Field>
+          </FormField>
 
           <button
             type="submit"
@@ -148,15 +149,6 @@ function RegisterPageContent() {
   );
 }
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="mb-2 block text-[13px] font-semibold text-muted uppercase tracking-wider">{label}</label>
-      {children}
-      {error && <p className="mt-1.5 text-[12px] font-medium text-destructive-400">{error}</p>}
-    </div>
-  );
-}
 
 export default function RegisterPage() {
   return (

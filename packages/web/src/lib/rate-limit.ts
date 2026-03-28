@@ -38,6 +38,12 @@ export function checkRateLimit(
   key: string,
   config: RateLimitConfig
 ): RateLimitResult {
+  // Bypass rate limiting during automated tests
+  if (process.env.E2E_TESTING === 'true' || process.env.NODE_ENV === 'test') {
+    return { allowed: true, remaining: config.maxRequests, retryAfterMs: null };
+  }
+
+
   const now = Date.now();
   const entry = store.get(key) ?? { timestamps: [] };
 

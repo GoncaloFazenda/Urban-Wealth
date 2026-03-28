@@ -6,6 +6,7 @@ import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
 import { EmptyState } from '@/components/states/EmptyState';
 import { motion } from 'framer-motion';
+import { SummaryCard } from './_components/SummaryCard';
 
 interface DashboardData {
   totalInvested: number;
@@ -139,17 +140,6 @@ export default function DashboardPage() {
           </>
         )}
       </motion.div>
-    </div>
-  );
-}
-
-function SummaryCard({ label, value, positive = false }: { label: string; value: string; positive?: boolean }) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-      <p className="text-[12px] font-bold uppercase tracking-wider text-muted mb-2">{label}</p>
-      <p className={`text-[28px] font-display font-bold tracking-tight ${positive ? 'text-positive-400' : 'text-foreground'}`}>
-        {value}
-      </p>
     </div>
   );
 }

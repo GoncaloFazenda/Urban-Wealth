@@ -5,188 +5,17 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Property } from '@urban-wealth/core';
-import { PLATFORM_FEE_RATE } from '@urban-wealth/core';
 import { useAuth } from '@/providers/AuthProvider';
 import { PropertyDetailSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
+import { StatusBadge } from '@/components/property/StatusBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, ChevronLeft, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { InvestmentCalculator } from './_components/InvestmentCalculator';
+import { ConfirmModal } from './_components/ConfirmModal';
+import { Metric } from './_components/Metric';
 
-/* ===== Status Badge ===== */
-function StatusBadge({ status }: { status: Property['status'] }) {
-  const config = {
-    open: { label: 'Funding Open', dot: 'bg-positive-400', text: 'text-positive-400', bg: 'bg-positive-400/10' },
-    coming_soon: { label: 'Coming Soon', dot: 'bg-warning-400', text: 'text-warning-400', bg: 'bg-warning-400/10' },
-    funded: { label: 'Fully Funded', dot: 'bg-muted', text: 'text-muted', bg: 'bg-muted-bg' },
-  };
-  const c = config[status];
-  return (
-    <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold tracking-widest uppercase ${c.bg} ${c.text} border border-border/50`}>
-      <span className={`h-1.5 w-1.5 rounded-full ${c.dot}`} />
-      {c.label}
-    </span>
-  );
-}
-
-/* ===== Risk Disclaimer ===== */
-function RiskDisclaimer() {
-  return (
-    <div className="rounded-md border border-warning-400/20 bg-warning-400/5 px-4 py-3 mt-4">
-      <p className="text-[12px] leading-relaxed text-muted">
-        <span className="font-semibold text-warning-400">Risk notice:</span>{' '}
-        Investing involves risk including possible loss of principal. Past performance is not indicative of future results. This is a simulated environment.
-      </p>
-    </div>
-  );
-}
-
-/* ===== Investment Calculator ===== */
-function InvestmentCalculator({
-  property,
-  onInvest,
-}: {
-  property: Property;
-  onInvest: (amount: number) => void;
-}) {
-  const [amount, setAmount] = useState('');
-  const num = parseFloat(amount) || 0;
-  const remaining = property.totalValue * ((100 - property.funded) / 100);
-  const ownership = num > 0 ? (num / property.totalValue) * 100 : 0;
-  const annualIncome = property.totalValue * (property.annualYield / 100) * (ownership / 100);
-  const appreciation = property.totalValue * (property.projectedAppreciation / 100) * (ownership / 100);
-  const fee = num * PLATFORM_FEE_RATE;
-  const isValid = num > 0 && num <= remaining;
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="rounded-xl border border-border bg-card p-6 shadow-card"
-    >
-      <h3 className="text-[18px] font-display font-bold text-foreground mb-6 tracking-tight">Investment Projection</h3>
-
-      <div className="mb-6">
-        <label className="mb-2 block text-[13px] font-semibold text-muted uppercase tracking-wider">
-          Investment Amount
-        </label>
-        <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-medium">€</span>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            min={0}
-            max={remaining}
-            className="input-field pl-8 text-[18px] font-semibold py-3"
-            placeholder="5,000"
-          />
-        </div>
-        <p className="mt-2 text-[12px] text-muted font-medium">
-          Available capacity: €{remaining.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-        </p>
-      </div>
-
-      <AnimatePresence>
-        {num > 0 && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mb-6 space-y-3 overflow-hidden"
-          >
-            <CalcRow label="Implied Ownership" value={`${ownership.toFixed(2)}%`} />
-            <CalcRow label="Projected Annual Income" value={`€${annualIncome.toFixed(0)}`} positive />
-            <CalcRow label="Projected Appreciation" value={`€${appreciation.toFixed(0)}`} positive />
-            <CalcRow label="Platform Fee (1.5%)" value={`€${fee.toFixed(0)}`} />
-            <div className="border-t border-border pt-4 mt-4">
-              <CalcRow label="Total Annual Return" value={`€${(annualIncome + appreciation).toFixed(0)}`} bold />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <RiskDisclaimer />
-
-      <button
-        onClick={() => onInvest(num)}
-        disabled={!isValid || property.status !== 'open'}
-        className="mt-6 w-full rounded-md bg-primary-500 px-4 py-3.5 text-[14px] font-bold text-white transition-all hover:bg-primary-400 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
-      >
-        {property.status !== 'open' ? 'Currently Unavailable' : 'Review & Invest'}
-      </button>
-    </motion.div>
-  );
-}
-
-function CalcRow({ label, value, positive = false, bold = false }: { label: string; value: string; positive?: boolean; bold?: boolean }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className={`text-[13px] ${bold ? 'font-bold text-foreground' : 'font-medium text-muted'}`}>{label}</span>
-      <span className={`text-[13px] font-semibold ${bold ? 'text-foreground text-[16px]' : positive ? 'text-positive-400' : 'text-foreground'}`}>
-        {value}
-      </span>
-    </div>
-  );
-}
-
-/* ===== Confirmation Modal ===== */
-function ConfirmModal({
-  property,
-  amount,
-  onClose,
-  onConfirm,
-  isSubmitting,
-}: {
-  property: Property;
-  amount: number;
-  onClose: () => void;
-  onConfirm: () => void;
-  isSubmitting: boolean;
-}) {
-  const ownership = (amount / property.totalValue) * 100;
-  const annualIncome = property.totalValue * (property.annualYield / 100) * (ownership / 100);
-  const appreciation = property.totalValue * (property.projectedAppreciation / 100) * (ownership / 100);
-  const fee = amount * PLATFORM_FEE_RATE;
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-modal animate-scale-in">
-        <h3 className="text-[20px] font-display font-bold text-foreground mb-6">Confirm Allocation</h3>
-
-        <div className="space-y-3 mb-6 bg-muted-bg p-4 rounded-lg border border-border">
-          <div className="flex justify-between items-center"><span className="text-[13px] font-medium text-muted">Asset</span><span className="text-[14px] text-foreground font-semibold max-w-[200px] text-right truncate">{property.title}</span></div>
-          <div className="flex justify-between items-center"><span className="text-[13px] font-medium text-muted">Capital</span><span className="text-[15px] text-foreground font-bold">€{amount.toLocaleString()}</span></div>
-          <div className="flex justify-between items-center"><span className="text-[13px] font-medium text-muted">Equity</span><span className="text-[13px] text-foreground font-semibold">{ownership.toFixed(2)}%</span></div>
-          <div className="flex justify-between items-center"><span className="text-[13px] font-medium text-muted">Est. annual income</span><span className="text-[13px] text-positive-400 font-semibold">€{annualIncome.toFixed(0)}</span></div>
-          <div className="flex justify-between items-center"><span className="text-[13px] font-medium text-muted">Est. appreciation</span><span className="text-[13px] text-positive-400 font-semibold">€{appreciation.toFixed(0)}</span></div>
-          <div className="flex justify-between items-center pt-2 mt-2 border-t border-border"><span className="text-[13px] font-bold text-muted">Sourcing fee</span><span className="text-[13px] text-foreground font-semibold">€{fee.toFixed(0)}</span></div>
-        </div>
-
-        <RiskDisclaimer />
-
-        <div className="mt-6 flex gap-3">
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-md border border-border py-3 text-[14px] font-semibold text-muted hover:bg-surface-hover hover:text-foreground transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={isSubmitting}
-            className="flex-1 rounded-md bg-primary-500 py-3 text-[14px] font-bold text-white transition-colors hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-          >
-            {isSubmitting ? 'Processing…' : 'Finalize Investment'}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ===== Page ===== */
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -316,7 +145,7 @@ export default function PropertyDetailPage() {
 
           <h3 className="text-[18px] font-display font-bold text-foreground mb-4">Financial Overview</h3>
           
-          {/* Financial metrics — clean table style */}
+          {/* Financial metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-xl overflow-hidden border border-border bg-border mb-10">
             <Metric label="Target Yield" value={`${p.annualYield}%`} positive />
             <Metric label="Est. Growth" value={`${p.projectedAppreciation}%`} />
@@ -362,17 +191,6 @@ export default function PropertyDetailPage() {
           />
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-function Metric({ label, value, positive = false }: { label: string; value: string; positive?: boolean }) {
-  return (
-    <div className="bg-card p-5 text-center transition-colors hover:bg-surface-hover">
-      <p className="text-[11px] font-bold uppercase tracking-wider text-muted mb-1.5">{label}</p>
-      <p className={`text-[20px] font-display font-bold tracking-tight ${positive ? 'text-positive-400' : 'text-foreground'}`}>
-        {value}
-      </p>
     </div>
   );
 }

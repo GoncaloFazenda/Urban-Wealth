@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Step } from './_components/Step';
+import { FaqItem } from './_components/FaqItem';
 
 export default function HowItWorksPage() {
   return (
@@ -103,47 +105,5 @@ export default function HowItWorksPage() {
         </Link>
       </motion.div>
     </div>
-  );
-}
-
-function Step({ number, title, description, delay }: { number: number; title: string; description: string; delay: number }) {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay }}
-      className="flex gap-5 sm:gap-8 group"
-    >
-      <div className="relative z-10 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-card border border-border shadow-sm text-[16px] font-display font-bold text-primary-500 transition-transform group-hover:scale-110">
-        {number}
-      </div>
-      <div className="pt-2 pb-6">
-        <h3 className="text-[18px] font-display font-bold text-foreground mb-2">{title}</h3>
-        <p className="text-[14px] leading-relaxed text-muted max-w-2xl">{description}</p>
-      </div>
-    </motion.div>
-  );
-}
-
-function FaqItem({ question, answer }: { question: string; answer: string }) {
-  return (
-    <details className="group rounded-xl border border-border bg-card overflow-hidden shadow-sm">
-      <summary className="flex cursor-pointer items-center justify-between px-6 py-4 text-[14px] font-bold text-foreground hover:bg-muted-bg transition-colors">
-        {question}
-        <svg
-          className="h-4 w-4 flex-shrink-0 text-muted transition-transform group-open:rotate-180"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2.5}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </summary>
-      <div className="px-6 pb-5 pt-1 text-[14px] leading-relaxed text-muted font-medium bg-card">
-        {answer}
-      </div>
-    </details>
   );
 }
