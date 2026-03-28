@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
 import { EmptyState } from '@/components/states/EmptyState';
+import { motion } from 'framer-motion';
 
 interface DashboardData {
   totalInvested: number;
@@ -40,97 +41,113 @@ export default function DashboardPage() {
     },
   });
 
-  if (isLoading) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-8"><DashboardSkeleton /></div>;
-  if (isError) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-8"><ErrorState title="Failed to load dashboard" onRetry={() => refetch()} /></div>;
+  if (isLoading) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-12"><DashboardSkeleton /></div>;
+  if (isError) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-12"><ErrorState title="Failed to load dashboard" onRetry={() => refetch()} /></div>;
 
   return (
-    <div className="mx-auto max-w-5xl px-5 sm:px-6 py-8 animate-fade-in">
+    <div className="mx-auto max-w-5xl px-5 sm:px-6 py-10">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="font-display text-[22px] font-bold text-white tracking-tight">
-          Portfolio
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8"
+      >
+        <h1 className="font-display text-[28px] font-bold text-foreground tracking-tight">
+          Portfolio Overview
         </h1>
-        <p className="mt-0.5 text-[13px] text-surface-400">
-          Welcome back, {user?.fullName?.split(' ')[0]}
+        <p className="mt-1 text-[14px] text-muted">
+          Welcome back, <span className="font-semibold text-foreground">{user?.fullName?.split(' ')[0]}</span>. Here's a summary of your holdings.
         </p>
-      </div>
+      </motion.div>
 
       {/* Summary */}
-      <div className="grid gap-3 sm:grid-cols-3 mb-8">
-        <SummaryCard label="Total invested" value={`€${(data?.totalInvested ?? 0).toLocaleString()}`} />
-        <SummaryCard label="Properties" value={String(data?.totalProperties ?? 0)} />
-        <SummaryCard label="Est. annual income" value={`€${(data?.estimatedAnnualIncome ?? 0).toLocaleString()}`} positive />
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="grid gap-4 sm:grid-cols-3 mb-12"
+      >
+        <SummaryCard label="Total Invested" value={`€${(data?.totalInvested ?? 0).toLocaleString()}`} />
+        <SummaryCard label="Active Properties" value={String(data?.totalProperties ?? 0)} />
+        <SummaryCard label="Est. Annual Income" value={`€${(data?.estimatedAnnualIncome ?? 0).toLocaleString()}`} positive />
+      </motion.div>
 
       {/* Investments */}
-      {!data?.investments.length ? (
-        <EmptyState
-          title="No investments yet"
-          message="Start building your portfolio by investing in a property."
-          action={{ label: 'Browse properties', href: '/' }}
-        />
-      ) : (
-        <>
-          <h2 className="text-[14px] font-semibold text-white mb-3">Your investments</h2>
-          <div className="space-y-2 mb-8">
-            {data.investments.map((inv) => (
-              <div key={inv.id} className="flex items-center gap-3 rounded-lg border border-white/[0.06] bg-surface-900 px-4 py-3">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-white truncate">{inv.propertyTitle ?? 'Property'}</p>
-                  <p className="text-[11px] text-surface-500">{inv.ownershipPercentage.toFixed(2)}% ownership</p>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        {!data?.investments.length ? (
+          <EmptyState
+            title="No investments yet"
+            message="Start building your portfolio by exploring our exclusively curated European properties."
+            action={{ label: 'Browse Portfolio', href: '/' }}
+          />
+        ) : (
+          <>
+            <h2 className="text-[18px] font-display font-bold text-foreground mb-4">Current Holdings</h2>
+            <div className="grid gap-3 mb-12">
+              {data.investments.map((inv) => (
+                <div key={inv.id} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card px-5 py-4 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-bold text-foreground truncate mb-0.5">{inv.propertyTitle ?? 'Property'}</p>
+                    <p className="text-[13px] font-medium text-muted">{inv.ownershipPercentage.toFixed(2)}% equity ownership</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[16px] font-bold text-foreground">€{inv.amount.toLocaleString()}</p>
+                    <p className="text-[12px] font-semibold text-primary-500 uppercase tracking-widest mt-0.5">{inv.status}</p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-[13px] font-semibold text-white">€{inv.amount.toLocaleString()}</p>
-                  <p className="text-[11px] text-surface-500">{inv.status}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {data.transactions.length > 0 && (
-            <>
-              <h2 className="text-[14px] font-semibold text-white mb-3">Transactions</h2>
-              <div className="rounded-lg border border-white/[0.06] overflow-hidden">
-                <table className="w-full text-[12px]">
-                  <thead>
-                    <tr className="border-b border-white/[0.06] bg-surface-900">
-                      <th className="px-4 py-2.5 text-left font-medium text-surface-500">Date</th>
-                      <th className="px-4 py-2.5 text-left font-medium text-surface-500">Property</th>
-                      <th className="px-4 py-2.5 text-right font-medium text-surface-500">Amount</th>
-                      <th className="px-4 py-2.5 text-right font-medium text-surface-500">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.transactions.map((tx) => (
-                      <tr key={tx.id} className="border-b border-white/[0.04]">
-                        <td className="px-4 py-2.5 text-surface-400">{new Date(tx.createdAt).toLocaleDateString()}</td>
-                        <td className="px-4 py-2.5 text-white">{tx.propertyTitle ?? 'Property'}</td>
-                        <td className="px-4 py-2.5 text-right text-white font-medium">€{tx.amount.toLocaleString()}</td>
-                        <td className="px-4 py-2.5 text-right">
-                          <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                            tx.status === 'Completed' ? 'bg-positive-400/[0.08] text-positive-400' : 'bg-warning-400/[0.08] text-warning-400'
-                          }`}>
-                            {tx.status}
-                          </span>
-                        </td>
+            {data.transactions.length > 0 && (
+              <>
+                <h2 className="text-[18px] font-display font-bold text-foreground mb-4">Transaction History</h2>
+                <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+                  <table className="w-full text-[13px]">
+                    <thead>
+                      <tr className="border-b border-border bg-muted-bg">
+                        <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">Date</th>
+                        <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">Asset</th>
+                        <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">Amount</th>
+                        <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-        </>
-      )}
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {data.transactions.map((tx) => (
+                        <tr key={tx.id} className="hover:bg-surface-hover/50 transition-colors">
+                          <td className="px-5 py-3.5 text-muted font-medium">{new Date(tx.createdAt).toLocaleDateString()}</td>
+                          <td className="px-5 py-3.5 text-foreground font-semibold">{tx.propertyTitle ?? 'Property'}</td>
+                          <td className="px-5 py-3.5 text-right text-foreground font-bold">€{tx.amount.toLocaleString()}</td>
+                          <td className="px-5 py-3.5 text-right">
+                            <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold tracking-widest uppercase ${
+                              tx.status === 'Completed' ? 'bg-positive-400/10 text-positive-400 border border-positive-400/20' : 'bg-warning-400/10 text-warning-400 border border-warning-400/20'
+                            }`}>
+                              {tx.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </motion.div>
     </div>
   );
 }
 
 function SummaryCard({ label, value, positive = false }: { label: string; value: string; positive?: boolean }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-surface-900 p-4">
-      <p className="text-[11px] font-medium text-surface-500 mb-1">{label}</p>
-      <p className={`text-[20px] font-semibold tracking-tight ${positive ? 'text-positive-400' : 'text-white'}`}>
+    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <p className="text-[12px] font-bold uppercase tracking-wider text-muted mb-2">{label}</p>
+      <p className={`text-[28px] font-display font-bold tracking-tight ${positive ? 'text-positive-400' : 'text-foreground'}`}>
         {value}
       </p>
     </div>

@@ -7,6 +7,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 function RegisterPageContent() {
   const { register: authRegister } = useAuth();
@@ -41,32 +42,37 @@ function RegisterPageContent() {
   };
 
   const requirements = [
-    { met: password.length >= 8, label: '8+ characters' },
+    { met: password.length >= 8, label: '8+ chars' },
     { met: /[A-Z]/.test(password), label: 'Uppercase' },
     { met: /[0-9]/.test(password), label: 'Number' },
     { met: /[^a-zA-Z0-9]/.test(password), label: 'Symbol' },
   ];
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-5 py-12">
-      <div className="w-full max-w-[380px] animate-fade-in">
-        <div className="mb-6">
-          <h1 className="font-display text-[22px] font-bold text-white tracking-tight">
-            Create your account
+    <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-5 py-12 bg-muted-bg">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-[420px] rounded-2xl border border-border bg-card p-8 shadow-card"
+      >
+        <div className="mb-8 text-center">
+          <h1 className="font-display text-[26px] font-bold text-foreground tracking-tight mb-2">
+            Create an account
           </h1>
-          <p className="mt-1 text-[13px] text-surface-400">
-            Start investing in fractional real estate
+          <p className="text-[14px] text-muted">
+            Start building your fractional real estate portfolio
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {serverError && (
-            <div className="rounded-md bg-destructive-400/[0.08] border border-destructive-400/[0.15] px-3 py-2.5 text-[13px] text-destructive-400">
+            <div className="rounded-md bg-destructive-400/10 border border-destructive-400/20 px-4 py-3 text-[13px] font-medium text-destructive-400">
               {serverError}
             </div>
           )}
 
-          <Field label="Full name" error={errors.fullName?.message}>
+          <Field label="Full Legal Name" error={errors.fullName?.message}>
             <input
               id="fullName"
               type="text"
@@ -76,7 +82,7 @@ function RegisterPageContent() {
             />
           </Field>
 
-          <Field label="Email" error={errors.email?.message}>
+          <Field label="Email Address" error={errors.email?.message}>
             <input
               id="email"
               type="email"
@@ -96,22 +102,23 @@ function RegisterPageContent() {
                 placeholder="••••••••"
               />
             </Field>
-            {/* Password requirements — minimal inline checks */}
-            <div className="mt-2 flex gap-3">
+            {/* Password requirements */}
+            <div className="mt-3 grid grid-cols-2 gap-2">
               {requirements.map((req) => (
                 <span
                   key={req.label}
-                  className={`text-[11px] transition-colors ${
-                    req.met ? 'text-positive-400' : 'text-surface-600'
+                  className={`text-[11px] font-medium transition-colors flex items-center gap-1.5 ${
+                    req.met ? 'text-positive-400' : 'text-muted'
                   }`}
                 >
-                  {req.met ? '✓' : '·'} {req.label}
+                  <span className={`h-1.5 w-1.5 rounded-full ${req.met ? 'bg-positive-400' : 'bg-border'}`} />
+                  {req.label}
                 </span>
               ))}
             </div>
           </div>
 
-          <Field label="Confirm password" error={errors.confirmPassword?.message}>
+          <Field label="Confirm Password" error={errors.confirmPassword?.message}>
             <input
               id="confirmPassword"
               type="password"
@@ -124,19 +131,19 @@ function RegisterPageContent() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-md bg-primary-500 px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+            className="w-full rounded-md bg-primary-500 px-4 py-3 text-[14px] font-bold text-white transition-all hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-md hover:shadow-lg"
           >
-            {isSubmitting ? 'Creating account…' : 'Create account'}
+            {isSubmitting ? 'Creating account…' : 'Create Account'}
           </button>
         </form>
 
-        <p className="mt-5 text-center text-[13px] text-surface-500">
+        <p className="mt-8 text-center text-[13px] font-medium text-muted border-t border-border pt-6">
           Already have an account?{' '}
-          <Link href="/login" className="text-primary-400 hover:text-primary-300 transition-colors">
-            Log in
+          <Link href="/login" className="text-primary-500 hover:text-primary-400 transition-colors font-bold">
+            Log in here
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -144,16 +151,16 @@ function RegisterPageContent() {
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-[12px] font-medium text-surface-400">{label}</label>
+      <label className="mb-2 block text-[13px] font-semibold text-muted uppercase tracking-wider">{label}</label>
       {children}
-      {error && <p className="mt-1 text-[11px] text-destructive-400">{error}</p>}
+      {error && <p className="mt-1.5 text-[12px] font-medium text-destructive-400">{error}</p>}
     </div>
   );
 }
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div className="min-h-screen bg-muted-bg" />}>
       <RegisterPageContent />
     </Suspense>
   );

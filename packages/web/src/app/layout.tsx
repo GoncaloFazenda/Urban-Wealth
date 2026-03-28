@@ -4,6 +4,7 @@ import { QueryProvider } from '@/providers/QueryProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Urban Wealth — Fractional Real Estate Investment',
@@ -23,8 +24,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-surface-950 text-white antialiased">
-        <QueryProvider>
+      <body className="min-h-screen bg-background text-foreground antialiased transition-colors duration-300">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <QueryProvider>
           <AuthProvider>
             <div className="flex min-h-screen flex-col">
               <Navbar />
@@ -33,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </AuthProvider>
         </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
