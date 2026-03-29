@@ -31,12 +31,13 @@ export function PropertiesSection() {
   const sort = (searchParams.get('sort') ?? 'newest') as PropertySortField;
 
   const { data, isLoading, isError, refetch } = useQuery<PropertiesResponse>({
-    queryKey: ['properties', status, location, sort],
+    queryKey: ['properties-home', status, location, sort],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (status !== 'all') params.set('status', status);
       if (location) params.set('location', location);
       if (sort) params.set('sort', sort);
+      params.set('limit', '6');
       const res = await fetch(`/api/properties?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch properties');
       return res.json();

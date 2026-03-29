@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import type { Prisma } from '@prisma/client';
 
+const DEFAULT_PAGE_SIZE = 9;
+const MAX_PAGE_SIZE = 50;
+
 const dbStatusMap: Record<string, string> = {
   open: 'OPEN',
   coming_soon: 'COMING_SOON',
@@ -22,6 +25,13 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get('sort');
     const minYield = searchParams.get('minYield');
     const maxYield = searchParams.get('maxYield');
+    const pageParam = searchParams.get('page');
+    const limitParam = searchParams.get('limit');
+
+    // Pagination
+    const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1);
+    const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limitParam ?? String(DEFAULT_PAGE_SIZE), 10) || DEFAULT_PAGE_SIZE));
+    const skip = (page - 1) * limit;
 
     // Build Prisma where clause
     const where: Prisma.PropertyWhereInput = {};
@@ -64,7 +74,10 @@ export async function GET(request: NextRequest) {
         break;
     }
 
-    const dbProperties = await prisma.property.findMany({ where, orderBy });
+    const [dbProperties, total] = await Promise.all([
+      prisma.property.findMany({ where, orderBy, skip, take: limit }),
+      prisma.property.count({ where }),
+    ]);
 
     // Map DB enums back to core types for the frontend
     const properties = dbProperties.map((p) => ({
@@ -91,9 +104,14 @@ export async function GET(request: NextRequest) {
     });
     const locations = locationRows.map((r) => r.location);
 
+    const totalPages = Math.ceil(total / limit);
+
     return NextResponse.json({
       properties,
-      total: properties.length,
+      total,
+      page,
+      limit,
+      totalPages,
       locations,
     });
   } catch (error) {

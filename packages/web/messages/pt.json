@@ -52,7 +52,9 @@
   },
   "PropertiesPage": {
     "title": "Propriedades de Investimento",
-    "subtitle": "Explore a nossa coleção completa de imobiliário residencial europeu rigorosamente avaliado. Filtre por mercado, estratégia de rendimento e estado de financiamento para encontrar oportunidades que correspondam aos seus objetivos de investimento."
+    "subtitle": "Explore a nossa colecao completa de imobiliario residencial europeu rigorosamente avaliado. Filtre por mercado, estrategia de rendimento e estado de financiamento para encontrar oportunidades que correspondam aos seus objetivos de investimento.",
+    "prev": "Anterior",
+    "next": "Seguinte"
   },
   "PropertyCard": {
     "yield": "Rendim.",
@@ -196,9 +198,16 @@
     "thAsset": "Ativo",
     "thAmount": "Montante",
     "thStatus": "Estado",
-    "statusCompleted": "Concluído",
+    "statusCompleted": "Concluido",
     "statusPending": "Pendente",
-    "errorTitle": "Falha ao carregar o painel"
+    "errorTitle": "Falha ao carregar o painel",
+    "learnHow": "Como Funciona",
+    "step1Title": "Explore propriedades",
+    "step1Desc": "Descubra oportunidades imobiliarias europeias selecionadas.",
+    "step2Title": "Invista a partir de 50 EUR",
+    "step2Desc": "Escolha um montante e analise os retornos projetados.",
+    "step3Title": "Ganhe rendimento passivo",
+    "step3Desc": "Receba rendimento de arrendamento e valorizacao."
   },
   "Admin": {
     "panelTitle": "Painel Admin",

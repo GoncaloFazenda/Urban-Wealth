@@ -52,7 +52,9 @@
   },
   "PropertiesPage": {
     "title": "Investment Properties",
-    "subtitle": "Browse our full collection of strictly vetted European residential real estate. Filter by market, yield strategy, and funding status to find opportunities that match your investment goals."
+    "subtitle": "Browse our full collection of strictly vetted European residential real estate. Filter by market, yield strategy, and funding status to find opportunities that match your investment goals.",
+    "prev": "Previous",
+    "next": "Next"
   },
   "PropertyCard": {
     "yield": "Yield",
@@ -198,7 +200,14 @@
     "thStatus": "Status",
     "statusCompleted": "Completed",
     "statusPending": "Pending",
-    "errorTitle": "Failed to load dashboard"
+    "errorTitle": "Failed to load dashboard",
+    "learnHow": "How It Works",
+    "step1Title": "Browse properties",
+    "step1Desc": "Explore curated European real estate opportunities.",
+    "step2Title": "Invest from EUR50",
+    "step2Desc": "Choose an amount and review projected returns.",
+    "step3Title": "Earn passive income",
+    "step3Desc": "Receive rental yield and appreciation gains."
   },
   "Admin": {
     "panelTitle": "Admin Panel",
