@@ -7,12 +7,12 @@ test.describe('Investment Flow', () => {
     await page.fill('#email', 'e2e@urbanwealth.test');
     await page.fill('#password', 'TestPass1!');
     await page.click('button[type="submit"]');
-    await expect(page).toHaveURL('/', { timeout: 10_000 });
+    await expect(page).toHaveURL(/\/en\/?$/, { timeout: 10_000 });
   });
 
   test('should complete the full investment flow', async ({ page }) => {
     // Navigate to first open property
-    const firstCard = page.locator('a[href^="/properties/"]').first();
+    const firstCard = page.locator('a[href*="/properties/"]').first();
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
     await firstCard.click();
 
@@ -49,10 +49,10 @@ test.describe('Investment Flow', () => {
   test('should show new investment in dashboard after investing', async ({ page }) => {
     // Find the first open property card and capture its title
     await page.goto('/');
-    await expect(page.locator('a[href^="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('a[href*="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
 
     const openCard = page
-      .locator('a[href^="/properties/"]')
+      .locator('a[href*="/properties/"]')
       .filter({ has: page.locator('text=Open') })
       .first();
     await expect(openCard).toBeVisible({ timeout: 10_000 });
@@ -97,10 +97,10 @@ test.describe('Investment Flow', () => {
   test('should update property funded percentage after investing', async ({ page }) => {
     // Navigate to the first open property
     await page.goto('/');
-    await expect(page.locator('a[href^="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('a[href*="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
 
     const openCard = page
-      .locator('a[href^="/properties/"]')
+      .locator('a[href*="/properties/"]')
       .filter({ has: page.locator('text=Open') })
       .first();
     await expect(openCard).toBeVisible({ timeout: 10_000 });
@@ -145,7 +145,7 @@ test.describe('Investment Flow', () => {
 
     // Go to a property detail page
     await page.goto('/');
-    const firstCard = page.locator('a[href^="/properties/"]').first();
+    const firstCard = page.locator('a[href*="/properties/"]').first();
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
     await firstCard.click();
 

@@ -1,0 +1,211 @@
+{
+  "Navbar": {
+    "properties": "Properties",
+    "howItWorks": "How It Works",
+    "dashboard": "Dashboard",
+    "logOut": "Log out",
+    "logIn": "Log in",
+    "getStarted": "Get Started",
+    "menu": "Menu"
+  },
+  "Footer": {
+    "newsletterTitle": "Join the inner circle",
+    "newsletterDescription": "Get early access to exclusive European real estate opportunities before they open to the public.",
+    "emailPlaceholder": "Your email address",
+    "subscribe": "Subscribe",
+    "brandDescription": "Fractional investment in premium European real estate. Starting from €50, giving everyone access to high-yield property markets.",
+    "platform": "Platform",
+    "browseProperties": "Browse Properties",
+    "howItWorks": "How It Works",
+    "getStarted": "Get Started",
+    "legal": "Legal",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "riskDisclosure": "Risk Disclosure",
+    "contact": "Contact",
+    "supportCentre": "Support Centre",
+    "copyright": "© {year} Urban Wealth. Simulated platform — no real investments."
+  },
+  "Hero": {
+    "badge": "Exclusive European Real Estate",
+    "title": "Invest in Legacy.\nBuild Your Wealth.",
+    "subtitle": "Access strictly curated, high-yield fractional real estate investments across Europe's prime markets. Starting from €50.",
+    "cta": "Explore Portfolio"
+  },
+  "Stats": {
+    "avgYield": "Avg. Yield",
+    "investors": "Investors",
+    "funded": "Funded",
+    "regulated": "Regulated",
+    "platform": "Platform"
+  },
+  "Properties": {
+    "title": "Curated Portfolio",
+    "subtitle": "Browse strictly vetted European residential real estate. Filter by market, yield strategy, and funding status.",
+    "showing": "Showing {count} of {total} investment opportunities",
+    "errorTitle": "Failed to load properties",
+    "errorMessage": "We couldn't retrieve the property listings. Please try again.",
+    "emptyTitle": "No properties found",
+    "emptyMessage": "No properties match your current filters. Try adjusting your search.",
+    "clearFilters": "Clear filters"
+  },
+  "PropertyCard": {
+    "yield": "Yield",
+    "growth": "Growth",
+    "total": "Total",
+    "funded": "{value}% funded",
+    "sharesLeft": "{count} shares left",
+    "open": "Open",
+    "comingSoon": "Coming Soon",
+    "fullyFunded": "Fully Funded"
+  },
+  "PropertyFilters": {
+    "allTargets": "All Targets",
+    "fundingOpen": "Funding Open",
+    "comingSoon": "Coming Soon",
+    "fullyFunded": "Fully Funded",
+    "allMarkets": "All markets",
+    "newlyListed": "Newly Listed",
+    "highestYield": "Highest Yield",
+    "topAppreciation": "Top Appreciation",
+    "mostFunded": "Most Funded"
+  },
+  "PropertyDetail": {
+    "backToPortfolio": "Back to Portfolio",
+    "financialOverview": "Financial Overview",
+    "targetYield": "Target Yield",
+    "estGrowth": "Est. Growth",
+    "totalReturn": "Total Return",
+    "platformFee": "Platform Fee",
+    "fundingStatus": "Funding Status",
+    "sharesRemaining": "{count} shares remaining",
+    "propertyNotFound": "Property not found",
+    "successToast": "Successfully allocated €{amount}"
+  },
+  "InvestmentCalculator": {
+    "title": "Investment Projection",
+    "amountLabel": "Investment Amount",
+    "amountPlaceholder": "5,000",
+    "availableCapacity": "Available capacity: €{amount}",
+    "impliedOwnership": "Implied Ownership",
+    "projectedAnnualIncome": "Projected Annual Income",
+    "projectedAppreciation": "Projected Appreciation",
+    "platformFee": "Platform Fee (1.5%)",
+    "totalAnnualReturn": "Total Annual Return",
+    "currentlyUnavailable": "Currently Unavailable",
+    "reviewAndInvest": "Review & Invest"
+  },
+  "ConfirmModal": {
+    "title": "Confirm Allocation",
+    "asset": "Asset",
+    "capital": "Capital",
+    "equity": "Equity",
+    "estAnnualIncome": "Est. annual income",
+    "estAppreciation": "Est. appreciation",
+    "sourcingFee": "Sourcing fee",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "finalizeInvestment": "Finalize Investment"
+  },
+  "RiskDisclaimer": {
+    "label": "Risk notice:",
+    "text": "Investing involves risk including possible loss of principal. Past performance is not indicative of future results. This is a simulated environment."
+  },
+  "StatusBadge": {
+    "open": "Funding Open",
+    "comingSoon": "Coming Soon",
+    "fullyFunded": "Fully Funded"
+  },
+  "Login": {
+    "title": "Welcome back",
+    "subtitle": "Access your investment portfolio",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitting": "Authenticating…",
+    "submit": "Log in securely",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create an account"
+  },
+  "Register": {
+    "title": "Create an account",
+    "subtitle": "Start building your fractional real estate portfolio",
+    "fullNameLabel": "Full Legal Name",
+    "fullNamePlaceholder": "Jane Smith",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "••••••••",
+    "submitting": "Creating account…",
+    "submit": "Create Account",
+    "hasAccount": "Already have an account?",
+    "logInHere": "Log in here",
+    "req8chars": "8+ chars",
+    "reqUppercase": "Uppercase",
+    "reqNumber": "Number",
+    "reqSymbol": "Symbol"
+  },
+  "HowItWorks": {
+    "sectionLabel": "Process",
+    "title": "How Urban Wealth Works",
+    "subtitle": "We democratize access to institutional-grade European real estate. Start building your legacy in four simple steps.",
+    "step1Title": "Curated Selection",
+    "step1Description": "Explore our curated selection of European investment properties. Our acquisitions team strictly vets every asset, providing full financial details, location insights, and independent valuations.",
+    "step2Title": "Analyze & Allocate",
+    "step2Description": "Select a property that fits your strategy. Use our investment calculator to project your ownership equity, est. annual yield, and potential appreciation before committing capital.",
+    "step3Title": "Passive Income",
+    "step3Description": "Receive your proportional share of rental income deposited directly to your account. Simultaneously benefit from long-term capital appreciation as property values rise.",
+    "step4Title": "Portfolio Management",
+    "step4Description": "Monitor your investments from an intuitive dashboard. Track real-time performance metrics, view comprehensive transaction histories, and reinvest accumulated dividends.",
+    "faqTitle": "Frequently asked questions",
+    "faq1Question": "What is fractional real estate investing?",
+    "faq1Answer": "Fractional investing allows you to purchase equity in a property alongside other investors, rather than funding the entire asset yourself. You receive proportional returns from rental income and property appreciation relative to your share.",
+    "faq2Question": "What is the minimum capital requirement?",
+    "faq2Answer": "You can begin investing with as little as €50. There is no maximum limit, although individual allocations are subject to the remaining funding capacity of each property.",
+    "faq3Question": "When are dividends distributed?",
+    "faq3Answer": "Rental income dividends are distributed on a monthly basis directly to your platform wallet. Capital appreciation is realized either upon the strategic sale of the asset or through periodic equity refinancing.",
+    "faq4Question": "What is the fee structure?",
+    "faq4Answer": "We charge a transparent, one-time sourcing fee of 1.5% on initially invested capital. There are no hidden management or performance fees—what you see in the calculator is what you pay.",
+    "faq5Question": "What happens when an asset reaches its funding target?",
+    "faq5Answer": "The property status updates to 'Fully Funded' and the equity offering closes. Settlement occurs shortly after, and investors begin accruing rental yield. New vetted assets are listed regularly.",
+    "ctaTitle": "Ready to begin?",
+    "ctaSubtitle": "Create an account in minutes and access our exclusive portfolio.",
+    "ctaButton": "Start Building Your Portfolio"
+  },
+  "Dashboard": {
+    "title": "Portfolio Overview",
+    "welcomeBack": "Welcome back, {name}. Here's a summary of your holdings.",
+    "totalInvested": "Total Invested",
+    "activeProperties": "Active Properties",
+    "estAnnualIncome": "Est. Annual Income",
+    "noInvestmentsTitle": "No investments yet",
+    "noInvestmentsMessage": "Start building your portfolio by exploring our exclusively curated European properties.",
+    "browsePortfolio": "Browse Portfolio",
+    "currentHoldings": "Current Holdings",
+    "equityOwnership": "{value}% equity ownership",
+    "transactionHistory": "Transaction History",
+    "thDate": "Date",
+    "thAsset": "Asset",
+    "thAmount": "Amount",
+    "thStatus": "Status",
+    "statusCompleted": "Completed",
+    "statusPending": "Pending",
+    "errorTitle": "Failed to load dashboard"
+  },
+  "ErrorState": {
+    "defaultTitle": "Something went wrong",
+    "defaultMessage": "We encountered an unexpected error. Please try again.",
+    "tryAgain": "Try again"
+  },
+  "LanguageSwitcher": {
+    "en": "EN",
+    "pt": "PT"
+  },
+  "Metadata": {
+    "title": "Urban Wealth — Fractional Real Estate Investment",
+    "description": "Invest in premium European real estate starting from €50. Earn rental yield and property appreciation with fractional ownership."
+  }
+}

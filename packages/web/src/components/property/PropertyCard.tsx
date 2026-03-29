@@ -1,27 +1,31 @@
-import Link from 'next/link';
+'use client';
+
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import type { Property } from '@urban-wealth/core';
+import { useTranslations } from 'next-intl';
 
 interface PropertyCardProps {
   property: Property;
 }
 
 function StatusBadge({ status }: { status: Property['status'] }) {
+  const t = useTranslations('PropertyCard');
   const config = {
     open: {
-      label: 'Open',
+      label: t('open'),
       dot: 'bg-positive-400',
       bg: 'bg-positive-400/10',
       text: 'text-positive-400',
     },
     coming_soon: {
-      label: 'Coming Soon',
+      label: t('comingSoon'),
       dot: 'bg-warning-400',
       bg: 'bg-warning-400/10',
       text: 'text-warning-400',
     },
     funded: {
-      label: 'Fully Funded',
+      label: t('fullyFunded'),
       dot: 'bg-muted',
       bg: 'bg-muted-bg',
       text: 'text-muted',
@@ -37,6 +41,8 @@ function StatusBadge({ status }: { status: Property['status'] }) {
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
+  const t = useTranslations('PropertyCard');
+
   return (
     <Link
       href={`/properties/${property.id}`}
@@ -72,20 +78,20 @@ export function PropertyCard({ property }: PropertyCardProps) {
           €{property.totalValue.toLocaleString()}
         </p>
 
-        {/* Key metrics — clean horizontal row */}
+        {/* Key metrics */}
         <div className="flex items-center gap-4 mb-5 text-[12px] bg-muted-bg p-2.5 rounded-md border border-border/50">
           <div className="flex-1 text-center">
-            <div className="text-muted mb-0.5 text-[10px] uppercase font-bold tracking-wider">Yield</div>
+            <div className="text-muted mb-0.5 text-[10px] uppercase font-bold tracking-wider">{t('yield')}</div>
             <div className="font-semibold text-positive-400">{property.annualYield}%</div>
           </div>
           <div className="h-6 w-px bg-border" />
           <div className="flex-1 text-center">
-            <div className="text-muted mb-0.5 text-[10px] uppercase font-bold tracking-wider">Growth</div>
+            <div className="text-muted mb-0.5 text-[10px] uppercase font-bold tracking-wider">{t('growth')}</div>
             <div className="font-semibold text-foreground/80">{property.projectedAppreciation}%</div>
           </div>
           <div className="h-6 w-px bg-border" />
           <div className="flex-1 text-center">
-            <div className="text-muted mb-0.5 text-[10px] uppercase font-bold tracking-wider">Total</div>
+            <div className="text-muted mb-0.5 text-[10px] uppercase font-bold tracking-wider">{t('total')}</div>
             <div className="font-bold text-foreground">
               {(property.annualYield + property.projectedAppreciation).toFixed(1)}%
             </div>
@@ -95,9 +101,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
         {/* Funded progress */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-primary-500">{property.funded}% funded</span>
+            <span className="text-[11px] font-semibold text-primary-500">{t('funded', { value: property.funded })}</span>
             <span className="text-[11px] font-medium text-muted">
-              {property.availableShares.toLocaleString()} shares left
+              {t('sharesLeft', { count: property.availableShares.toLocaleString() })}
             </span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-muted-bg border border-border/50">

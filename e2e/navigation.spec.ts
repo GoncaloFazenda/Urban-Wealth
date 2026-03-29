@@ -40,7 +40,7 @@ test.describe('Theme Toggle', () => {
 
     // Switch to dark mode
     const themeToggle = page.locator('button[aria-label*="theme"], button[aria-label*="Theme"], button:has(svg.lucide-sun), button:has(svg.lucide-moon)').first();
-    
+
     // Get current state and toggle
     const initialClass = await page.locator('html').getAttribute('class');
     await themeToggle.click();
@@ -53,12 +53,10 @@ test.describe('Theme Toggle', () => {
     // Theme should persist
     const afterNavClass = await page.locator('html').getAttribute('class');
     const initialWasDark = initialClass?.includes('dark') ?? false;
-    
+
     if (initialWasDark) {
-      // We toggled from dark to light
       expect(afterNavClass).not.toContain('dark');
     } else {
-      // We toggled from light to dark
       expect(afterNavClass).toContain('dark');
     }
   });
@@ -96,9 +94,8 @@ test.describe('Dashboard', () => {
     await context.clearCookies();
     await page.goto('/dashboard');
 
-    // The dashboard API will return 401, page should show empty state or error
-    // Since middleware might redirect, check if we're on dashboard or login
-    await page.waitForTimeout(2_000);
+    // Middleware should redirect to login
+    await expect(page).toHaveURL(/\/login/, { timeout: 5_000 });
   });
 
   test('should display dashboard when authenticated', async ({ page }) => {
@@ -108,8 +105,8 @@ test.describe('Dashboard', () => {
     await page.fill('#password', 'TestPass1!');
     await page.click('button[type="submit"]');
 
-    // Wait for login to process — may redirect to / or stay on login
-    await page.waitForTimeout(3_000);
+    // Wait for login to process
+    await expect(page).toHaveURL(/\/en\/?$/, { timeout: 10_000 });
 
     // Navigate to dashboard
     await page.goto('/dashboard');

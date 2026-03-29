@@ -25,9 +25,9 @@ export default defineConfig({
 
   webServer: {
     command: 'yarn workspace @urban-wealth/web dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3000/en',
     reuseExistingServer: !process.env.CI,
-    timeout: 30_000,
+    timeout: 60_000,
     env: {
       E2E_TESTING: 'true',
     },

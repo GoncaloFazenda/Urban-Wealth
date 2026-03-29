@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Property } from '@urban-wealth/core';
@@ -11,7 +12,8 @@ import { ErrorState } from '@/components/states/ErrorState';
 import { StatusBadge } from '@/components/property/StatusBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, ChevronLeft, MapPin } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { InvestmentCalculator } from './_components/InvestmentCalculator';
 import { ConfirmModal } from './_components/ConfirmModal';
 import { Metric } from './_components/Metric';
@@ -24,6 +26,7 @@ export default function PropertyDetailPage() {
   const [investAmount, setInvestAmount] = useState(0);
   const [isInvesting, setIsInvesting] = useState(false);
   const [toast, setToast] = useState('');
+  const t = useTranslations('PropertyDetail');
 
   const { data, isLoading, isError, refetch } = useQuery<{ property: Property }>({
     queryKey: ['property', params.id],
@@ -57,7 +60,7 @@ export default function PropertyDetailPage() {
         throw new Error(d.error ?? 'Investment failed');
       }
       setShowModal(false);
-      setToast(`Successfully allocated €${investAmount.toLocaleString()}`);
+      setToast(t('successToast', { amount: investAmount.toLocaleString() }));
       setTimeout(() => setToast(''), 4000);
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Investment failed');
@@ -68,7 +71,7 @@ export default function PropertyDetailPage() {
 
   if (isLoading) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-12"><PropertyDetailSkeleton /></div>;
   if (isError) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-12"><ErrorState onRetry={() => refetch()} /></div>;
-  if (!data?.property) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-12"><ErrorState title="Property not found" /></div>;
+  if (!data?.property) return <div className="mx-auto max-w-5xl px-5 sm:px-6 py-12"><ErrorState title={t('propertyNotFound')} /></div>;
 
   const p = data.property;
   const totalReturn = p.annualYield + p.projectedAppreciation;
@@ -77,13 +80,13 @@ export default function PropertyDetailPage() {
     <div className="mx-auto max-w-6xl px-5 sm:px-6 py-8 pb-20">
       {/* Back link */}
       <Link href="/" className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-foreground transition-colors mb-6 group">
-        <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Back to Portfolio
+        <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> {t('backToPortfolio')}
       </Link>
 
       {/* Toast */}
       <AnimatePresence>
         {toast && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -20, x: '-50%' }}
@@ -95,7 +98,7 @@ export default function PropertyDetailPage() {
       </AnimatePresence>
 
       {/* Image gallery */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -103,13 +106,13 @@ export default function PropertyDetailPage() {
       >
         {p.photoUrls.slice(0, 3).map((url, i) => (
           <div key={i} className={`relative overflow-hidden ${i === 0 ? 'col-span-2' : ''} bg-muted-bg group`}>
-            <Image 
-              src={url} 
-              alt={`${p.title} — ${i + 1}`} 
-              fill 
-              className="object-cover transition-transform duration-[1.5s] group-hover:scale-105" 
-              sizes={i === 0 ? '66vw' : '33vw'} 
-              priority={i === 0} 
+            <Image
+              src={url}
+              alt={`${p.title} — ${i + 1}`}
+              fill
+              className="object-cover transition-transform duration-[1.5s] group-hover:scale-105"
+              sizes={i === 0 ? '66vw' : '33vw'}
+              priority={i === 0}
             />
             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
           </div>
@@ -118,7 +121,7 @@ export default function PropertyDetailPage() {
 
       <div className="grid gap-12 lg:grid-cols-[1fr_380px]">
         {/* Left — details */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -143,20 +146,20 @@ export default function PropertyDetailPage() {
             </p>
           </div>
 
-          <h3 className="text-[18px] font-display font-bold text-foreground mb-4">Financial Overview</h3>
-          
+          <h3 className="text-[18px] font-display font-bold text-foreground mb-4">{t('financialOverview')}</h3>
+
           {/* Financial metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-xl overflow-hidden border border-border bg-border mb-10">
-            <Metric label="Target Yield" value={`${p.annualYield}%`} positive />
-            <Metric label="Est. Growth" value={`${p.projectedAppreciation}%`} />
-            <Metric label="Total Return" value={`${totalReturn.toFixed(1)}%`} positive />
-            <Metric label="Platform Fee" value="1.5%" />
+            <Metric label={t('targetYield')} value={`${p.annualYield}%`} positive />
+            <Metric label={t('estGrowth')} value={`${p.projectedAppreciation}%`} />
+            <Metric label={t('totalReturn')} value={`${totalReturn.toFixed(1)}%`} positive />
+            <Metric label={t('platformFee')} value="1.5%" />
           </div>
 
           {/* Funding progress */}
           <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[14px] font-bold text-foreground tracking-tight">Funding Status</span>
+              <span className="text-[14px] font-bold text-foreground tracking-tight">{t('fundingStatus')}</span>
               <span className="text-[16px] font-display font-bold text-primary-500">{p.funded}%</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-muted-bg border border-border/50">
@@ -168,7 +171,7 @@ export default function PropertyDetailPage() {
               />
             </div>
             <p className="mt-3 text-[13px] font-medium text-muted">
-              <span className="text-foreground font-bold">{p.availableShares.toLocaleString()}</span> shares remaining
+              <span className="text-foreground font-bold">{p.availableShares.toLocaleString()}</span> {t('sharesRemaining', { count: '' }).trim()}
             </p>
           </div>
         </motion.div>

@@ -16,7 +16,7 @@ test.describe('Authentication', () => {
     await page.click('button[type="submit"]');
 
     // Should redirect to homepage after successful registration
-    await expect(page).toHaveURL('/', { timeout: 10_000 });
+    await expect(page).toHaveURL(/\/en\/?$/, { timeout: 10_000 });
   });
 
   test('should show validation errors for invalid registration', async ({ page }) => {
@@ -40,7 +40,7 @@ test.describe('Authentication', () => {
     await page.click('button[type="submit"]');
 
     // Should redirect to homepage
-    await expect(page).toHaveURL('/', { timeout: 10_000 });
+    await expect(page).toHaveURL(/\/en\/?$/, { timeout: 10_000 });
   });
 
   test('should show error for invalid login credentials', async ({ page }) => {

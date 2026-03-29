@@ -1,7 +1,9 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import type { Property, PropertyStatus, PropertySortField } from '@urban-wealth/core';
 import { PropertyCard } from '@/components/property/PropertyCard';
 import { PropertyFilters } from '@/components/property/PropertyFilters';
@@ -21,6 +23,7 @@ interface PropertiesResponse {
 export function PropertiesSection() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations('Properties');
 
   const status = (searchParams.get('status') ?? 'all') as PropertyStatus | 'all';
   const location = searchParams.get('location') ?? '';
@@ -53,10 +56,10 @@ export function PropertiesSection() {
     <div className="w-full">
       <HeroSection />
       <StatsSection />
-      
+
       <div id="properties" className="mx-auto max-w-6xl px-5 sm:px-6 py-16 scroll-mt-20">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -64,10 +67,10 @@ export function PropertiesSection() {
           className="mb-8"
         >
           <h2 className="font-display text-[28px] sm:text-[32px] font-bold text-foreground tracking-tight">
-            Curated Portfolio
+            {t('title')}
           </h2>
           <p className="mt-1.5 text-[15px] text-muted max-w-xl">
-            Browse strictly vetted European residential real estate. Filter by market, yield strategy, and funding status.
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -93,15 +96,15 @@ export function PropertiesSection() {
           </div>
         ) : isError ? (
           <ErrorState
-            title="Failed to load properties"
-            message="We couldn't retrieve the property listings. Please try again."
+            title={t('errorTitle')}
+            message={t('errorMessage')}
             onRetry={() => refetch()}
           />
         ) : !data?.properties.length ? (
           <EmptyState
-            title="No properties found"
-            message="No properties match your current filters. Try adjusting your search."
-            action={{ label: 'Clear filters', href: '/' }}
+            title={t('emptyTitle')}
+            message={t('emptyMessage')}
+            action={{ label: t('clearFilters'), href: '/' }}
           />
         ) : (
           <>
@@ -119,7 +122,7 @@ export function PropertiesSection() {
               ))}
             </div>
             <p className="mt-10 pt-6 border-t border-border text-center text-[13px] font-medium text-muted">
-              Showing {data.properties.length} of {data.total} investment opportunities
+              {t('showing', { count: data.properties.length, total: data.total })}
             </p>
           </>
         )}

@@ -20,8 +20,8 @@ test.describe('Property Browsing', () => {
   test('should load and display property cards', async ({ page }) => {
     await page.goto('/');
 
-    // Wait for properties to load
-    const propertyCards = page.locator('a[href^="/properties/"]');
+    // Wait for properties to load (links now include locale prefix)
+    const propertyCards = page.locator('a[href*="/properties/"]');
     await expect(propertyCards.first()).toBeVisible({ timeout: 10_000 });
 
     // Should have multiple properties
@@ -33,7 +33,7 @@ test.describe('Property Browsing', () => {
     await page.goto('/');
 
     // Wait for properties to load first
-    await expect(page.locator('a[href^="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('a[href*="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
 
     // Click "Fully Funded" status tab button
     await page.click('button:has-text("Fully Funded")');
@@ -46,7 +46,7 @@ test.describe('Property Browsing', () => {
     await page.goto('/');
 
     // Wait for properties
-    const firstCard = page.locator('a[href^="/properties/"]').first();
+    const firstCard = page.locator('a[href*="/properties/"]').first();
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
 
     await firstCard.click();
@@ -64,7 +64,7 @@ test.describe('Property Browsing', () => {
     await page.goto('/');
 
     // Navigate to first property
-    const firstCard = page.locator('a[href^="/properties/"]').first();
+    const firstCard = page.locator('a[href*="/properties/"]').first();
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
     await firstCard.click();
 
@@ -84,13 +84,13 @@ test.describe('Property Browsing', () => {
   test('should navigate back to portfolio from detail page', async ({ page }) => {
     await page.goto('/');
 
-    const firstCard = page.locator('a[href^="/properties/"]').first();
+    const firstCard = page.locator('a[href*="/properties/"]').first();
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
     await firstCard.click();
 
     await expect(page.locator('text=Back to Portfolio')).toBeVisible({ timeout: 10_000 });
     await page.click('text=Back to Portfolio');
 
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL(/\/en\/?$/);
   });
 });

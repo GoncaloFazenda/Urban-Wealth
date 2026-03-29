@@ -4,11 +4,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginInput } from '@urban-wealth/core';
 import { useAuth } from '@/providers/AuthProvider';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { FormField } from '@/components/ui/FormField';
+import { useTranslations } from 'next-intl';
 
 function LoginPageContent() {
   const { login } = useAuth();
@@ -16,6 +18,7 @@ function LoginPageContent() {
   const searchParams = useSearchParams();
   const [serverError, setServerError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('Login');
 
   const {
     register,
@@ -38,7 +41,7 @@ function LoginPageContent() {
 
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-5 py-12 bg-muted-bg">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -46,10 +49,10 @@ function LoginPageContent() {
       >
         <div className="mb-8 text-center">
           <h1 className="font-display text-[26px] font-bold text-foreground tracking-tight mb-2">
-            Welcome back
+            {t('title')}
           </h1>
           <p className="text-[14px] text-muted">
-            Access your investment portfolio
+            {t('subtitle')}
           </p>
         </div>
 
@@ -60,23 +63,23 @@ function LoginPageContent() {
             </div>
           )}
 
-          <FormField label="Email Address" error={errors.email?.message}>
+          <FormField label={t('emailLabel')} error={errors.email?.message}>
             <input
               id="email"
               type="email"
               {...register('email')}
               className="input-field"
-              placeholder="you@company.com"
+              placeholder={t('emailPlaceholder')}
             />
           </FormField>
 
-          <FormField label="Password" error={errors.password?.message}>
+          <FormField label={t('passwordLabel')} error={errors.password?.message}>
             <input
               id="password"
               type="password"
               {...register('password')}
               className="input-field"
-              placeholder="••••••••"
+              placeholder={t('passwordPlaceholder')}
             />
           </FormField>
 
@@ -85,14 +88,14 @@ function LoginPageContent() {
             disabled={isSubmitting}
             className="w-full rounded-md bg-primary-500 px-4 py-3 text-[14px] font-bold text-white transition-all hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-md hover:shadow-lg"
           >
-            {isSubmitting ? 'Authenticating…' : 'Log in securely'}
+            {isSubmitting ? t('submitting') : t('submit')}
           </button>
         </form>
 
         <p className="mt-8 text-center text-[13px] font-medium text-muted border-t border-border pt-6">
-          Don&apos;t have an account?{' '}
+          {t('noAccount')}{' '}
           <Link href="/register" className="text-primary-500 hover:text-primary-400 transition-colors font-bold">
-            Create an account
+            {t('createAccount')}
           </Link>
         </p>
       </motion.div>
