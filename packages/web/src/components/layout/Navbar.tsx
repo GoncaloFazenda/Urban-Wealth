@@ -78,6 +78,11 @@ export function Navbar() {
                 {t('dashboard')}
               </NavLink>
             )}
+            {user?.role === 'admin' && (
+              <NavLink href="/admin" active={isActive('/admin')}>
+                Admin
+              </NavLink>
+            )}
           </div>
 
           {/* Auth, Theme & Language */}
@@ -168,6 +173,7 @@ export function Navbar() {
             <MobileLink href="/properties" onClick={() => setMobileOpen(false)} active={isActive('/properties')}>{t('properties')}</MobileLink>
             <MobileLink href="/how-it-works" onClick={() => setMobileOpen(false)} active={isActive('/how-it-works')}>{t('howItWorks')}</MobileLink>
             {user && <MobileLink href="/dashboard" onClick={() => setMobileOpen(false)} active={isActive('/dashboard')}>{t('dashboard')}</MobileLink>}
+            {user?.role === 'admin' && <MobileLink href="/admin" onClick={() => setMobileOpen(false)} active={isActive('/admin')}>Admin</MobileLink>}
 
             {/* Mobile Language Switcher */}
             <div className="flex gap-1 px-3 py-2">
