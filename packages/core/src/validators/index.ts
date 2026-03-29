@@ -11,8 +11,12 @@ export {
   loginSchema,
   passwordSchema,
   userRoleSchema,
+  updateProfileSchema,
+  changePasswordSchema,
   type RegisterInput,
   type LoginInput,
+  type UpdateProfileInput,
+  type ChangePasswordInput,
 } from './userSchema';
 
 export {

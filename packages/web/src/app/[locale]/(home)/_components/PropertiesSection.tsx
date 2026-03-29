@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import type { Property, PropertyStatus, PropertySortField } from '@urban-wealth/core';
 import { PropertyCard } from '@/components/property/PropertyCard';
 import { PropertyFilters } from '@/components/property/PropertyFilters';
+import { Link } from '@/i18n/navigation';
 import { PropertyCardSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
 import { EmptyState } from '@/components/states/EmptyState';
@@ -121,9 +122,17 @@ export function PropertiesSection() {
                 </motion.div>
               ))}
             </div>
-            <p className="mt-10 pt-6 border-t border-border text-center text-[13px] font-medium text-muted">
-              {t('showing', { count: data.properties.length, total: data.total })}
-            </p>
+            <div className="mt-10 pt-6 border-t border-border text-center">
+              <p className="text-[13px] font-medium text-muted mb-4">
+                {t('showing', { count: data.properties.length, total: data.total })}
+              </p>
+              <Link
+                href="/properties"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-5 py-2.5 text-[13px] font-semibold text-foreground transition-all hover:bg-surface-hover hover:border-primary-500/30"
+              >
+                {t('viewAll')}
+              </Link>
+            </div>
           </>
         )}
       </div>

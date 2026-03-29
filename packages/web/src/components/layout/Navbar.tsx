@@ -67,7 +67,7 @@ export function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            <NavLink href="/" active={isActive('/')}>
+            <NavLink href="/properties" active={isActive('/properties')}>
               {t('properties')}
             </NavLink>
             <NavLink href="/how-it-works" active={isActive('/how-it-works')}>
@@ -107,14 +107,17 @@ export function Navbar() {
               <div className="h-8 w-20 rounded-md skeleton-shimmer" />
             ) : user ? (
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-surface-hover"
+                >
                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-hover text-xs font-semibold text-foreground border border-border">
                     {user.fullName.charAt(0).toUpperCase()}
                   </div>
                   <span className="text-[13px] font-medium text-muted">
                     {user.fullName}
                   </span>
-                </div>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="rounded-md px-3 py-1.5 w-18 text-[13px] font-medium text-muted transition-colors hover:text-foreground hover:bg-surface-hover"
@@ -162,7 +165,7 @@ export function Navbar() {
         {/* Mobile menu */}
         {mobileOpen && (
           <div className="md:hidden border-t border-border py-4 space-y-1 animate-fade-in mt-2">
-            <MobileLink href="/" onClick={() => setMobileOpen(false)} active={isActive('/')}>{t('properties')}</MobileLink>
+            <MobileLink href="/properties" onClick={() => setMobileOpen(false)} active={isActive('/properties')}>{t('properties')}</MobileLink>
             <MobileLink href="/how-it-works" onClick={() => setMobileOpen(false)} active={isActive('/how-it-works')}>{t('howItWorks')}</MobileLink>
             {user && <MobileLink href="/dashboard" onClick={() => setMobileOpen(false)} active={isActive('/dashboard')}>{t('dashboard')}</MobileLink>}
 

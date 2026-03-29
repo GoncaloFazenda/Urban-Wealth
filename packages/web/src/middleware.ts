@@ -4,7 +4,7 @@ import { routing } from '@/i18n/routing';
 import { AUTH_CONSTANTS, REDIRECT_ALLOWLIST } from '@/lib/constants';
 
 // Paths that require authentication (without locale prefix)
-const PROTECTED_PATHS = ['/dashboard', '/admin'];
+const PROTECTED_PATHS = ['/dashboard', '/admin', '/profile'];
 const AUTH_PAGES = ['/login', '/register'];
 
 const intlMiddleware = createMiddleware(routing);

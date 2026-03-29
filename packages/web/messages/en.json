@@ -47,7 +47,12 @@
     "errorMessage": "We couldn't retrieve the property listings. Please try again.",
     "emptyTitle": "No properties found",
     "emptyMessage": "No properties match your current filters. Try adjusting your search.",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "viewAll": "View All Properties"
+  },
+  "PropertiesPage": {
+    "title": "Investment Properties",
+    "subtitle": "Browse our full collection of strictly vetted European residential real estate. Filter by market, yield strategy, and funding status to find opportunities that match your investment goals."
   },
   "PropertyCard": {
     "yield": "Yield",
@@ -194,6 +199,25 @@
     "statusCompleted": "Completed",
     "statusPending": "Pending",
     "errorTitle": "Failed to load dashboard"
+  },
+  "Profile": {
+    "title": "Account Settings",
+    "personalInfo": "Personal Information",
+    "fullNameLabel": "Full Legal Name",
+    "emailLabel": "Email Address",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "profileUpdated": "Profile updated successfully.",
+    "changePassword": "Change Password",
+    "currentPasswordLabel": "Current Password",
+    "newPasswordLabel": "New Password",
+    "confirmNewPasswordLabel": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "updating": "Updating...",
+    "passwordUpdated": "Password changed successfully.",
+    "accountDetails": "Account Details",
+    "accountRole": "Account Role",
+    "accountId": "Account ID"
   },
   "ErrorState": {
     "defaultTitle": "Something went wrong",

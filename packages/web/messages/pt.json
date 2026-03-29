@@ -47,7 +47,12 @@
     "errorMessage": "Não foi possível obter os anúncios de propriedades. Por favor, tente novamente.",
     "emptyTitle": "Nenhuma propriedade encontrada",
     "emptyMessage": "Nenhuma propriedade corresponde aos seus filtros atuais. Tente ajustar a sua pesquisa.",
-    "clearFilters": "Limpar filtros"
+    "clearFilters": "Limpar filtros",
+    "viewAll": "Ver Todas as Propriedades"
+  },
+  "PropertiesPage": {
+    "title": "Propriedades de Investimento",
+    "subtitle": "Explore a nossa coleção completa de imobiliário residencial europeu rigorosamente avaliado. Filtre por mercado, estratégia de rendimento e estado de financiamento para encontrar oportunidades que correspondam aos seus objetivos de investimento."
   },
   "PropertyCard": {
     "yield": "Rendim.",
@@ -194,6 +199,25 @@
     "statusCompleted": "Concluído",
     "statusPending": "Pendente",
     "errorTitle": "Falha ao carregar o painel"
+  },
+  "Profile": {
+    "title": "Definicoes da Conta",
+    "personalInfo": "Informacao Pessoal",
+    "fullNameLabel": "Nome Completo Legal",
+    "emailLabel": "Endereco de Email",
+    "saveChanges": "Guardar Alteracoes",
+    "saving": "A guardar...",
+    "profileUpdated": "Perfil atualizado com sucesso.",
+    "changePassword": "Alterar Palavra-passe",
+    "currentPasswordLabel": "Palavra-passe Atual",
+    "newPasswordLabel": "Nova Palavra-passe",
+    "confirmNewPasswordLabel": "Confirmar Nova Palavra-passe",
+    "updatePassword": "Atualizar Palavra-passe",
+    "updating": "A atualizar...",
+    "passwordUpdated": "Palavra-passe alterada com sucesso.",
+    "accountDetails": "Detalhes da Conta",
+    "accountRole": "Tipo de Conta",
+    "accountId": "ID da Conta"
   },
   "ErrorState": {
     "defaultTitle": "Algo correu mal",
