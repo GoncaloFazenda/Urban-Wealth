@@ -12,12 +12,18 @@ interface DashboardData {
   totalInvested: number;
   totalProperties: number;
   estimatedAnnualIncome: number;
+  holdings: Array<{
+    propertyId: string;
+    propertyTitle: string;
+    amount: number;
+    ownershipPercentage: number;
+    estimatedAnnualIncome: number;
+    status: string;
+  }>;
   investments: Array<{
     id: string;
     propertyTitle?: string;
     amount: number;
-    ownershipPercentage: number;
-    estimatedAnnualIncome: number;
     status: string;
     createdAt: string;
   }>;
@@ -73,7 +79,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        {!data?.investments.length ? (
+        {!data?.holdings.length ? (
           <EmptyState
             title="No investments yet"
             message="Start building your portfolio by exploring our exclusively curated European properties."
@@ -83,15 +89,15 @@ export default function DashboardPage() {
           <>
             <h2 className="text-[18px] font-display font-bold text-foreground mb-4">Current Holdings</h2>
             <div className="grid gap-3 mb-12">
-              {data.investments.map((inv) => (
-                <div key={inv.id} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card px-5 py-4 shadow-sm hover:shadow-md transition-shadow">
+              {data.holdings.map((holding) => (
+                <div key={holding.propertyId} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card px-5 py-4 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-bold text-foreground truncate mb-0.5">{inv.propertyTitle ?? 'Property'}</p>
-                    <p className="text-[13px] font-medium text-muted">{inv.ownershipPercentage.toFixed(2)}% equity ownership</p>
+                    <p className="text-[15px] font-bold text-foreground truncate mb-0.5">{holding.propertyTitle}</p>
+                    <p className="text-[13px] font-medium text-muted">{holding.ownershipPercentage.toFixed(2)}% equity ownership</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[16px] font-bold text-foreground">€{inv.amount.toLocaleString()}</p>
-                    <p className="text-[12px] font-semibold text-primary-500 uppercase tracking-widest mt-0.5">{inv.status}</p>
+                    <p className="text-[16px] font-bold text-foreground">€{holding.amount.toLocaleString()}</p>
+                    <p className="text-[12px] font-semibold text-primary-500 uppercase tracking-widest mt-0.5">{holding.status}</p>
                   </div>
                 </div>
               ))}

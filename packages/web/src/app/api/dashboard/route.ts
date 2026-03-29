@@ -22,12 +22,38 @@ export async function GET() {
     const totalProperties = new Set(dbInvestments.map((inv) => inv.propertyId)).size;
     const estimatedAnnualIncome = dbInvestments.reduce((sum, inv) => sum + inv.estimatedAnnualIncome, 0);
 
+    // Aggregate per property for the holdings view
+    const holdingsMap = new Map<string, {
+      propertyId: string;
+      propertyTitle: string;
+      amount: number;
+      ownershipPercentage: number;
+      estimatedAnnualIncome: number;
+      status: string;
+    }>();
+    for (const inv of dbInvestments) {
+      const existing = holdingsMap.get(inv.propertyId);
+      if (existing) {
+        existing.amount += inv.amount;
+        existing.ownershipPercentage += inv.ownershipPercentage;
+        existing.estimatedAnnualIncome += inv.estimatedAnnualIncome;
+      } else {
+        holdingsMap.set(inv.propertyId, {
+          propertyId: inv.propertyId,
+          propertyTitle: inv.property.title,
+          amount: inv.amount,
+          ownershipPercentage: inv.ownershipPercentage,
+          estimatedAnnualIncome: inv.estimatedAnnualIncome,
+          status: inv.status === 'COMPLETED' ? 'Completed' : 'Pending',
+        });
+      }
+    }
+
+    // Raw event log for the transaction history
     const investments = dbInvestments.map((inv) => ({
       id: inv.id,
       propertyTitle: inv.property.title,
       amount: inv.amount,
-      ownershipPercentage: inv.ownershipPercentage,
-      estimatedAnnualIncome: inv.estimatedAnnualIncome,
       status: inv.status === 'COMPLETED' ? 'Completed' : 'Pending',
       createdAt: inv.createdAt.toISOString(),
     }));
@@ -36,6 +62,7 @@ export async function GET() {
       totalInvested,
       totalProperties,
       estimatedAnnualIncome,
+      holdings: Array.from(holdingsMap.values()),
       investments,
     });
   } catch (error) {

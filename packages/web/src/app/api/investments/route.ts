@@ -70,20 +70,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check remaining value against actual DB investments
-    const { _sum } = await prisma.investment.aggregate({
-      where: { propertyId },
-      _sum: { amount: true },
-    });
-    const alreadyInvested = _sum.amount ?? 0;
-    const remainingValue = property.totalValue - alreadyInvested;
-    if (amount > remainingValue) {
-      return NextResponse.json(
-        { error: 'Investment amount exceeds remaining available value' },
-        { status: 400 }
-      );
-    }
-
     // Calculate financials
     const ownershipPercentage = (amount / property.totalValue) * 100;
     const estimatedAnnualIncome =
@@ -102,10 +88,47 @@ export async function POST(request: NextRequest) {
       funded: 'FUNDED',
     };
 
-    const newFunded = ((alreadyInvested + amount) / property.totalValue) * 100;
+    // Ensure the property row exists before we try to lock it
+    await prisma.property.upsert({
+      where: { id: property.id },
+      create: {
+        id: property.id,
+        title: property.title,
+        location: property.location,
+        photoUrls: property.photoUrls,
+        totalValue: property.totalValue,
+        funded: 0,
+        annualYield: property.annualYield,
+        projectedAppreciation: property.projectedAppreciation,
+        status: statusMap[property.status] ?? 'OPEN',
+        description: property.description,
+        availableShares: property.availableShares,
+        platformFee: property.platformFee,
+      },
+      update: {},
+    });
 
-    const [investment] = await prisma.$transaction([
-      prisma.investment.create({
+    // Lock the property row so concurrent requests queue rather than race
+    const investment = await prisma.$transaction(async (tx) => {
+      await tx.$executeRaw`SELECT 1 FROM properties WHERE id = ${property.id} FOR UPDATE`;
+
+      const { _sum } = await tx.investment.aggregate({
+        where: { propertyId: property.id },
+        _sum: { amount: true },
+      });
+      const alreadyInvested = _sum.amount ?? 0;
+      const remainingValue = property.totalValue - alreadyInvested;
+
+      if (amount > remainingValue) {
+        throw Object.assign(
+          new Error('Investment amount exceeds remaining available value'),
+          { code: 'CAPACITY_EXCEEDED' }
+        );
+      }
+
+      const newFunded = ((alreadyInvested + amount) / property.totalValue) * 100;
+
+      const inv = await tx.investment.create({
         data: {
           userId: session.userId,
           propertyId: property.id,
@@ -116,29 +139,21 @@ export async function POST(request: NextRequest) {
           platformFee,
           status: 'COMPLETED',
         },
-      }),
-      prisma.property.upsert({
+      });
+
+      await tx.property.update({
         where: { id: property.id },
-        create: {
-          id: property.id,
-          title: property.title,
-          location: property.location,
-          photoUrls: property.photoUrls,
-          totalValue: property.totalValue,
-          funded: newFunded,
-          annualYield: property.annualYield,
-          projectedAppreciation: property.projectedAppreciation,
-          status: statusMap[property.status] ?? 'OPEN',
-          description: property.description,
-          availableShares: property.availableShares,
-          platformFee: property.platformFee,
-        },
-        update: { funded: newFunded },
-      }),
-    ]);
+        data: { funded: newFunded },
+      });
+
+      return inv;
+    });
 
     return NextResponse.json({ investment }, { status: 201 });
   } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'CAPACITY_EXCEEDED') {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     console.error('Investment error:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(
       { error: 'Failed to process investment' },
