@@ -160,7 +160,7 @@ export default function PropertyDetailPage() {
           <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <span className="text-[14px] font-bold text-foreground tracking-tight">{t('fundingStatus')}</span>
-              <span className="text-[16px] font-display font-bold text-primary-500">{p.funded}%</span>
+              <span className="text-[16px] font-display font-bold text-primary-500">{parseFloat(p.funded.toFixed(2))}%</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-muted-bg border border-border/50">
               <motion.div

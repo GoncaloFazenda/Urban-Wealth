@@ -101,7 +101,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         {/* Funded progress */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-primary-500">{t('funded', { value: property.funded })}</span>
+            <span className="text-[11px] font-semibold text-primary-500">{t('funded', { value: parseFloat(property.funded.toFixed(2)) })}</span>
             <span className="text-[11px] font-medium text-muted">
               {t('sharesLeft', { count: property.availableShares.toLocaleString() })}
             </span>
