@@ -74,9 +74,14 @@ export function Navbar() {
               {t('howItWorks')}
             </NavLink>
             {user && (
-              <NavLink href="/dashboard" active={isActive('/dashboard')}>
-                {t('dashboard')}
-              </NavLink>
+              <>
+                <NavLink href="/dashboard" active={isActive('/dashboard')}>
+                  {t('dashboard')}
+                </NavLink>
+                <NavLink href="/watchlist" active={isActive('/watchlist')}>
+                  {t('watchlist')}
+                </NavLink>
+              </>
             )}
             {user?.role === 'admin' && (
               <NavLink href="/admin" active={isActive('/admin')}>
@@ -172,7 +177,12 @@ export function Navbar() {
           <div className="md:hidden border-t border-border py-4 space-y-1 animate-fade-in mt-2">
             <MobileLink href="/properties" onClick={() => setMobileOpen(false)} active={isActive('/properties')}>{t('properties')}</MobileLink>
             <MobileLink href="/how-it-works" onClick={() => setMobileOpen(false)} active={isActive('/how-it-works')}>{t('howItWorks')}</MobileLink>
-            {user && <MobileLink href="/dashboard" onClick={() => setMobileOpen(false)} active={isActive('/dashboard')}>{t('dashboard')}</MobileLink>}
+            {user && (
+              <>
+                <MobileLink href="/dashboard" onClick={() => setMobileOpen(false)} active={isActive('/dashboard')}>{t('dashboard')}</MobileLink>
+                <MobileLink href="/watchlist" onClick={() => setMobileOpen(false)} active={isActive('/watchlist')}>{t('watchlist')}</MobileLink>
+              </>
+            )}
             {user?.role === 'admin' && <MobileLink href="/admin" onClick={() => setMobileOpen(false)} active={isActive('/admin')}>Admin</MobileLink>}
 
             {/* Mobile Language Switcher */}

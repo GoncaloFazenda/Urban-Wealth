@@ -6,7 +6,8 @@
     "logOut": "Log out",
     "logIn": "Log in",
     "getStarted": "Get Started",
-    "menu": "Menu"
+    "menu": "Menu",
+    "watchlist": "Watchlist"
   },
   "Footer": {
     "newsletterTitle": "Join the inner circle",
@@ -208,6 +209,15 @@
     "step2Desc": "Choose an amount and review projected returns.",
     "step3Title": "Earn passive income",
     "step3Desc": "Receive rental yield and appreciation gains."
+  },
+  "Watchlist": {
+    "title": "Your Watchlist",
+    "subtitle": "Properties you've saved for later. Keep track of opportunities that interest you.",
+    "errorTitle": "Failed to load watchlist",
+    "emptyTitle": "No saved properties yet",
+    "emptyMessage": "Browse our portfolio and bookmark properties you're interested in. They'll appear here for easy access.",
+    "browseProperties": "Browse Properties",
+    "count": "{count} saved properties"
   },
   "Admin": {
     "panelTitle": "Admin Panel",

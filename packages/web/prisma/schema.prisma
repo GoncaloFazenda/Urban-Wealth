@@ -17,6 +17,7 @@ model User {
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
   investments  Investment[]
+  watchlist    Watchlist[]
 
   @@map("users")
 }
@@ -36,6 +37,7 @@ model Property {
   platformFee           Float          @default(0.015) @map("platform_fee")
   createdAt             DateTime       @default(now()) @map("created_at")
   investments           Investment[]
+  watchlist             Watchlist[]
 
   @@map("properties")
 }
@@ -77,6 +79,19 @@ enum PropertyStatus {
   OPEN
   COMING_SOON
   FUNDED
+}
+
+model Watchlist {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  propertyId String   @map("property_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@unique([userId, propertyId])
+  @@map("watchlist")
 }
 
 enum InvestmentStatus {

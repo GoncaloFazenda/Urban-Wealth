@@ -6,7 +6,8 @@
     "logOut": "Sair",
     "logIn": "Entrar",
     "getStarted": "Começar",
-    "menu": "Menu"
+    "menu": "Menu",
+    "watchlist": "Favoritos"
   },
   "Footer": {
     "newsletterTitle": "Junte-se ao círculo exclusivo",
@@ -208,6 +209,15 @@
     "step2Desc": "Escolha um montante e analise os retornos projetados.",
     "step3Title": "Ganhe rendimento passivo",
     "step3Desc": "Receba rendimento de arrendamento e valorizacao."
+  },
+  "Watchlist": {
+    "title": "Os Seus Favoritos",
+    "subtitle": "Propriedades que guardou para mais tarde. Acompanhe as oportunidades que lhe interessam.",
+    "errorTitle": "Falha ao carregar favoritos",
+    "emptyTitle": "Sem propriedades guardadas",
+    "emptyMessage": "Explore o nosso portfolio e marque as propriedades que lhe interessam. Aparecerao aqui para acesso rapido.",
+    "browseProperties": "Explorar Propriedades",
+    "count": "{count} propriedades guardadas"
   },
   "Admin": {
     "panelTitle": "Painel Admin",
