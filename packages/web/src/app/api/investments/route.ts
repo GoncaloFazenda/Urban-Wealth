@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  investmentSchema,
-  mockProperties,
-  PLATFORM_FEE_RATE,
-} from '@urban-wealth/core';
+import { investmentSchema, PLATFORM_FEE_RATE } from '@urban-wealth/core';
 import { getSession } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { AUTH_CONSTANTS } from '@/lib/constants';
 import { prisma } from '@/lib/prisma';
-import type { PropertyStatus } from '@prisma/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -53,8 +48,10 @@ export async function POST(request: NextRequest) {
 
     const { propertyId, amount } = parsed.data;
 
-    // Find property
-    const property = mockProperties.find((p) => p.id === propertyId);
+    // Find property from DB
+    const property = await prisma.property.findUnique({
+      where: { id: propertyId },
+    });
     if (!property) {
       return NextResponse.json(
         { error: 'Property not found' },
@@ -63,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check property status
-    if (property.status !== 'open') {
+    if (property.status !== 'OPEN') {
       return NextResponse.json(
         { error: 'This property is not currently open for investment' },
         { status: 400 }
@@ -81,32 +78,6 @@ export async function POST(request: NextRequest) {
       (property.projectedAppreciation / 100) *
       (ownershipPercentage / 100);
     const platformFee = amount * PLATFORM_FEE_RATE;
-
-    const statusMap: Record<string, PropertyStatus> = {
-      open: 'OPEN',
-      coming_soon: 'COMING_SOON',
-      funded: 'FUNDED',
-    };
-
-    // Ensure the property row exists before we try to lock it
-    await prisma.property.upsert({
-      where: { id: property.id },
-      create: {
-        id: property.id,
-        title: property.title,
-        location: property.location,
-        photoUrls: property.photoUrls,
-        totalValue: property.totalValue,
-        funded: 0,
-        annualYield: property.annualYield,
-        projectedAppreciation: property.projectedAppreciation,
-        status: statusMap[property.status] ?? 'OPEN',
-        description: property.description,
-        availableShares: property.availableShares,
-        platformFee: property.platformFee,
-      },
-      update: {},
-    });
 
     // Lock the property row so concurrent requests queue rather than race
     const investment = await prisma.$transaction(async (tx) => {

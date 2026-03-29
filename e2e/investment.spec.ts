@@ -94,6 +94,51 @@ test.describe('Investment Flow', () => {
     await expect(page.locator(`text=€${investAmount.toLocaleString('en-GB')}`).first()).toBeVisible();
   });
 
+  test('should update property funded percentage after investing', async ({ page }) => {
+    // Navigate to the first open property
+    await page.goto('/');
+    await expect(page.locator('a[href^="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
+
+    const openCard = page
+      .locator('a[href^="/properties/"]')
+      .filter({ has: page.locator('text=Open') })
+      .first();
+    await expect(openCard).toBeVisible({ timeout: 10_000 });
+    await openCard.click();
+
+    // Wait for detail page
+    await expect(page.locator('text=Funding Status')).toBeVisible({ timeout: 10_000 });
+
+    // The funded % sits in the sibling span next to "Funding Status"
+    const fundedSpan = page.locator('span:has-text("Funding Status") + span');
+    const fundedBeforeText = await fundedSpan.textContent();
+    const before = parseFloat(fundedBeforeText ?? '0');
+
+    // Invest €100
+    await page.locator('input[type="number"]').fill('100');
+    const investButton = page.locator('button:has-text("Review & Invest")');
+    await expect(investButton).toBeEnabled({ timeout: 5_000 });
+    await investButton.click();
+
+    // Confirm in modal
+    await expect(page.locator('text=Confirm Allocation')).toBeVisible({ timeout: 5_000 });
+    await page.click('button:has-text("Finalize Investment")');
+
+    // Wait for success toast
+    await expect(page.locator('text=Successfully allocated')).toBeVisible({ timeout: 10_000 });
+
+    // Reload to get updated data from the DB
+    await page.reload();
+    await expect(page.locator('text=Funding Status')).toBeVisible({ timeout: 10_000 });
+
+    // Capture updated funded %
+    const fundedAfterText = await fundedSpan.textContent();
+    const after = parseFloat(fundedAfterText ?? '0');
+
+    // The funded % must have increased
+    expect(after).toBeGreaterThan(before);
+  });
+
   test('should redirect unauthenticated user to login when investing', async ({ page, context }) => {
     // Clear cookies to simulate unauthenticated user
     await context.clearCookies();
