@@ -11,6 +11,7 @@ import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { FormField } from '@/components/ui/FormField';
 import { useTranslations } from 'next-intl';
+import { getSafeRedirect } from '@/lib/constants';
 
 function RegisterPageContent() {
   const { register: authRegister } = useAuth();
@@ -37,7 +38,7 @@ function RegisterPageContent() {
     setServerError('');
     try {
       await authRegister(data.fullName, data.email, data.password, data.confirmPassword);
-      router.push(searchParams.get('redirect') ?? '/');
+      router.push(getSafeRedirect(searchParams.get('redirect')));
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Registration failed');
     } finally {

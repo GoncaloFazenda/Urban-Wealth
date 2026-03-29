@@ -22,3 +22,13 @@ export const REDIRECT_ALLOWLIST = [
   '/properties',
   '/how-it-works',
 ] as const;
+
+export function getSafeRedirect(value: string | null): string {
+  if (!value) return '/';
+  const path = value.split('?')[0] ?? '/';
+  return REDIRECT_ALLOWLIST.some(
+    (allowed) => path === allowed || path.startsWith(`${allowed}/`)
+  )
+    ? value
+    : '/';
+}
