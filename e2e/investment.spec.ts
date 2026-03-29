@@ -47,6 +47,10 @@ test.describe('Investment Flow', () => {
   });
 
   test('should show new investment in dashboard after investing', async ({ page }) => {
+    // Snapshot dashboard BEFORE investing to get the pre-existing holding amount
+    await page.goto('/dashboard');
+    await expect(page.locator('text=Portfolio Overview')).toBeVisible({ timeout: 10_000 });
+
     // Find the first open property card and capture its title
     await page.goto('/');
     await expect(page.locator('a[href*="/properties/"]').first()).toBeVisible({ timeout: 10_000 });
@@ -58,40 +62,46 @@ test.describe('Investment Flow', () => {
     await expect(openCard).toBeVisible({ timeout: 10_000 });
 
     const propertyTitle = await openCard.locator('h3').textContent();
+
+    // Capture pre-existing holding amount for this property (0 if absent)
+    await page.goto('/dashboard');
+    await page.waitForTimeout(1_000);
+    const holdingsGrid = page.locator('h2:text-is("Current Holdings") + div');
+    const existingRow = holdingsGrid.filter({ hasText: propertyTitle! }).first();
+    const existingAmountText = await existingRow.locator('p.text-\\[16px\\]').textContent().catch(() => '€0');
+    const existingAmount = parseFloat((existingAmountText ?? '€0').replace(/[€,]/g, '')) || 0;
+
+    // Navigate to the property and invest
+    await page.goto('/');
+    await expect(openCard).toBeVisible({ timeout: 10_000 });
     await openCard.click();
 
-    // Wait for the detail page to load
     await expect(page.locator('text=Investment Projection')).toBeVisible({ timeout: 10_000 });
 
-    // Enter investment amount
     const investAmount = 500;
     await page.locator('input[type="number"]').fill(String(investAmount));
 
-    // Invest button must be enabled before clicking
     const investButton = page.locator('button:has-text("Review & Invest")');
     await expect(investButton).toBeEnabled({ timeout: 5_000 });
     await investButton.click();
 
-    // Confirm in modal
     await expect(page.locator('text=Confirm Allocation')).toBeVisible({ timeout: 5_000 });
     await page.click('button:has-text("Finalize Investment")');
 
-    // Wait for success toast
     await expect(page.locator('text=Successfully allocated')).toBeVisible({ timeout: 10_000 });
 
-    // Navigate to dashboard
+    // Navigate to dashboard and verify the holding amount increased by exactly investAmount
     await page.goto('/dashboard');
     await expect(page.locator('text=Portfolio Overview')).toBeVisible({ timeout: 10_000 });
-
-    // Current Holdings section must be visible
     await expect(page.locator('text=Current Holdings')).toBeVisible({ timeout: 10_000 });
 
-    // The invested property title must appear in the holdings list
-    const holdingsGrid = page.locator('h2:text-is("Current Holdings") + div');
-    await expect(holdingsGrid.getByText(propertyTitle!, { exact: true }).first()).toBeVisible({ timeout: 5_000 });
+    const updatedRow = holdingsGrid.filter({ hasText: propertyTitle! }).first();
+    await expect(updatedRow).toBeVisible({ timeout: 5_000 });
 
-    // The investment amount must be shown in the holdings row
-    await expect(page.locator(`text=€${investAmount.toLocaleString('en-GB')}`).first()).toBeVisible();
+    const updatedAmountText = await updatedRow.locator('p.text-\\[16px\\]').textContent();
+    const updatedAmount = parseFloat((updatedAmountText ?? '€0').replace(/[€,]/g, ''));
+
+    expect(updatedAmount).toBe(existingAmount + investAmount);
   });
 
   test('should update property funded percentage after investing', async ({ page }) => {

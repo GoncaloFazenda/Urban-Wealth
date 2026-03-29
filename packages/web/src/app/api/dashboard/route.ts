@@ -37,6 +37,8 @@ export async function GET() {
         existing.amount += inv.amount;
         existing.ownershipPercentage += inv.ownershipPercentage;
         existing.estimatedAnnualIncome += inv.estimatedAnnualIncome;
+        // Any PENDING investment makes the whole holding PENDING
+        if (inv.status === 'PENDING') existing.status = 'Pending';
       } else {
         holdingsMap.set(inv.propertyId, {
           propertyId: inv.propertyId,
