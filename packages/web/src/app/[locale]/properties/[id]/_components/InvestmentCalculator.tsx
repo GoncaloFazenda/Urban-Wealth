@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Property } from '@urban-wealth/core';
 import { calculateInvestment } from '@urban-wealth/ui';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,6 +26,10 @@ export function InvestmentCalculator({ property, onInvest }: InvestmentCalculato
     property.annualYield,
     property.projectedAppreciation
   );
+
+  useEffect(() => {
+      setAmount('')
+  }, [property]);
 
   return (
     <motion.div

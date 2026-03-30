@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/providers/AuthProvider';
 import { useCallback } from 'react';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export function useWatchlist() {
   const { user } = useAuth();
@@ -11,7 +12,7 @@ export function useWatchlist() {
   const { data, isLoading } = useQuery<{ propertyIds: string[] }>({
     queryKey: ['watchlist-ids'],
     queryFn: async () => {
-      const res = await fetch('/api/watchlist', { credentials: 'include' });
+      const res = await fetchWithAuth('/api/watchlist');
       if (!res.ok) throw new Error('Failed to load watchlist');
       return res.json();
     },
@@ -20,10 +21,9 @@ export function useWatchlist() {
 
   const mutation = useMutation({
     mutationFn: async (propertyId: string) => {
-      const res = await fetch('/api/watchlist', {
+      const res = await fetchWithAuth('/api/watchlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ propertyId }),
       });
       if (!res.ok) throw new Error('Failed to toggle');

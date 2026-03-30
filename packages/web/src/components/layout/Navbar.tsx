@@ -78,9 +78,7 @@ export function Navbar() {
                 <NavLink href="/dashboard" active={isActive('/dashboard')}>
                   {t('dashboard')}
                 </NavLink>
-                <NavLink href="/watchlist" active={isActive('/watchlist')}>
-                  {t('watchlist')}
-                </NavLink>
+               
               </>
             )}
             {user?.role === 'admin' && (
@@ -180,7 +178,7 @@ export function Navbar() {
             {user && (
               <>
                 <MobileLink href="/dashboard" onClick={() => setMobileOpen(false)} active={isActive('/dashboard')}>{t('dashboard')}</MobileLink>
-                <MobileLink href="/watchlist" onClick={() => setMobileOpen(false)} active={isActive('/watchlist')}>{t('watchlist')}</MobileLink>
+                <MobileLink href="/profile?tab=favorites" onClick={() => setMobileOpen(false)}>{t('watchlist')}</MobileLink>
               </>
             )}
             {user?.role === 'admin' && <MobileLink href="/admin" onClick={() => setMobileOpen(false)} active={isActive('/admin')}>Admin</MobileLink>}

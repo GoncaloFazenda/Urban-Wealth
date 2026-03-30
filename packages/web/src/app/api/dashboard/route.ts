@@ -60,12 +60,58 @@ export async function GET() {
       createdAt: inv.createdAt.toISOString(),
     }));
 
+    // --- Analytics ---
+
+    // Allocation breakdown (amount per property)
+    const allocation = Array.from(holdingsMap.values()).map((h) => ({
+      name: h.propertyTitle,
+      value: h.amount,
+    }));
+
+    // Monthly investment timeline (cumulative)
+    const monthlyMap = new Map<string, number>();
+    const sortedInvestments = [...dbInvestments].sort(
+      (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+    );
+    let cumulative = 0;
+    for (const inv of sortedInvestments) {
+      const month = inv.createdAt.toISOString().slice(0, 7); // YYYY-MM
+      cumulative += inv.amount;
+      monthlyMap.set(month, cumulative);
+    }
+    const timeline = Array.from(monthlyMap.entries()).map(([month, total]) => ({
+      month,
+      total,
+    }));
+
+    // Yield comparison per property
+    const yieldComparison = Array.from(holdingsMap.values()).map((h) => ({
+      name: h.propertyTitle,
+      invested: h.amount,
+      annualIncome: h.estimatedAnnualIncome,
+      yieldPercent: h.amount > 0
+        ? parseFloat(((h.estimatedAnnualIncome / h.amount) * 100).toFixed(2))
+        : 0,
+    }));
+
+    // Total estimated appreciation
+    let totalAppreciation = 0;
+    for (const inv of dbInvestments) {
+      totalAppreciation += inv.estimatedAppreciationGain;
+    }
+
     return NextResponse.json({
       totalInvested,
       totalProperties,
       estimatedAnnualIncome,
+      totalAppreciation,
       holdings: Array.from(holdingsMap.values()),
       investments,
+      analytics: {
+        allocation,
+        timeline,
+        yieldComparison,
+      },
     });
   } catch (error) {
     console.error('Dashboard error:', error instanceof Error ? error.message : 'Unknown error');

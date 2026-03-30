@@ -81,14 +81,21 @@ export async function POST(request: NextRequest) {
 
     // Lock the property row so concurrent requests queue rather than race
     const investment = await prisma.$transaction(async (tx) => {
-      await tx.$executeRaw`SELECT 1 FROM properties WHERE id = ${property.id} FOR UPDATE`;
+      // Lock and read fresh property state inside transaction
+      const [lockedProperty] = await tx.$queryRaw<Array<{
+        available_shares: number;
+        total_value: number;
+        funded: number;
+      }>>`
+        SELECT available_shares, total_value, funded FROM properties WHERE id = ${property.id} FOR UPDATE
+      `;
 
-      const { _sum } = await tx.investment.aggregate({
-        where: { propertyId: property.id },
-        _sum: { amount: true },
-      });
-      const alreadyInvested = _sum.amount ?? 0;
-      const remainingValue = property.totalValue - alreadyInvested;
+      const currentShares = lockedProperty?.available_shares ?? property.availableShares;
+      const currentFunded = lockedProperty?.funded ?? property.funded;
+      const totalValue = lockedProperty?.total_value ?? property.totalValue;
+
+      // Remaining capacity based on the stored funded %, not investment records
+      const remainingValue = totalValue * ((100 - currentFunded) / 100);
 
       if (amount > remainingValue) {
         throw Object.assign(
@@ -97,7 +104,15 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const newFunded = ((alreadyInvested + amount) / property.totalValue) * 100;
+      // Increment funded % by the proportion this investment represents
+      const fundedIncrement = (amount / totalValue) * 100;
+      const newFunded = Math.min(100, currentFunded + fundedIncrement);
+
+      // Shares consumed proportional to how much of the remaining capacity was used
+      const sharesUsed = remainingValue > 0
+        ? Math.max(1, Math.round(currentShares * (amount / remainingValue)))
+        : 0;
+      const newAvailableShares = Math.max(0, currentShares - sharesUsed);
 
       const inv = await tx.investment.create({
         data: {
@@ -114,7 +129,10 @@ export async function POST(request: NextRequest) {
 
       await tx.property.update({
         where: { id: property.id },
-        data: { funded: newFunded },
+        data: {
+          funded: newFunded,
+          availableShares: newAvailableShares,
+        },
       });
 
       return inv;

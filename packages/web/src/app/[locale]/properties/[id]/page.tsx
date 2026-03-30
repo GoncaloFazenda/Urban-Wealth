@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
@@ -22,6 +22,7 @@ export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
   const [investAmount, setInvestAmount] = useState(0);
   const [isInvesting, setIsInvesting] = useState(false);
@@ -62,9 +63,16 @@ export default function PropertyDetailPage() {
       setShowModal(false);
       setToast(t('successToast', { amount: investAmount.toLocaleString() }));
       setTimeout(() => setToast(''), 4000);
+
+      // Refetch property data so funded %, shares, and capacity update
+      refetch();
+      // Invalidate listings so they reflect the new funded state
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties-home'] });
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Investment failed');
     } finally {
+      setInvestAmount(0);
       setIsInvesting(false);
     }
   };
@@ -178,7 +186,7 @@ export default function PropertyDetailPage() {
 
         {/* Right — calculator (sticky) */}
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <InvestmentCalculator property={p} onInvest={handleInvest} />
+          <InvestmentCalculator property={p} onInvest={handleInvest}  />
         </div>
       </div>
 

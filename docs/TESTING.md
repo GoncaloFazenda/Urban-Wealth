@@ -9,8 +9,8 @@
 | Layer | Package | Runner | Tests | Status |
 |---|---|---|---|---|
 | Unit | `@urban-wealth/core` | Jest | 44 | ✅ All passing |
-| E2E | Root (`e2e/`) | Playwright | 20 | ✅ All passing |
-| **Total** | | | **64** | ✅ |
+| E2E | Root (`e2e/`) | Playwright | 43 | ✅ All passing |
+| **Total** | | | **87** | ✅ |
 
 ---
 
@@ -105,11 +105,13 @@
 | should display property detail with working calculator | Amount input → projections appear | ✅ |
 | should navigate back to portfolio from detail page | "Back to Portfolio" → returns to `/` | ✅ |
 
-### `investment.spec.ts` — 2 tests
+### `investment.spec.ts` — 5 tests
 
 | Test | What it verifies | Status |
 |---|---|---|
 | should complete the full investment flow | Login → property → amount → review → confirm → success toast | ✅ |
+| should show new investment in dashboard after investing | Invest → dashboard holding amount increases | ✅ |
+| should update property funded percentage after investing | Funded % increases after investment | ✅ |
 | should redirect unauthenticated user to login | Invest without auth → redirect to `/login?redirect=...` | ✅ |
 
 ### `navigation.spec.ts` — 6 tests
@@ -122,6 +124,55 @@
 | should display FAQ with expandable items | FAQ accordion opens on click | ✅ |
 | should redirect to login if not authenticated (Dashboard) | Unauthenticated → handled gracefully | ✅ |
 | should display dashboard when authenticated | Login → Dashboard → "Portfolio Overview" visible | ✅ |
+
+### `properties-listing.spec.ts` — 6 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should display the properties listing page | `/properties` shows heading + property cards | ✅ |
+| should show pagination controls | Prev/Next buttons visible | ✅ |
+| should filter properties by status on listing page | Status filter updates URL | ✅ |
+| should sort properties | Sort by yield updates URL | ✅ |
+| should navigate from homepage to properties listing | "View All Properties" link works | ✅ |
+| should navigate to property detail from listing | Card click → detail page | ✅ |
+
+### `profile.spec.ts` — 6 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should display profile page with settings tab | Header, tabs, settings sections visible | ✅ |
+| should show user info in profile form | Email pre-filled correctly | ✅ |
+| should switch to favorites tab | Favorites tab shows empty state or cards | ✅ |
+| should open favorites tab via URL param | `?tab=favorites` opens favorites directly | ✅ |
+| should redirect unauthenticated user to login | No auth → redirect to `/login?redirect=...` | ✅ |
+
+### `watchlist.spec.ts` — 3 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should toggle bookmark on property card | Bookmark button appears on hover, click toggles | ✅ |
+| should show bookmarked property in favorites tab | Bookmarked property appears in profile favorites | ✅ |
+| should not show bookmark button when logged out | Unauthenticated users don't see bookmark | ✅ |
+
+### `admin.spec.ts` — 5 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should redirect non-admin to login | Regular user sees redirect or access denied | ✅ |
+| should redirect unauthenticated user from admin | No auth → redirect to `/login` | ✅ |
+| should return 401 for unauthenticated admin stats API | `GET /api/admin/stats` → 401 | ✅ |
+| should return 401 for unauthenticated admin properties API | `GET /api/admin/properties` → 401 | ✅ |
+| should return 401 for unauthenticated admin users API | `GET /api/admin/users` → 401 | ✅ |
+
+### `dashboard-analytics.spec.ts` — 5 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should show onboarding card when user has no investments | Fresh user sees empty state with 3-step guide | ✅ |
+| should show summary cards including appreciation | 4 summary cards (invested, properties, income, appreciation) | ✅ |
+| should display analytics charts when user has investments | Allocation, Yield, Growth charts visible | ✅ |
+| should display transaction history table | Table with Date, Asset, Amount, Status columns | ✅ |
+| should make holdings clickable to property detail | Holding link navigates to property page | ✅ |
 
 ---
 
@@ -144,3 +195,4 @@ yarn test:all
 - A test user (`e2e@urbanwealth.test` / `TestPass1!`) is seeded via `globalSetup` before E2E tests
 - Registration tests generate unique emails with `Date.now()` to avoid collisions
 - Playwright is configured to reuse an existing dev server locally (CI starts a fresh one)
+- Admin tests verify API-level auth since the test user has a `USER` role, not `ADMIN`

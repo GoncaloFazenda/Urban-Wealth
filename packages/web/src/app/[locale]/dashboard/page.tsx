@@ -8,11 +8,15 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { SummaryCard } from './_components/SummaryCard';
+import { AllocationChart } from './_components/AllocationChart';
+import { TimelineChart } from './_components/TimelineChart';
+import { YieldChart } from './_components/YieldChart';
 
 interface DashboardData {
   totalInvested: number;
   totalProperties: number;
   estimatedAnnualIncome: number;
+  totalAppreciation: number;
   holdings: Array<{
     propertyId: string;
     propertyTitle: string;
@@ -28,6 +32,16 @@ interface DashboardData {
     status: string;
     createdAt: string;
   }>;
+  analytics: {
+    allocation: Array<{ name: string; value: number }>;
+    timeline: Array<{ month: string; total: number }>;
+    yieldComparison: Array<{
+      name: string;
+      invested: number;
+      annualIncome: number;
+      yieldPercent: number;
+    }>;
+  };
 }
 
 export default function DashboardPage() {
@@ -68,11 +82,12 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="grid gap-4 sm:grid-cols-3 mb-12"
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-12"
       >
         <SummaryCard label={t('totalInvested')} value={`€${(data?.totalInvested ?? 0).toLocaleString()}`} />
         <SummaryCard label={t('activeProperties')} value={String(data?.totalProperties ?? 0)} />
         <SummaryCard label={t('estAnnualIncome')} value={`€${(data?.estimatedAnnualIncome ?? 0).toLocaleString()}`} positive />
+        <SummaryCard label={t('estAppreciation')} value={`€${(data?.totalAppreciation ?? 0).toLocaleString()}`} positive />
       </motion.div>
 
       {/* Investments */}
@@ -187,6 +202,25 @@ export default function DashboardPage() {
                   </table>
                 </div>
               </>
+            )}
+
+            {/* Analytics */}
+            {data.analytics && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mt-12"
+              >
+                <h2 className="text-[18px] font-display font-bold text-foreground mb-4">{t('analyticsTitle')}</h2>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <AllocationChart data={data.analytics.allocation} />
+                  <YieldChart data={data.analytics.yieldComparison} />
+                  <div className="lg:col-span-2">
+                    <TimelineChart data={data.analytics.timeline} />
+                  </div>
+                </div>
+              </motion.div>
             )}
           </>
         )}

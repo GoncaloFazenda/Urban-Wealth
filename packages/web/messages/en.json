@@ -208,7 +208,15 @@
     "step2Title": "Invest from EUR50",
     "step2Desc": "Choose an amount and review projected returns.",
     "step3Title": "Earn passive income",
-    "step3Desc": "Receive rental yield and appreciation gains."
+    "step3Desc": "Receive rental yield and appreciation gains.",
+    "estAppreciation": "Est. Appreciation",
+    "analyticsTitle": "Portfolio Analytics",
+    "allocationTitle": "Asset Allocation",
+    "timelineTitle": "Portfolio Growth",
+    "yieldTitle": "Yield Comparison",
+    "yieldLabel": "Yield",
+    "incomeLabel": "Annual Income",
+    "totalInvestedLabel": "Total Invested"
   },
   "Watchlist": {
     "title": "Your Watchlist",
@@ -302,6 +310,8 @@
     "updatePassword": "Update Password",
     "updating": "Updating...",
     "passwordUpdated": "Password changed successfully.",
+    "settingsTab": "Settings",
+    "favoritesTab": "Favorites",
     "accountDetails": "Account Details",
     "accountRole": "Account Role",
     "accountId": "Account ID"
