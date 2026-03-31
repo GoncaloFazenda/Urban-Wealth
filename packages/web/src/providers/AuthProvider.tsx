@@ -36,26 +36,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const checkSession = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch {
+      // Not authenticated — that's fine
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   // Check session on mount
   useEffect(() => {
-    async function checkSession() {
-      try {
-        const res = await fetch('/api/auth/refresh', {
-          method: 'POST',
-          credentials: 'include',
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        }
-      } catch {
-        // Not authenticated — that's fine
-      } finally {
-        setIsLoading(false);
+    checkSession();
+  }, [checkSession]);
+
+  // Re-check session when user returns to the tab (access token may have expired)
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible' && user) {
+        checkSession();
       }
     }
-    checkSession();
-  }, []);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [checkSession, user]);
 
   const login = useCallback(
     async (email: string, password: string) => {

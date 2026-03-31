@@ -8,7 +8,7 @@ import { PropertyCard } from '@/components/property/PropertyCard';
 import { PropertyCardSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
 import { Link } from '@/i18n/navigation';
-import { motion } from 'framer-motion';
+import { FadeInView } from '@/components/ui/FadeInView';
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 interface WatchlistResponse {
@@ -74,15 +74,14 @@ export function FavoritesTab() {
     <>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {data.properties.map((property, idx) => (
-          <motion.div
+          <FadeInView
             key={property.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: '0px 0px -50px 0px' }}
-            transition={{ duration: 0.5, delay: idx * 0.05 }}
+            animation="scale"
+            duration={0.5}
+            delay={idx * 0.05}
           >
             <PropertyCard property={property} />
-          </motion.div>
+          </FadeInView>
         ))}
       </div>
       <p className="mt-8 text-center text-[13px] font-medium text-muted">

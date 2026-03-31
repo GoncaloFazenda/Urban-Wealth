@@ -4,13 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/providers/AuthProvider';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import dynamic from 'next/dynamic';
 import { SummaryCard } from './_components/SummaryCard';
-import { AllocationChart } from './_components/AllocationChart';
-import { TimelineChart } from './_components/TimelineChart';
-import { YieldChart } from './_components/YieldChart';
+
+const AllocationChart = dynamic(() => import('./_components/AllocationChart').then(m => m.AllocationChart), { ssr: false });
+const TimelineChart = dynamic(() => import('./_components/TimelineChart').then(m => m.TimelineChart), { ssr: false });
+const YieldChart = dynamic(() => import('./_components/YieldChart').then(m => m.YieldChart), { ssr: false });
 
 interface DashboardData {
   totalInvested: number;
@@ -63,39 +64,25 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-5xl px-5 sm:px-6 py-10">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-8"
-      >
+      <div className="mb-8 animate-enter-sm">
         <h1 className="font-display text-[28px] font-bold text-foreground tracking-tight">
           {t('title')}
         </h1>
         <p className="mt-1 text-[14px] text-muted">
           {t('welcomeBack', { name: user?.fullName?.split(' ')[0] ?? '' })}
         </p>
-      </motion.div>
+      </div>
 
       {/* Summary */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-12"
-      >
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-12 animate-enter-sm-delay-1">
         <SummaryCard label={t('totalInvested')} value={`€${(data?.totalInvested ?? 0).toLocaleString()}`} />
         <SummaryCard label={t('activeProperties')} value={String(data?.totalProperties ?? 0)} />
         <SummaryCard label={t('estAnnualIncome')} value={`€${(data?.estimatedAnnualIncome ?? 0).toLocaleString()}`} positive />
         <SummaryCard label={t('estAppreciation')} value={`€${(data?.totalAppreciation ?? 0).toLocaleString()}`} positive />
-      </motion.div>
+      </div>
 
       {/* Investments */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
+      <div className="animate-enter-sm-delay-3">
         {!data?.holdings.length ? (
           <div className="rounded-2xl border border-border bg-card p-8 sm:p-12 text-center shadow-card">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-500/10 border border-primary-500/20">
@@ -206,12 +193,7 @@ export default function DashboardPage() {
 
             {/* Analytics */}
             {data.analytics && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="mt-12"
-              >
+              <div className="mt-12 animate-enter-sm-delay-4">
                 <h2 className="text-[18px] font-display font-bold text-foreground mb-4">{t('analyticsTitle')}</h2>
                 <div className="grid gap-4 lg:grid-cols-2">
                   <AllocationChart data={data.analytics.allocation} />
@@ -220,11 +202,11 @@ export default function DashboardPage() {
                     <TimelineChart data={data.analytics.timeline} />
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

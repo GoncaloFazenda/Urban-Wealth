@@ -8,7 +8,6 @@ import { useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import { Link } from '@/i18n/navigation';
-import { motion } from 'framer-motion';
 import { FormField } from '@/components/ui/FormField';
 import { useTranslations } from 'next-intl';
 import { getSafeRedirect } from '@/lib/constants';
@@ -55,11 +54,8 @@ function RegisterPageContent() {
 
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-5 py-12 bg-muted-bg">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-[420px] rounded-2xl border border-border bg-card p-8 shadow-card"
+      <div
+        className="w-full max-w-[420px] rounded-2xl border border-border bg-card p-8 shadow-card animate-enter"
       >
         <div className="mb-8 text-center">
           <h1 className="font-display text-[26px] font-bold text-foreground tracking-tight mb-2">
@@ -147,7 +143,7 @@ function RegisterPageContent() {
             {t('logInHere')}
           </Link>
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

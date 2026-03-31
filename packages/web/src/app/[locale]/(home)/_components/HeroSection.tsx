@@ -19,14 +19,15 @@ export function HeroSection() {
   return (
     <div ref={ref} className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden bg-black">
       {/* Background Parallax */}
-      <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10 z-10" />
+      <motion.div style={{ y }} className="absolute inset-[-20%_0_0_0] z-0">
         <img
           src="/heros/hero-luxury.png"
           alt="Premium Real Estate"
           className="w-full h-full object-cover object-center scale-105"
         />
       </motion.div>
+      {/* Gradient overlay — stays fixed, not affected by parallax */}
+      <motion.div style={{ opacity }} className="absolute inset-0 z-[1] bg-gradient-to-t from-black via-black/40 to-black/10" />
 
       {/* Hero Content */}
       <div className="relative z-20 mx-auto max-w-6xl px-5 sm:px-6 w-full text-center">

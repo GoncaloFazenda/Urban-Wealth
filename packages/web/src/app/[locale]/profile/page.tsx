@@ -3,7 +3,6 @@
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ProfileForm } from './_components/ProfileForm';
@@ -37,11 +36,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-[calc(100vh-3.5rem)] bg-muted-bg py-12">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="animate-enter">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-4 mb-3">
@@ -99,7 +94,7 @@ export default function ProfilePage() {
           ) : (
             <FavoritesTab />
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

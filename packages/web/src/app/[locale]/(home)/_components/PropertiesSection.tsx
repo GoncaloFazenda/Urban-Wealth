@@ -11,9 +11,7 @@ import { Link } from '@/i18n/navigation';
 import { PropertyCardSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
 import { EmptyState } from '@/components/states/EmptyState';
-import { motion } from 'framer-motion';
-import { HeroSection } from './HeroSection';
-import { StatsSection } from './StatsSection';
+import { FadeInView } from '@/components/ui/FadeInView';
 
 interface PropertiesResponse {
   properties: Property[];
@@ -21,7 +19,11 @@ interface PropertiesResponse {
   locations: string[];
 }
 
-export function PropertiesSection() {
+interface PropertiesSectionProps {
+  initialData?: PropertiesResponse;
+}
+
+export function PropertiesSection({ initialData }: PropertiesSectionProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations('Properties');
@@ -29,6 +31,8 @@ export function PropertiesSection() {
   const status = (searchParams.get('status') ?? 'all') as PropertyStatus | 'all';
   const location = searchParams.get('location') ?? '';
   const sort = (searchParams.get('sort') ?? 'newest') as PropertySortField;
+
+  const isDefaultFilters = status === 'all' && !location && sort === 'newest';
 
   const { data, isLoading, isError, refetch } = useQuery<PropertiesResponse>({
     queryKey: ['properties-home', status, location, sort],
@@ -42,6 +46,7 @@ export function PropertiesSection() {
       if (!res.ok) throw new Error('Failed to fetch properties');
       return res.json();
     },
+    initialData: isDefaultFilters ? initialData : undefined,
   });
 
   const updateParams = (key: string, value: string) => {
@@ -56,25 +61,16 @@ export function PropertiesSection() {
 
   return (
     <div className="w-full">
-      <HeroSection />
-      <StatsSection />
-
       <div id="properties" className="mx-auto max-w-6xl px-5 sm:px-6 py-16 scroll-mt-20">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
+        <FadeInView className="mb-8">
           <h2 className="font-display text-[28px] sm:text-[32px] font-bold text-foreground tracking-tight">
             {t('title')}
           </h2>
           <p className="mt-1.5 text-[15px] text-muted max-w-xl">
             {t('subtitle')}
           </p>
-        </motion.div>
+        </FadeInView>
 
         {/* Filters */}
         <div className="mb-8 pb-6 border-b border-border">
@@ -112,15 +108,14 @@ export function PropertiesSection() {
           <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {data.properties.map((property, idx) => (
-                <motion.div
+                <FadeInView
                   key={property.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: "0px 0px -50px 0px" }}
-                  transition={{ duration: 0.5, delay: idx * 0.05 }}
+                  animation="scale"
+                  duration={0.5}
+                  delay={idx * 0.05}
                 >
                   <PropertyCard property={property} />
-                </motion.div>
+                </FadeInView>
               ))}
             </div>
             <div className="mt-10 pt-6 border-t border-border text-center">

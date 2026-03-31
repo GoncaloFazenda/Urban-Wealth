@@ -1,18 +1,23 @@
-'use client';
-
 import { Link } from '@/i18n/navigation';
-import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
+import { MotionDiv } from '@/components/ui/MotionDiv';
 import { Step } from './_components/Step';
 import { FaqItem } from './_components/FaqItem';
 
-export default function HowItWorksPage() {
-  const t = useTranslations('HowItWorks');
+export default async function HowItWorksPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations('HowItWorks');
 
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-6 py-16 pb-24">
       {/* Header */}
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -25,7 +30,7 @@ export default function HowItWorksPage() {
         <p className="mx-auto max-w-2xl text-[16px] leading-relaxed text-muted">
           {t('subtitle')}
         </p>
-      </motion.div>
+      </MotionDiv>
 
       {/* Steps */}
       <div className="space-y-6 mb-20 relative">
@@ -37,7 +42,7 @@ export default function HowItWorksPage() {
       </div>
 
       {/* FAQ */}
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -54,10 +59,10 @@ export default function HowItWorksPage() {
           <FaqItem question={t('faq4Question')} answer={t('faq4Answer')} />
           <FaqItem question={t('faq5Question')} answer={t('faq5Answer')} />
         </div>
-      </motion.div>
+      </MotionDiv>
 
       {/* CTA */}
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
@@ -71,7 +76,7 @@ export default function HowItWorksPage() {
         >
           {t('ctaButton')}
         </Link>
-      </motion.div>
+      </MotionDiv>
     </div>
   );
 }

@@ -26,9 +26,9 @@
   --color-positive-400: oklch(0.66 0.13 160);
   --color-warning-400: oklch(0.80 0.12 75);
 
-  /* Fonts */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
+  /* Fonts — mapped from next/font CSS variables */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-outfit), system-ui, -apple-system, sans-serif;
 
   /* Spacing & Radius */
   --spacing-page: 1.5rem;
@@ -112,7 +112,12 @@ body {
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up-lg {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -175,6 +180,47 @@ body {
 .input-field:focus {
   border-color: var(--color-primary-500);
   box-shadow: 0 0 0 1px var(--color-primary-500);
+}
+
+/* Page entrance animations — replaces simple framer-motion fade-ins */
+
+/* Large slide (20px) — login, register, profile, properties header */
+.animate-enter {
+  animation: slide-up-lg 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Small slide (10px) — dashboard, admin pages */
+.animate-enter-sm {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-enter-sm-delay-1 {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.animate-enter-sm-delay-2 {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.animate-enter-sm-delay-3 {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+.animate-enter-sm-delay-4 {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Dark mode specific select adjustments */

@@ -3,7 +3,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { motion } from 'framer-motion';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { Modal } from '@/components/ui/Modal';
@@ -70,12 +69,7 @@ export default function AdminPropertiesPage() {
 
   return (
     <div className="max-w-5xl">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center justify-between mb-8"
-      >
+      <div className="flex items-center justify-between mb-8 animate-enter-sm">
         <div>
           <h1 className="font-display text-[28px] font-bold text-foreground tracking-tight">
             {t('propertiesTitle')}
@@ -90,7 +84,7 @@ export default function AdminPropertiesPage() {
         >
           {t('addProperty')}
         </Link>
-      </motion.div>
+      </div>
 
       <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
         <table className="w-full text-[13px]">

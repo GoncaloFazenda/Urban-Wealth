@@ -1,10 +1,8 @@
-'use client';
-
 import { TrendingUp, Users, ShieldCheck } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export function StatsSection() {
-  const t = useTranslations('Stats');
+export async function StatsSection() {
+  const t = await getTranslations('Stats');
 
   return (
     <div className="border-y border-border bg-muted-bg py-8">

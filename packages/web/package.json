@@ -35,6 +35,7 @@
     "zod": "^3.25.7"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.1",
     "@repo/typescript-config": "*",
     "@tailwindcss/postcss": "^4.1.8",
     "@testing-library/dom": "^10.4.1",

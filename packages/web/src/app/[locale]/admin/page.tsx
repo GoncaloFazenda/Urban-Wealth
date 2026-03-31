@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { motion } from 'framer-motion';
 import { SummaryCard } from '../dashboard/_components/SummaryCard';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
@@ -41,25 +40,15 @@ export default function AdminDashboard() {
 
   return (
     <div className="max-w-5xl">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-8"
-      >
+      <div className="mb-8 animate-enter-sm">
         <h1 className="font-display text-[28px] font-bold text-foreground tracking-tight">
           {t('overviewTitle')}
         </h1>
         <p className="mt-1 text-[14px] text-muted">{t('overviewSubtitle')}</p>
-      </motion.div>
+      </div>
 
       {/* Stats Grid */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-12"
-      >
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-12 animate-enter-sm-delay-1">
         <SummaryCard label={t('statUsers')} value={String(data?.totalUsers ?? 0)} />
         <SummaryCard label={t('statProperties')} value={String(data?.totalProperties ?? 0)} />
         <SummaryCard label={t('statInvestments')} value={String(data?.totalInvestments ?? 0)} />
@@ -68,29 +57,20 @@ export default function AdminDashboard() {
           value={`€${(data?.totalVolume ?? 0).toLocaleString()}`}
           positive
         />
-      </motion.div>
+      </div>
 
       {/* Platform Revenue */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.15 }}
-        className="mb-12"
-      >
+      <div className="mb-12 animate-enter-sm-delay-2">
         <SummaryCard
           label={t('statFees')}
           value={`€${(data?.totalFees ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           positive
         />
-      </motion.div>
+      </div>
 
       {/* Recent Activity */}
       {data?.recentInvestments && data.recentInvestments.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <div className="animate-enter-sm-delay-3">
           <h2 className="text-[18px] font-display font-bold text-foreground mb-4">
             {t('recentActivity')}
           </h2>
@@ -123,7 +103,7 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
-        </motion.div>
+        </div>
       )}
     </div>
   );

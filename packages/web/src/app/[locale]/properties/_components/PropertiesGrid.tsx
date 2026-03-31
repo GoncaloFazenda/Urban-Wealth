@@ -10,7 +10,7 @@ import { PropertyFilters } from '@/components/property/PropertyFilters';
 import { PropertyCardSkeleton } from '@/components/states/LoadingSkeleton';
 import { ErrorState } from '@/components/states/ErrorState';
 import { EmptyState } from '@/components/states/EmptyState';
-import { motion } from 'framer-motion';
+import { FadeInView } from '@/components/ui/FadeInView';
 
 interface PropertiesResponse {
   properties: Property[];
@@ -21,7 +21,11 @@ interface PropertiesResponse {
   locations: string[];
 }
 
-export function PropertiesGrid() {
+interface PropertiesGridProps {
+  initialData?: PropertiesResponse;
+}
+
+export function PropertiesGrid({ initialData }: PropertiesGridProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations('PropertiesPage');
@@ -31,6 +35,8 @@ export function PropertiesGrid() {
   const location = searchParams.get('location') ?? '';
   const sort = (searchParams.get('sort') ?? 'newest') as PropertySortField;
   const page = parseInt(searchParams.get('page') ?? '1', 10) || 1;
+
+  const isDefaultFilters = status === 'all' && !location && sort === 'newest' && page === 1;
 
   const { data, isLoading, isError, refetch } = useQuery<PropertiesResponse>({
     queryKey: ['properties', status, location, sort, page],
@@ -44,6 +50,7 @@ export function PropertiesGrid() {
       if (!res.ok) throw new Error('Failed to fetch properties');
       return res.json();
     },
+    initialData: isDefaultFilters ? initialData : undefined,
   });
 
   const updateParams = (key: string, value: string) => {
@@ -74,19 +81,14 @@ export function PropertiesGrid() {
   return (
     <div className="mx-auto max-w-6xl px-5 sm:px-6 py-12">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-10"
-      >
+      <div className="mb-10 animate-enter">
         <h1 className="font-display text-[32px] sm:text-[38px] font-bold text-foreground tracking-tight">
           {t('title')}
         </h1>
         <p className="mt-2 text-[15px] text-muted max-w-2xl">
           {t('subtitle')}
         </p>
-      </motion.div>
+      </div>
 
       {/* Filters */}
       <div className="mb-8 pb-6 border-b border-border">
@@ -124,15 +126,14 @@ export function PropertiesGrid() {
         <>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {data.properties.map((property, idx) => (
-              <motion.div
+              <FadeInView
                 key={property.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "0px 0px -50px 0px" }}
-                transition={{ duration: 0.5, delay: idx * 0.05 }}
+                animation="scale"
+                duration={0.5}
+                delay={idx * 0.05}
               >
                 <PropertyCard property={property} />
-              </motion.div>
+              </FadeInView>
             ))}
           </div>
 
