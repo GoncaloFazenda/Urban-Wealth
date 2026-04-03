@@ -23,7 +23,7 @@ export function HeroSection() {
         <img
           src="/heros/hero-luxury.png"
           alt="Premium Real Estate"
-          className="w-full h-full object-cover object-center scale-105"
+          className="w-full h-full object-cover object-center scale-105 mt-20"
         />
       </motion.div>
       {/* Gradient overlay — stays fixed, not affected by parallax */}

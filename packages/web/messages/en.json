@@ -7,7 +7,10 @@
     "logIn": "Log in",
     "getStarted": "Get Started",
     "menu": "Menu",
-    "watchlist": "Watchlist"
+    "watchlist": "Watchlist",
+    "earnings": "Earnings",
+    "favorites": "Favorites",
+    "profile": "Profile"
   },
   "Footer": {
     "newsletterTitle": "Join the inner circle",
@@ -227,6 +230,16 @@
     "browseProperties": "Browse Properties",
     "count": "{count} saved properties"
   },
+  "Earnings": {
+    "title": "Earnings",
+    "subtitle": "Track your monthly rental yield and wallet balance.",
+    "walletBalance": "Wallet Balance",
+    "totalEarned": "Total Earned",
+    "historyTitle": "Payout History",
+    "emptyTitle": "No earnings yet",
+    "emptyMessage": "Your monthly rental yield will appear here once distributions begin. Invest in properties to start earning passive income.",
+    "errorTitle": "Failed to load earnings"
+  },
   "Admin": {
     "panelTitle": "Admin Panel",
     "panelSubtitle": "Platform management",
@@ -293,7 +306,19 @@
     "thInvestments": "Investments",
     "thJoined": "Joined",
     "thEquity": "Equity",
-    "thFee": "Fee"
+    "thFee": "Fee",
+    "userTotalInvested": "Total Invested",
+    "userAnnualIncome": "Est. Annual Income",
+    "userWalletBalance": "Wallet Balance",
+    "userInvestments": "Investments",
+    "userNoInvestments": "This user has no investments yet.",
+    "distributionTitle": "Yield Distribution",
+    "distributionDescription": "Distribute monthly rental yields to all eligible investors.",
+    "distributionHint": "Distributes for the previous month. Duplicate runs are safely skipped.",
+    "distributionButton": "Run Distribution",
+    "distributionRunning": "Distributing…",
+    "distributionSuccess": "Distribution completed for {month}",
+    "distributionDetails": "{processed} investments processed, {created} payouts created, {skipped} skipped. Total distributed: €{total}"
   },
   "Profile": {
     "title": "Account Settings",

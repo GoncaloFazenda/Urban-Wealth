@@ -20,6 +20,7 @@ export async function GET() {
     return NextResponse.json({
       investments: investments.map((inv) => ({
         id: inv.id,
+        userId: inv.userId,
         userName: inv.user.fullName,
         userEmail: inv.user.email,
         propertyTitle: inv.property.title,

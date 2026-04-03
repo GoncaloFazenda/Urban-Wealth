@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { useAuth } from '@/providers/AuthProvider';
+import { Link } from '@/i18n/navigation';
 
 interface AdminUser {
   id: string;
@@ -82,7 +83,7 @@ export default function AdminUsersPage() {
                       <div className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-hover text-[11px] font-bold text-foreground border border-border">
                         {user.fullName.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-foreground font-semibold">{user.fullName}</span>
+                      <Link href={`/admin/users/${user.id}`} className="text-foreground font-semibold hover:text-primary-500 transition-colors">{user.fullName}</Link>
                     </div>
                   </td>
                   <td className="px-5 py-3.5 text-muted font-medium">{user.email}</td>

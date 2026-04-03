@@ -9,8 +9,8 @@
 | Layer | Package | Runner | Tests | Status |
 |---|---|---|---|---|
 | Unit | `@urban-wealth/core` | Jest | 44 | ✅ All passing |
-| E2E | Root (`e2e/`) | Playwright | 43 | ✅ All passing |
-| **Total** | | | **87** | ✅ |
+| E2E | Root (`e2e/`) | Playwright | 60 | ✅ All passing |
+| **Total** | | | **104** | ✅ |
 
 ---
 
@@ -173,6 +173,43 @@
 | should display analytics charts when user has investments | Allocation, Yield, Growth charts visible | ✅ |
 | should display transaction history table | Table with Date, Asset, Amount, Status columns | ✅ |
 | should make holdings clickable to property detail | Holding link navigates to property page | ✅ |
+
+### `earnings.spec.ts` — 3 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should display earnings page with wallet balance | Heading, Wallet Balance, Total Earned cards visible | ✅ |
+| should show empty state or payout history | Empty state or Payout History section visible | ✅ |
+| should redirect unauthenticated user to login | No auth → redirect to `/login?redirect=...` | ✅ |
+
+### `favorites.spec.ts` — 4 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should display favorites page with title | Standalone `/favorites` shows heading | ✅ |
+| should show empty state or saved properties | Empty state or property cards visible | ✅ |
+| should redirect unauthenticated user to login | No auth → redirect to `/login?redirect=...` | ✅ |
+| should show bookmarked property on favorites page | Bookmark on `/properties` → appears on `/favorites` | ✅ |
+
+### `navbar-dropdown.spec.ts` — 5 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should show dropdown on hover with correct links | Hover username → Earnings, Favorites, Profile, Log out visible | ✅ |
+| should navigate to earnings from dropdown | Click Earnings → `/earnings` | ✅ |
+| should navigate to favorites from dropdown | Click Favorites → `/favorites` | ✅ |
+| should navigate to profile from dropdown | Click Profile → `/profile` | ✅ |
+| should log out from dropdown | Click Log out → `/login` | ✅ |
+
+### `yield-distribution.spec.ts` — 5 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should return 403 for unauthenticated distribution request | `POST /api/admin/distribute-yields` → 403 | ✅ |
+| should return 401 for unauthenticated earnings API | `GET /api/earnings` → 401 | ✅ |
+| should return earnings data for authenticated user | Login → earnings API returns balance, totalEarned, history | ✅ |
+| should return 403 for non-admin distribution request | Regular user → `POST /api/admin/distribute-yields` → 403 | ✅ |
+| should return 403 for unauthenticated admin user detail API | `GET /api/admin/users/:id` → 401/403 | ✅ |
 
 ---
 

@@ -1,0 +1,330 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - link "Urban Wealth" [ref=e6] [cursor=pointer]:
+          - /url: /en
+          - img [ref=e8]
+          - generic [ref=e12]: Urban Wealth
+        - generic [ref=e13]:
+          - link "Properties" [ref=e14] [cursor=pointer]:
+            - /url: /en/properties
+          - link "How It Works" [ref=e15] [cursor=pointer]:
+            - /url: /en/how-it-works
+          - link "Dashboard" [ref=e16] [cursor=pointer]:
+            - /url: /en/dashboard
+        - generic [ref=e17]:
+          - button "Toggle theme" [ref=e18]:
+            - img [ref=e20]
+          - generic [ref=e26]:
+            - button "EN" [ref=e27]
+            - button "PT" [ref=e28]
+          - button "T Test Investor" [ref=e31]:
+            - generic [ref=e32]: T
+            - generic [ref=e33]: Test Investor
+            - img [ref=e34]
+    - main [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - heading "Portfolio Overview" [level=1] [ref=e39]
+          - paragraph [ref=e40]: Welcome back, Test. Here's a summary of your holdings.
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - paragraph [ref=e43]: Total Invested
+            - paragraph [ref=e44]: €27,900
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Active Properties
+            - paragraph [ref=e47]: "2"
+          - generic [ref=e48]:
+            - paragraph [ref=e49]: Est. Annual Income
+            - paragraph [ref=e50]: €2,023.2
+          - generic [ref=e51]:
+            - paragraph [ref=e52]: Est. Appreciation
+            - paragraph [ref=e53]: €1,054.8
+        - generic [ref=e54]:
+          - heading "Current Holdings" [level=2] [ref=e55]
+          - generic [ref=e56]:
+            - link "Riverside Luxury Apartments 5.91% equity ownership €18,900 Completed" [ref=e57] [cursor=pointer]:
+              - /url: /en/properties/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+              - generic [ref=e58]:
+                - paragraph [ref=e59]: Riverside Luxury Apartments
+                - paragraph [ref=e60]: 5.91% equity ownership
+              - generic [ref=e61]:
+                - paragraph [ref=e62]: €18,900
+                - paragraph [ref=e63]: Completed
+            - link "Vienna Ringstrasse Residence 3.27% equity ownership €9,000 Completed" [ref=e64] [cursor=pointer]:
+              - /url: /en/properties/b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e
+              - generic [ref=e65]:
+                - paragraph [ref=e66]: Vienna Ringstrasse Residence
+                - paragraph [ref=e67]: 3.27% equity ownership
+              - generic [ref=e68]:
+                - paragraph [ref=e69]: €9,000
+                - paragraph [ref=e70]: Completed
+          - heading "Transaction History" [level=2] [ref=e71]
+          - table [ref=e73]:
+            - rowgroup [ref=e74]:
+              - row "Date Asset Amount Status" [ref=e75]:
+                - columnheader "Date" [ref=e76]
+                - columnheader "Asset" [ref=e77]
+                - columnheader "Amount" [ref=e78]
+                - columnheader "Status" [ref=e79]
+            - rowgroup [ref=e80]:
+              - row "30/03/2026 Riverside Luxury Apartments €10,000 Completed" [ref=e81]:
+                - cell "30/03/2026" [ref=e82]
+                - cell "Riverside Luxury Apartments" [ref=e83]
+                - cell "€10,000" [ref=e84]
+                - cell "Completed" [ref=e85]:
+                  - generic [ref=e86]: Completed
+              - row "30/03/2026 Riverside Luxury Apartments €1,000 Completed" [ref=e87]:
+                - cell "30/03/2026" [ref=e88]
+                - cell "Riverside Luxury Apartments" [ref=e89]
+                - cell "€1,000" [ref=e90]
+                - cell "Completed" [ref=e91]:
+                  - generic [ref=e92]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €100 Completed" [ref=e93]:
+                - cell "29/03/2026" [ref=e94]
+                - cell "Riverside Luxury Apartments" [ref=e95]
+                - cell "€100" [ref=e96]
+                - cell "Completed" [ref=e97]:
+                  - generic [ref=e98]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €500 Completed" [ref=e99]:
+                - cell "29/03/2026" [ref=e100]
+                - cell "Riverside Luxury Apartments" [ref=e101]
+                - cell "€500" [ref=e102]
+                - cell "Completed" [ref=e103]:
+                  - generic [ref=e104]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €1,000 Completed" [ref=e105]:
+                - cell "29/03/2026" [ref=e106]
+                - cell "Riverside Luxury Apartments" [ref=e107]
+                - cell "€1,000" [ref=e108]
+                - cell "Completed" [ref=e109]:
+                  - generic [ref=e110]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €100 Completed" [ref=e111]:
+                - cell "29/03/2026" [ref=e112]
+                - cell "Riverside Luxury Apartments" [ref=e113]
+                - cell "€100" [ref=e114]
+                - cell "Completed" [ref=e115]:
+                  - generic [ref=e116]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €500 Completed" [ref=e117]:
+                - cell "29/03/2026" [ref=e118]
+                - cell "Riverside Luxury Apartments" [ref=e119]
+                - cell "€500" [ref=e120]
+                - cell "Completed" [ref=e121]:
+                  - generic [ref=e122]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €1,000 Completed" [ref=e123]:
+                - cell "29/03/2026" [ref=e124]
+                - cell "Riverside Luxury Apartments" [ref=e125]
+                - cell "€1,000" [ref=e126]
+                - cell "Completed" [ref=e127]:
+                  - generic [ref=e128]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €100 Completed" [ref=e129]:
+                - cell "29/03/2026" [ref=e130]
+                - cell "Riverside Luxury Apartments" [ref=e131]
+                - cell "€100" [ref=e132]
+                - cell "Completed" [ref=e133]:
+                  - generic [ref=e134]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €500 Completed" [ref=e135]:
+                - cell "29/03/2026" [ref=e136]
+                - cell "Riverside Luxury Apartments" [ref=e137]
+                - cell "€500" [ref=e138]
+                - cell "Completed" [ref=e139]:
+                  - generic [ref=e140]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €1,000 Completed" [ref=e141]:
+                - cell "29/03/2026" [ref=e142]
+                - cell "Riverside Luxury Apartments" [ref=e143]
+                - cell "€1,000" [ref=e144]
+                - cell "Completed" [ref=e145]:
+                  - generic [ref=e146]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €100 Completed" [ref=e147]:
+                - cell "29/03/2026" [ref=e148]
+                - cell "Riverside Luxury Apartments" [ref=e149]
+                - cell "€100" [ref=e150]
+                - cell "Completed" [ref=e151]:
+                  - generic [ref=e152]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €500 Completed" [ref=e153]:
+                - cell "29/03/2026" [ref=e154]
+                - cell "Riverside Luxury Apartments" [ref=e155]
+                - cell "€500" [ref=e156]
+                - cell "Completed" [ref=e157]:
+                  - generic [ref=e158]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €1,000 Completed" [ref=e159]:
+                - cell "29/03/2026" [ref=e160]
+                - cell "Riverside Luxury Apartments" [ref=e161]
+                - cell "€1,000" [ref=e162]
+                - cell "Completed" [ref=e163]:
+                  - generic [ref=e164]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €500 Completed" [ref=e165]:
+                - cell "29/03/2026" [ref=e166]
+                - cell "Riverside Luxury Apartments" [ref=e167]
+                - cell "€500" [ref=e168]
+                - cell "Completed" [ref=e169]:
+                  - generic [ref=e170]: Completed
+              - row "29/03/2026 Riverside Luxury Apartments €1,000 Completed" [ref=e171]:
+                - cell "29/03/2026" [ref=e172]
+                - cell "Riverside Luxury Apartments" [ref=e173]
+                - cell "€1,000" [ref=e174]
+                - cell "Completed" [ref=e175]:
+                  - generic [ref=e176]: Completed
+              - row "29/03/2026 Vienna Ringstrasse Residence €500 Completed" [ref=e177]:
+                - cell "29/03/2026" [ref=e178]
+                - cell "Vienna Ringstrasse Residence" [ref=e179]
+                - cell "€500" [ref=e180]
+                - cell "Completed" [ref=e181]:
+                  - generic [ref=e182]: Completed
+              - row "29/03/2026 Vienna Ringstrasse Residence €1,000 Completed" [ref=e183]:
+                - cell "29/03/2026" [ref=e184]
+                - cell "Vienna Ringstrasse Residence" [ref=e185]
+                - cell "€1,000" [ref=e186]
+                - cell "Completed" [ref=e187]:
+                  - generic [ref=e188]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €500 Completed" [ref=e189]:
+                - cell "28/03/2026" [ref=e190]
+                - cell "Vienna Ringstrasse Residence" [ref=e191]
+                - cell "€500" [ref=e192]
+                - cell "Completed" [ref=e193]:
+                  - generic [ref=e194]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €1,000 Completed" [ref=e195]:
+                - cell "28/03/2026" [ref=e196]
+                - cell "Vienna Ringstrasse Residence" [ref=e197]
+                - cell "€1,000" [ref=e198]
+                - cell "Completed" [ref=e199]:
+                  - generic [ref=e200]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €500 Completed" [ref=e201]:
+                - cell "28/03/2026" [ref=e202]
+                - cell "Vienna Ringstrasse Residence" [ref=e203]
+                - cell "€500" [ref=e204]
+                - cell "Completed" [ref=e205]:
+                  - generic [ref=e206]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €1,000 Completed" [ref=e207]:
+                - cell "28/03/2026" [ref=e208]
+                - cell "Vienna Ringstrasse Residence" [ref=e209]
+                - cell "€1,000" [ref=e210]
+                - cell "Completed" [ref=e211]:
+                  - generic [ref=e212]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €500 Completed" [ref=e213]:
+                - cell "28/03/2026" [ref=e214]
+                - cell "Vienna Ringstrasse Residence" [ref=e215]
+                - cell "€500" [ref=e216]
+                - cell "Completed" [ref=e217]:
+                  - generic [ref=e218]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €1,000 Completed" [ref=e219]:
+                - cell "28/03/2026" [ref=e220]
+                - cell "Vienna Ringstrasse Residence" [ref=e221]
+                - cell "€1,000" [ref=e222]
+                - cell "Completed" [ref=e223]:
+                  - generic [ref=e224]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €500 Completed" [ref=e225]:
+                - cell "28/03/2026" [ref=e226]
+                - cell "Vienna Ringstrasse Residence" [ref=e227]
+                - cell "€500" [ref=e228]
+                - cell "Completed" [ref=e229]:
+                  - generic [ref=e230]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €1,000 Completed" [ref=e231]:
+                - cell "28/03/2026" [ref=e232]
+                - cell "Vienna Ringstrasse Residence" [ref=e233]
+                - cell "€1,000" [ref=e234]
+                - cell "Completed" [ref=e235]:
+                  - generic [ref=e236]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €500 Completed" [ref=e237]:
+                - cell "28/03/2026" [ref=e238]
+                - cell "Vienna Ringstrasse Residence" [ref=e239]
+                - cell "€500" [ref=e240]
+                - cell "Completed" [ref=e241]:
+                  - generic [ref=e242]: Completed
+              - row "28/03/2026 Vienna Ringstrasse Residence €1,000 Completed" [ref=e243]:
+                - cell "28/03/2026" [ref=e244]
+                - cell "Vienna Ringstrasse Residence" [ref=e245]
+                - cell "€1,000" [ref=e246]
+                - cell "Completed" [ref=e247]:
+                  - generic [ref=e248]: Completed
+          - generic [ref=e249]:
+            - heading "Portfolio Analytics" [level=2] [ref=e250]
+            - generic [ref=e251]:
+              - generic [ref=e252]:
+                - heading "Asset Allocation" [level=3] [ref=e253]
+                - generic [ref=e254]:
+                  - application [ref=e258]
+                  - generic [ref=e268]:
+                    - generic [ref=e269]:
+                      - generic [ref=e272]: Riverside Luxury Apartments
+                      - generic [ref=e273]: 68%
+                    - generic [ref=e274]:
+                      - generic [ref=e277]: Vienna Ringstrasse Residence
+                      - generic [ref=e278]: 32%
+              - generic [ref=e279]:
+                - heading "Yield Comparison" [level=3] [ref=e280]
+                - application [ref=e284]:
+                  - generic [ref=e295]:
+                    - generic [ref=e296]:
+                      - generic [ref=e298]: Riverside Lu...
+                      - generic [ref=e300]: Vienna Rings...
+                    - generic [ref=e301]:
+                      - generic [ref=e303]: 0%
+                      - generic [ref=e305]: 3%
+                      - generic [ref=e307]: 6%
+                      - generic [ref=e309]: 9%
+                      - generic [ref=e311]: 12%
+    - contentinfo [ref=e312]:
+      - generic [ref=e314]:
+        - generic [ref=e315]:
+          - heading "Join the inner circle" [level=3] [ref=e316]
+          - paragraph [ref=e317]: Get early access to exclusive European real estate opportunities before they open to the public.
+        - generic [ref=e318]:
+          - textbox "Your email address" [ref=e319]
+          - button "Subscribe" [ref=e320]
+      - generic [ref=e321]:
+        - generic [ref=e322]:
+          - generic [ref=e323]:
+            - link "Urban Wealth" [ref=e324] [cursor=pointer]:
+              - /url: /en
+              - img [ref=e326]
+              - generic [ref=e330]: Urban Wealth
+            - paragraph [ref=e331]: Fractional investment in premium European real estate. Starting from €50, giving everyone access to high-yield property markets.
+          - generic [ref=e332]:
+            - heading "Platform" [level=4] [ref=e333]
+            - list [ref=e334]:
+              - listitem [ref=e335]:
+                - link "Browse Properties" [ref=e336] [cursor=pointer]:
+                  - /url: /en
+              - listitem [ref=e337]:
+                - link "How It Works" [ref=e338] [cursor=pointer]:
+                  - /url: /en/how-it-works
+              - listitem [ref=e339]:
+                - link "Get Started" [ref=e340] [cursor=pointer]:
+                  - /url: /en/register
+          - generic [ref=e341]:
+            - heading "Legal" [level=4] [ref=e342]
+            - list [ref=e343]:
+              - listitem [ref=e344]:
+                - link "Terms of Service" [ref=e345] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e346]:
+                - link "Privacy Policy" [ref=e347] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e348]:
+                - link "Risk Disclosure" [ref=e349] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e350]:
+            - heading "Contact" [level=4] [ref=e351]
+            - list [ref=e352]:
+              - listitem [ref=e353]:
+                - link "Support Centre" [ref=e354] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e355]:
+                - link "hello@urbanwealth.io" [ref=e356] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e357]
+        - generic [ref=e361]:
+          - paragraph [ref=e362]: © 2026 Urban Wealth. Simulated platform — no real investments.
+          - generic [ref=e363]:
+            - generic [ref=e364]: Next.js
+            - generic [ref=e366]: Tailwind
+            - generic [ref=e368]: Prisma
+  - button "Open Next.js Dev Tools" [ref=e374] [cursor=pointer]:
+    - img [ref=e375]
+  - alert [ref=e378]
+  - generic [ref=e379]: 0%
+```

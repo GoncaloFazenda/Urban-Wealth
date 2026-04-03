@@ -1,0 +1,131 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - link "Urban Wealth" [ref=e6] [cursor=pointer]:
+          - /url: /en
+          - img [ref=e8]
+          - generic [ref=e12]: Urban Wealth
+        - generic [ref=e13]:
+          - link "Properties" [ref=e14] [cursor=pointer]:
+            - /url: /en/properties
+          - link "How It Works" [ref=e15] [cursor=pointer]:
+            - /url: /en/how-it-works
+          - link "Dashboard" [ref=e16] [cursor=pointer]:
+            - /url: /en/dashboard
+        - generic [ref=e17]:
+          - button "Toggle theme" [ref=e18]:
+            - img [ref=e20]
+          - generic [ref=e26]:
+            - button "EN" [ref=e27]
+            - button "PT" [ref=e28]
+          - button "E Empty Dashboard User" [ref=e31]:
+            - generic [ref=e32]: E
+            - generic [ref=e33]: Empty Dashboard User
+            - img [ref=e34]
+    - main [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - heading "Portfolio Overview" [level=1] [ref=e39]
+          - paragraph [ref=e40]: Welcome back, Empty. Here's a summary of your holdings.
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - paragraph [ref=e43]: Total Invested
+            - paragraph [ref=e44]: €0
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Active Properties
+            - paragraph [ref=e47]: "0"
+          - generic [ref=e48]:
+            - paragraph [ref=e49]: Est. Annual Income
+            - paragraph [ref=e50]: €0
+          - generic [ref=e51]:
+            - paragraph [ref=e52]: Est. Appreciation
+            - paragraph [ref=e53]: €0
+        - generic [ref=e55]:
+          - img [ref=e57]
+          - heading "No investments yet" [level=3] [ref=e59]
+          - paragraph [ref=e60]: Start building your portfolio by exploring our exclusively curated European properties.
+          - generic [ref=e61]:
+            - link "Browse Portfolio" [ref=e62] [cursor=pointer]:
+              - /url: /en/properties
+            - link "How It Works" [ref=e63] [cursor=pointer]:
+              - /url: /en/how-it-works
+          - generic [ref=e64]:
+            - generic [ref=e65]:
+              - generic [ref=e66]: "1"
+              - generic [ref=e67]:
+                - paragraph [ref=e68]: Browse properties
+                - paragraph [ref=e69]: Explore curated European real estate opportunities.
+            - generic [ref=e70]:
+              - generic [ref=e71]: "2"
+              - generic [ref=e72]:
+                - paragraph [ref=e73]: Invest from EUR50
+                - paragraph [ref=e74]: Choose an amount and review projected returns.
+            - generic [ref=e75]:
+              - generic [ref=e76]: "3"
+              - generic [ref=e77]:
+                - paragraph [ref=e78]: Earn passive income
+                - paragraph [ref=e79]: Receive rental yield and appreciation gains.
+    - contentinfo [ref=e80]:
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - heading "Join the inner circle" [level=3] [ref=e84]
+          - paragraph [ref=e85]: Get early access to exclusive European real estate opportunities before they open to the public.
+        - generic [ref=e86]:
+          - textbox "Your email address" [ref=e87]
+          - button "Subscribe" [ref=e88]
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - link "Urban Wealth" [ref=e92] [cursor=pointer]:
+              - /url: /en
+              - img [ref=e94]
+              - generic [ref=e98]: Urban Wealth
+            - paragraph [ref=e99]: Fractional investment in premium European real estate. Starting from €50, giving everyone access to high-yield property markets.
+          - generic [ref=e100]:
+            - heading "Platform" [level=4] [ref=e101]
+            - list [ref=e102]:
+              - listitem [ref=e103]:
+                - link "Browse Properties" [ref=e104] [cursor=pointer]:
+                  - /url: /en
+              - listitem [ref=e105]:
+                - link "How It Works" [ref=e106] [cursor=pointer]:
+                  - /url: /en/how-it-works
+              - listitem [ref=e107]:
+                - link "Get Started" [ref=e108] [cursor=pointer]:
+                  - /url: /en/register
+          - generic [ref=e109]:
+            - heading "Legal" [level=4] [ref=e110]
+            - list [ref=e111]:
+              - listitem [ref=e112]:
+                - link "Terms of Service" [ref=e113] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e114]:
+                - link "Privacy Policy" [ref=e115] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e116]:
+                - link "Risk Disclosure" [ref=e117] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e118]:
+            - heading "Contact" [level=4] [ref=e119]
+            - list [ref=e120]:
+              - listitem [ref=e121]:
+                - link "Support Centre" [ref=e122] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e123]:
+                - link "hello@urbanwealth.io" [ref=e124] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e125]
+        - generic [ref=e129]:
+          - paragraph [ref=e130]: © 2026 Urban Wealth. Simulated platform — no real investments.
+          - generic [ref=e131]:
+            - generic [ref=e132]: Next.js
+            - generic [ref=e134]: Tailwind
+            - generic [ref=e136]: Prisma
+  - button "Open Next.js Dev Tools" [ref=e142] [cursor=pointer]:
+    - img [ref=e143]
+  - alert [ref=e146]
+```

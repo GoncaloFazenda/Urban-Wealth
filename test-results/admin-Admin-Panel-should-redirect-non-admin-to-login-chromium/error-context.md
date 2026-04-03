@@ -1,0 +1,300 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - link "Urban Wealth" [ref=e6] [cursor=pointer]:
+          - /url: /en
+          - img [ref=e8]
+          - generic [ref=e12]: Urban Wealth
+        - generic [ref=e13]:
+          - link "Properties" [ref=e14] [cursor=pointer]:
+            - /url: /en/properties
+          - link "How It Works" [ref=e15] [cursor=pointer]:
+            - /url: /en/how-it-works
+          - link "Dashboard" [ref=e16] [cursor=pointer]:
+            - /url: /en/dashboard
+        - generic [ref=e17]:
+          - button "Toggle theme" [ref=e18]:
+            - img [ref=e20]
+          - generic [ref=e26]:
+            - button "EN" [ref=e27]
+            - button "PT" [ref=e28]
+          - button "T Test Investor" [ref=e31]:
+            - generic [ref=e32]: T
+            - generic [ref=e33]: Test Investor
+            - img [ref=e34]
+    - main [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - img "Premium Real Estate" [ref=e40]
+          - generic [ref=e43]:
+            - generic [ref=e44]: Exclusive European Real Estate
+            - heading "Invest in Legacy. Build Your Wealth." [level=1] [ref=e45]
+            - paragraph [ref=e46]: Access strictly curated, high-yield fractional real estate investments across Europe's prime markets. Starting from €50.
+            - link "Explore Portfolio" [ref=e48] [cursor=pointer]:
+              - /url: "#properties"
+              - text: Explore Portfolio
+              - img [ref=e49]
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - img [ref=e55]
+            - heading "6.8%" [level=3] [ref=e58]
+            - paragraph [ref=e59]: Avg. Yield
+          - generic [ref=e60]:
+            - img [ref=e61]
+            - heading "12.5k" [level=3] [ref=e66]
+            - paragraph [ref=e67]: Investors
+          - generic [ref=e68]:
+            - heading "€52M" [level=3] [ref=e69]
+            - paragraph [ref=e70]: Funded
+          - generic [ref=e71]:
+            - img [ref=e72]
+            - heading "Regulated" [level=3] [ref=e75]
+            - paragraph [ref=e76]: Platform
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - heading "Curated Portfolio" [level=2] [ref=e80]
+            - paragraph [ref=e81]: Browse strictly vetted European residential real estate. Filter by market, yield strategy, and funding status.
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - button "All Targets" [ref=e85]
+              - button "Funding Open" [ref=e86]
+              - button "Coming Soon" [ref=e87]
+              - button "Fully Funded" [ref=e88]
+            - generic [ref=e89]:
+              - combobox [ref=e90] [cursor=pointer]:
+                - option "All markets" [selected]
+                - option "Amsterdam, Netherlands"
+                - option "Barcelona, Spain"
+                - option "Berlin, Germany"
+                - option "Dublin, Ireland"
+                - option "Lisbon, Portugal"
+                - option "Milan, Italy"
+                - option "Porto, Portugal"
+                - option "Vienna, Austria"
+              - combobox [ref=e91] [cursor=pointer]:
+                - option "Newly Listed" [selected]
+                - option "Highest Yield"
+                - option "Top Appreciation"
+                - option "Most Funded"
+          - generic [ref=e92]:
+            - link "Riverside Luxury Apartments Open Add to watchlist Riverside Luxury Apartments Lisbon, Portugal €320,000 Yield 6.8% Growth 4.2% Total 11.0% 29.97% funded 280 shares left" [ref=e94] [cursor=pointer]:
+              - /url: /en/properties/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+              - generic [ref=e95]:
+                - img "Riverside Luxury Apartments" [ref=e96]
+                - generic [ref=e99]: Open
+                - button "Add to watchlist" [ref=e102]:
+                  - img [ref=e103]
+              - generic [ref=e105]:
+                - heading "Riverside Luxury Apartments" [level=3] [ref=e106]
+                - paragraph [ref=e107]: Lisbon, Portugal
+                - paragraph [ref=e108]: €320,000
+                - generic [ref=e109]:
+                  - generic [ref=e110]:
+                    - generic [ref=e111]: Yield
+                    - generic [ref=e112]: 6.8%
+                  - generic [ref=e114]:
+                    - generic [ref=e115]: Growth
+                    - generic [ref=e116]: 4.2%
+                  - generic [ref=e118]:
+                    - generic [ref=e119]: Total
+                    - generic [ref=e120]: 11.0%
+                - generic [ref=e122]:
+                  - generic [ref=e123]: 29.97% funded
+                  - generic [ref=e124]: 280 shares left
+            - link "Vienna Ringstrasse Residence Open Add to watchlist Vienna Ringstrasse Residence Vienna, Austria €275,000 Yield 8.2% Growth 2.9% Total 11.1% 6.18% funded 850 shares left" [ref=e128] [cursor=pointer]:
+              - /url: /en/properties/b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e
+              - generic [ref=e129]:
+                - img "Vienna Ringstrasse Residence" [ref=e130]
+                - generic [ref=e133]: Open
+                - button "Add to watchlist" [ref=e136]:
+                  - img [ref=e137]
+              - generic [ref=e139]:
+                - heading "Vienna Ringstrasse Residence" [level=3] [ref=e140]
+                - paragraph [ref=e141]: Vienna, Austria
+                - paragraph [ref=e142]: €275,000
+                - generic [ref=e143]:
+                  - generic [ref=e144]:
+                    - generic [ref=e145]: Yield
+                    - generic [ref=e146]: 8.2%
+                  - generic [ref=e148]:
+                    - generic [ref=e149]: Growth
+                    - generic [ref=e150]: 2.9%
+                  - generic [ref=e152]:
+                    - generic [ref=e153]: Total
+                    - generic [ref=e154]: 11.1%
+                - generic [ref=e156]:
+                  - generic [ref=e157]: 6.18% funded
+                  - generic [ref=e158]: 850 shares left
+            - link "Barcelona Eixample Duplex Coming Soon Add to watchlist Barcelona Eixample Duplex Barcelona, Spain €380,000 Yield 6.3% Growth 5% Total 11.3% 0% funded 1,000 shares left" [ref=e162] [cursor=pointer]:
+              - /url: /en/properties/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b
+              - generic [ref=e163]:
+                - img "Barcelona Eixample Duplex" [ref=e164]
+                - generic [ref=e167]: Coming Soon
+                - button "Add to watchlist" [ref=e170]:
+                  - img [ref=e171]
+              - generic [ref=e173]:
+                - heading "Barcelona Eixample Duplex" [level=3] [ref=e174]
+                - paragraph [ref=e175]: Barcelona, Spain
+                - paragraph [ref=e176]: €380,000
+                - generic [ref=e177]:
+                  - generic [ref=e178]:
+                    - generic [ref=e179]: Yield
+                    - generic [ref=e180]: 6.3%
+                  - generic [ref=e182]:
+                    - generic [ref=e183]: Growth
+                    - generic [ref=e184]: 5%
+                  - generic [ref=e186]:
+                    - generic [ref=e187]: Total
+                    - generic [ref=e188]: 11.3%
+                - generic [ref=e190]:
+                  - generic [ref=e191]: 0% funded
+                  - generic [ref=e192]: 1,000 shares left
+            - link "Amsterdam Canal-Side Flat Open Add to watchlist Amsterdam Canal-Side Flat Amsterdam, Netherlands €520,000 Yield 5.9% Growth 4.5% Total 10.4% 3.85% funded 670 shares left" [ref=e195] [cursor=pointer]:
+              - /url: /en/properties/d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a
+              - generic [ref=e196]:
+                - img "Amsterdam Canal-Side Flat" [ref=e197]
+                - generic [ref=e200]: Open
+                - button "Add to watchlist" [ref=e203]:
+                  - img [ref=e204]
+              - generic [ref=e206]:
+                - heading "Amsterdam Canal-Side Flat" [level=3] [ref=e207]
+                - paragraph [ref=e208]: Amsterdam, Netherlands
+                - paragraph [ref=e209]: €520,000
+                - generic [ref=e210]:
+                  - generic [ref=e211]:
+                    - generic [ref=e212]: Yield
+                    - generic [ref=e213]: 5.9%
+                  - generic [ref=e215]:
+                    - generic [ref=e216]: Growth
+                    - generic [ref=e217]: 4.5%
+                  - generic [ref=e219]:
+                    - generic [ref=e220]: Total
+                    - generic [ref=e221]: 10.4%
+                - generic [ref=e223]:
+                  - generic [ref=e224]: 3.85% funded
+                  - generic [ref=e225]: 670 shares left
+            - link "Porto Historic Quarter Townhouse Open Add to watchlist Porto Historic Quarter Townhouse Porto, Portugal €185,000 Yield 7.1% Growth 3.8% Total 10.9% 3.3% funded 550 shares left" [ref=e229] [cursor=pointer]:
+              - /url: /en/properties/b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e
+              - generic [ref=e230]:
+                - img "Porto Historic Quarter Townhouse" [ref=e231]
+                - generic [ref=e234]: Open
+                - button "Add to watchlist" [ref=e237]:
+                  - img [ref=e238]
+              - generic [ref=e240]:
+                - heading "Porto Historic Quarter Townhouse" [level=3] [ref=e241]
+                - paragraph [ref=e242]: Porto, Portugal
+                - paragraph [ref=e243]: €185,000
+                - generic [ref=e244]:
+                  - generic [ref=e245]:
+                    - generic [ref=e246]: Yield
+                    - generic [ref=e247]: 7.1%
+                  - generic [ref=e249]:
+                    - generic [ref=e250]: Growth
+                    - generic [ref=e251]: 3.8%
+                  - generic [ref=e253]:
+                    - generic [ref=e254]: Total
+                    - generic [ref=e255]: 10.9%
+                - generic [ref=e257]:
+                  - generic [ref=e258]: 3.3% funded
+                  - generic [ref=e259]: 550 shares left
+            - link "Dublin Docklands Apartment Open Add to watchlist Dublin Docklands Apartment Dublin, Ireland €295,000 Yield 7.5% Growth 3.2% Total 10.7% 27.12% funded 120 shares left" [ref=e263] [cursor=pointer]:
+              - /url: /en/properties/f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c
+              - generic [ref=e264]:
+                - img "Dublin Docklands Apartment" [ref=e265]
+                - generic [ref=e268]: Open
+                - button "Add to watchlist" [ref=e271]:
+                  - img [ref=e272]
+              - generic [ref=e274]:
+                - heading "Dublin Docklands Apartment" [level=3] [ref=e275]
+                - paragraph [ref=e276]: Dublin, Ireland
+                - paragraph [ref=e277]: €295,000
+                - generic [ref=e278]:
+                  - generic [ref=e279]:
+                    - generic [ref=e280]: Yield
+                    - generic [ref=e281]: 7.5%
+                  - generic [ref=e283]:
+                    - generic [ref=e284]: Growth
+                    - generic [ref=e285]: 3.2%
+                  - generic [ref=e287]:
+                    - generic [ref=e288]: Total
+                    - generic [ref=e289]: 10.7%
+                - generic [ref=e291]:
+                  - generic [ref=e292]: 27.12% funded
+                  - generic [ref=e293]: 120 shares left
+          - generic [ref=e296]:
+            - paragraph [ref=e297]: Showing 6 of 8 investment opportunities
+            - link "View All Properties" [ref=e298] [cursor=pointer]:
+              - /url: /en/properties
+    - contentinfo [ref=e299]:
+      - generic [ref=e301]:
+        - generic [ref=e302]:
+          - heading "Join the inner circle" [level=3] [ref=e303]
+          - paragraph [ref=e304]: Get early access to exclusive European real estate opportunities before they open to the public.
+        - generic [ref=e305]:
+          - textbox "Your email address" [ref=e306]
+          - button "Subscribe" [ref=e307]
+      - generic [ref=e308]:
+        - generic [ref=e309]:
+          - generic [ref=e310]:
+            - link "Urban Wealth" [ref=e311] [cursor=pointer]:
+              - /url: /en
+              - img [ref=e313]
+              - generic [ref=e317]: Urban Wealth
+            - paragraph [ref=e318]: Fractional investment in premium European real estate. Starting from €50, giving everyone access to high-yield property markets.
+          - generic [ref=e319]:
+            - heading "Platform" [level=4] [ref=e320]
+            - list [ref=e321]:
+              - listitem [ref=e322]:
+                - link "Browse Properties" [ref=e323] [cursor=pointer]:
+                  - /url: /en
+              - listitem [ref=e324]:
+                - link "How It Works" [ref=e325] [cursor=pointer]:
+                  - /url: /en/how-it-works
+              - listitem [ref=e326]:
+                - link "Get Started" [ref=e327] [cursor=pointer]:
+                  - /url: /en/register
+          - generic [ref=e328]:
+            - heading "Legal" [level=4] [ref=e329]
+            - list [ref=e330]:
+              - listitem [ref=e331]:
+                - link "Terms of Service" [ref=e332] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e333]:
+                - link "Privacy Policy" [ref=e334] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e335]:
+                - link "Risk Disclosure" [ref=e336] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e337]:
+            - heading "Contact" [level=4] [ref=e338]
+            - list [ref=e339]:
+              - listitem [ref=e340]:
+                - link "Support Centre" [ref=e341] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e342]:
+                - link "hello@urbanwealth.io" [ref=e343] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e344]
+        - generic [ref=e348]:
+          - paragraph [ref=e349]: © 2026 Urban Wealth. Simulated platform — no real investments.
+          - generic [ref=e350]:
+            - generic [ref=e351]: Next.js
+            - generic [ref=e353]: Tailwind
+            - generic [ref=e355]: Prisma
+  - generic [ref=e360] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e361]:
+      - img [ref=e362]
+    - generic [ref=e365]:
+      - button "Open issues overlay" [ref=e366]:
+        - generic [ref=e367]:
+          - generic [ref=e368]: "0"
+          - generic [ref=e369]: "1"
+        - generic [ref=e370]: Issue
+      - button "Collapse issues badge" [ref=e371]:
+        - img [ref=e372]
+  - alert [ref=e374]
+```

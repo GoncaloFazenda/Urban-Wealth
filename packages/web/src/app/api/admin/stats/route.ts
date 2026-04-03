@@ -34,6 +34,7 @@ export async function GET() {
       totalFees: investmentAgg._sum.platformFee ?? 0,
       recentInvestments: recentInvestments.map((inv) => ({
         id: inv.id,
+        userId: inv.userId,
         userName: inv.user.fullName,
         userEmail: inv.user.email,
         propertyTitle: inv.property.title,

@@ -114,6 +114,10 @@ export async function POST(request: NextRequest) {
         : 0;
       const newAvailableShares = Math.max(0, currentShares - sharesUsed);
 
+      // Yield starts on the 1st of next month
+      const now = new Date();
+      const yieldStartDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
       const inv = await tx.investment.create({
         data: {
           userId: session.userId,
@@ -124,6 +128,7 @@ export async function POST(request: NextRequest) {
           estimatedAppreciationGain,
           platformFee,
           status: 'COMPLETED',
+          yieldStartDate,
         },
       });
 

@@ -4,9 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
+import { Link } from '@/i18n/navigation';
 
 interface AdminInvestment {
   id: string;
+  userId: string;
   userName: string;
   userEmail: string;
   propertyTitle: string;
@@ -69,7 +71,7 @@ export default function AdminInvestmentsPage() {
                   {new Date(inv.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-5 py-3.5">
-                  <p className="text-foreground font-semibold">{inv.userName}</p>
+                  <Link href={`/admin/users/${inv.userId}`} className="text-foreground font-semibold hover:text-primary-500 transition-colors">{inv.userName}</Link>
                   <p className="text-[11px] text-muted">{inv.userEmail}</p>
                 </td>
                 <td className="px-5 py-3.5">

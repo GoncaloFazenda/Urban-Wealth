@@ -18,6 +18,8 @@ model User {
   updatedAt    DateTime     @updatedAt @map("updated_at")
   investments  Investment[]
   watchlist    Watchlist[]
+  wallet       Wallet?
+  yieldPayouts YieldPayout[]
 
   @@map("users")
 }
@@ -52,10 +54,12 @@ model Investment {
   estimatedAppreciationGain Float         @map("estimated_appreciation_gain")
   platformFee            Float            @map("platform_fee")
   status                 InvestmentStatus @default(COMPLETED)
+  yieldStartDate         DateTime?        @map("yield_start_date")
   createdAt              DateTime         @default(now()) @map("created_at")
 
   user     User     @relation(fields: [userId], references: [id])
   property Property @relation(fields: [propertyId], references: [id])
+  payouts  YieldPayout[]
 
   @@map("investments")
 }
@@ -92,6 +96,32 @@ model Watchlist {
 
   @@unique([userId, propertyId])
   @@map("watchlist")
+}
+
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  balance   Float    @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("wallets")
+}
+
+model YieldPayout {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  investmentId String   @map("investment_id")
+  amount       Float
+  month        DateTime
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user       User       @relation(fields: [userId], references: [id])
+  investment Investment @relation(fields: [investmentId], references: [id])
+
+  @@unique([investmentId, month])
+  @@map("yield_payouts")
 }
 
 enum InvestmentStatus {

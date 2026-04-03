@@ -7,7 +7,10 @@
     "logIn": "Entrar",
     "getStarted": "Começar",
     "menu": "Menu",
-    "watchlist": "Favoritos"
+    "watchlist": "Favoritos",
+    "earnings": "Rendimentos",
+    "favorites": "Favoritos",
+    "profile": "Perfil"
   },
   "Footer": {
     "newsletterTitle": "Junte-se ao círculo exclusivo",
@@ -227,6 +230,16 @@
     "browseProperties": "Explorar Propriedades",
     "count": "{count} propriedades guardadas"
   },
+  "Earnings": {
+    "title": "Rendimentos",
+    "subtitle": "Acompanhe o seu rendimento mensal de arrendamento e saldo da carteira.",
+    "walletBalance": "Saldo da Carteira",
+    "totalEarned": "Total Ganho",
+    "historyTitle": "Histórico de Pagamentos",
+    "emptyTitle": "Sem rendimentos ainda",
+    "emptyMessage": "O seu rendimento mensal de arrendamento aparecerá aqui assim que as distribuições começarem. Invista em propriedades para começar a ganhar rendimento passivo.",
+    "errorTitle": "Falha ao carregar rendimentos"
+  },
   "Admin": {
     "panelTitle": "Painel Admin",
     "panelSubtitle": "Gestao da plataforma",
@@ -293,7 +306,19 @@
     "thInvestments": "Investimentos",
     "thJoined": "Registo",
     "thEquity": "Participacao",
-    "thFee": "Taxa"
+    "thFee": "Taxa",
+    "userTotalInvested": "Total Investido",
+    "userAnnualIncome": "Rendimento Anual Est.",
+    "userWalletBalance": "Saldo da Carteira",
+    "userInvestments": "Investimentos",
+    "userNoInvestments": "Este utilizador ainda não tem investimentos.",
+    "distributionTitle": "Distribuição de Rendimentos",
+    "distributionDescription": "Distribuir rendimentos mensais de arrendamento a todos os investidores elegíveis.",
+    "distributionHint": "Distribui para o mês anterior. Execuções duplicadas são ignoradas com segurança.",
+    "distributionButton": "Executar Distribuição",
+    "distributionRunning": "A distribuir…",
+    "distributionSuccess": "Distribuição concluída para {month}",
+    "distributionDetails": "{processed} investimentos processados, {created} pagamentos criados, {skipped} ignorados. Total distribuído: €{total}"
   },
   "Profile": {
     "title": "Definicoes da Conta",
