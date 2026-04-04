@@ -63,13 +63,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Re-check session when user returns to the tab (access token may have expired)
   useEffect(() => {
     function handleVisibilityChange() {
-      if (document.visibilityState === 'visible' && user) {
+      if (document.visibilityState === 'visible') {
         checkSession();
       }
     }
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [checkSession, user]);
+  }, [checkSession]);
 
   const login = useCallback(
     async (email: string, password: string) => {
