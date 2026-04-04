@@ -9,8 +9,8 @@
 | Layer | Package | Runner | Tests | Status |
 |---|---|---|---|---|
 | Unit | `@urban-wealth/core` | Jest | 44 | ✅ All passing |
-| E2E | Root (`e2e/`) | Playwright | 60 | ✅ All passing |
-| **Total** | | | **104** | ✅ |
+| E2E | Root (`e2e/`) | Playwright | 79 | ✅ All passing |
+| **Total** | | | **123** | ✅ |
 
 ---
 
@@ -105,7 +105,7 @@
 | should display property detail with working calculator | Amount input → projections appear | ✅ |
 | should navigate back to portfolio from detail page | "Back to Portfolio" → returns to `/` | ✅ |
 
-### `investment.spec.ts` — 5 tests
+### `investment.spec.ts` — 4 tests
 
 | Test | What it verifies | Status |
 |---|---|---|
@@ -136,14 +136,14 @@
 | should navigate from homepage to properties listing | "View All Properties" link works | ✅ |
 | should navigate to property detail from listing | Card click → detail page | ✅ |
 
-### `profile.spec.ts` — 6 tests
+### `profile.spec.ts` — 5 tests
 
 | Test | What it verifies | Status |
 |---|---|---|
-| should display profile page with settings tab | Header, tabs, settings sections visible | ✅ |
+| should display profile page with settings sections | Header, Personal Info, Change Password, Account Details visible | ✅ |
 | should show user info in profile form | Email pre-filled correctly | ✅ |
-| should switch to favorites tab | Favorites tab shows empty state or cards | ✅ |
-| should open favorites tab via URL param | `?tab=favorites` opens favorites directly | ✅ |
+| should update profile name and show success message | Change name → success toast → persists on reload | ✅ |
+| should change password and login with new password | Change password → logout → login with new password works | ✅ |
 | should redirect unauthenticated user to login | No auth → redirect to `/login?redirect=...` | ✅ |
 
 ### `watchlist.spec.ts` — 3 tests
@@ -151,18 +151,20 @@
 | Test | What it verifies | Status |
 |---|---|---|
 | should toggle bookmark on property card | Bookmark button appears on hover, click toggles | ✅ |
-| should show bookmarked property in favorites tab | Bookmarked property appears in profile favorites | ✅ |
+| should show bookmarked property in favorites page | Bookmarked property appears on `/favorites` | ✅ |
 | should not show bookmark button when logged out | Unauthenticated users don't see bookmark | ✅ |
 
-### `admin.spec.ts` — 5 tests
+### `admin.spec.ts` — 7 tests
 
 | Test | What it verifies | Status |
 |---|---|---|
-| should redirect non-admin to login | Regular user sees redirect or access denied | ✅ |
+| should redirect non-admin to login | Regular user redirected away, admin panel not visible | ✅ |
 | should redirect unauthenticated user from admin | No auth → redirect to `/login` | ✅ |
-| should return 401 for unauthenticated admin stats API | `GET /api/admin/stats` → 401 | ✅ |
-| should return 401 for unauthenticated admin properties API | `GET /api/admin/properties` → 401 | ✅ |
-| should return 401 for unauthenticated admin users API | `GET /api/admin/users` → 401 | ✅ |
+| should return 403 for unauthenticated admin stats API | `GET /api/admin/stats` → 403 | ✅ |
+| should return 403 for unauthenticated admin properties API | `GET /api/admin/properties` → 403 | ✅ |
+| should return 403 for unauthenticated admin users API | `GET /api/admin/users` → 403 | ✅ |
+| should promote and demote a user via admin API | Admin promotes user → verifies → demotes back | ✅ |
+| should prevent admin from changing own role | Self-demote → 400 "Cannot change your own role" | ✅ |
 
 ### `dashboard-analytics.spec.ts` — 5 tests
 
@@ -174,13 +176,14 @@
 | should display transaction history table | Table with Date, Asset, Amount, Status columns | ✅ |
 | should make holdings clickable to property detail | Holding link navigates to property page | ✅ |
 
-### `earnings.spec.ts` — 3 tests
+### `earnings.spec.ts` — 4 tests
 
 | Test | What it verifies | Status |
 |---|---|---|
 | should display earnings page with wallet balance | Heading, Wallet Balance, Total Earned cards visible | ✅ |
 | should show empty state or payout history | Empty state or Payout History section visible | ✅ |
 | should redirect unauthenticated user to login | No auth → redirect to `/login?redirect=...` | ✅ |
+| should show wallet balance on earnings page after distribution | Invest → distribute → earnings page shows Payout History | ✅ |
 
 ### `favorites.spec.ts` — 4 tests
 
@@ -201,7 +204,7 @@
 | should navigate to profile from dropdown | Click Profile → `/profile` | ✅ |
 | should log out from dropdown | Click Log out → `/login` | ✅ |
 
-### `yield-distribution.spec.ts` — 5 tests
+### `yield-distribution.spec.ts` — 6 tests
 
 | Test | What it verifies | Status |
 |---|---|---|
@@ -210,6 +213,28 @@
 | should return earnings data for authenticated user | Login → earnings API returns balance, totalEarned, history | ✅ |
 | should return 403 for non-admin distribution request | Regular user → `POST /api/admin/distribute-yields` → 403 | ✅ |
 | should return 403 for unauthenticated admin user detail API | `GET /api/admin/users/:id` → 401/403 | ✅ |
+| should distribute yields and credit wallet for invested user | Invest → admin distributes → wallet credited, duplicates skipped | ✅ |
+
+### `investment-guards.spec.ts` — 4 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should reject investment exceeding remaining capacity | Amount > remaining value → 400 "exceeds" | ✅ |
+| should reject investment on a coming_soon property | Coming Soon property → 400 "not currently open" | ✅ |
+| should reject investment on a fully funded property | Fully Funded property → 400 "not currently open" | ✅ |
+| should reject investment on a non-existent property | Fake UUID → 404 "not found" | ✅ |
+
+### `admin-properties.spec.ts` — 7 tests
+
+| Test | What it verifies | Status |
+|---|---|---|
+| should create a new property | Admin POST → 201, property appears in list | ✅ |
+| should read the created property by ID | Admin GET → correct title, location, value, fee | ✅ |
+| should update the property | Admin PUT → title, yield, status changed and persisted | ✅ |
+| should delete the property | Admin DELETE → 200, GET returns 404 | ✅ |
+| should reject deleting a property with investments | Property with investments → 409 | ✅ |
+| should reject create with invalid data | Missing fields → 400 "Validation failed" | ✅ |
+| should reject non-admin from creating properties | Regular user POST → 403 | ✅ |
 
 ---
 
@@ -229,7 +254,8 @@ yarn test:all
 ## Notes
 
 - E2E tests use `E2E_TESTING=true` env var to bypass rate limiting during test runs
-- A test user (`e2e@urbanwealth.test` / `TestPass1!`) is seeded via `globalSetup` before E2E tests
+- Two test users are seeded: `e2e@urbanwealth.test` / `TestPass1!` (regular user) and `admin@urbanwealth.test` / `AdminPass1!` (admin user)
 - Registration tests generate unique emails with `Date.now()` to avoid collisions
 - Playwright is configured to reuse an existing dev server locally (CI starts a fresh one)
-- Admin tests verify API-level auth since the test user has a `USER` role, not `ADMIN`
+- The admin test user is created in `prisma/seed.ts` and used for distribution and admin-level API tests
+- Profile tests restore original values after modification to avoid polluting other tests

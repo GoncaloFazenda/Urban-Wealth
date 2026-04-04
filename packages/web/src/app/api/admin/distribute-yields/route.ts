@@ -13,11 +13,18 @@ export async function POST() {
     const now = new Date();
     const distributionMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
-    // Find all completed investments whose yield has started
+    // The last day of the distribution month (i.e. end of the period we're paying for)
+    const distributionMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    // Find all completed investments whose yield has started on or before the distribution month.
+    // Investments with null yieldStartDate (created before the field was added) are treated as eligible.
     const investments = await prisma.investment.findMany({
       where: {
         status: 'COMPLETED',
-        yieldStartDate: { lte: distributionMonth },
+        OR: [
+          { yieldStartDate: { lte: distributionMonthEnd } },
+          { yieldStartDate: null },
+        ],
       },
       include: {
         property: { select: { annualYield: true, totalValue: true } },

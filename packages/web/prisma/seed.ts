@@ -1,5 +1,5 @@
 import { PrismaClient, PropertyStatus } from '@prisma/client';
-import { mockProperties } from '@urban-wealth/core';
+import { hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -10,6 +10,9 @@ const statusMap: Record<string, PropertyStatus> = {
 };
 
 async function main() {
+  // Dynamic import to avoid ESM/CJS named-export interop issue with tsx + Node 24
+  const { mockProperties } = await import('../../core/src/mockData.js');
+
   console.log('Seeding properties...');
 
   for (const p of mockProperties) {
@@ -46,6 +49,27 @@ async function main() {
   }
 
   console.log(`Seeded ${mockProperties.length} properties.`);
+
+  // Seed admin test user for E2E tests
+  const adminEmail = 'admin@urbanwealth.test';
+  const existing = await prisma.user.findUnique({ where: { email: adminEmail } });
+  if (!existing) {
+    const passwordHash = await hash('AdminPass1!', 12);
+    await prisma.user.create({
+      data: {
+        fullName: 'Test Admin',
+        email: adminEmail,
+        passwordHash,
+        role: 'ADMIN',
+      },
+    });
+    console.log('Seeded admin test user: admin@urbanwealth.test');
+  } else if (existing.role !== 'ADMIN') {
+    await prisma.user.update({ where: { email: adminEmail }, data: { role: 'ADMIN' } });
+    console.log('Promoted existing admin test user to ADMIN');
+  } else {
+    console.log('Admin test user already exists — reusing');
+  }
 }
 
 main()
