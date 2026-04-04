@@ -29,7 +29,7 @@ test.describe('Watchlist / Favorites', () => {
     await expect(svg).toBeVisible();
   });
 
-  test('should show bookmarked property in favorites tab', async ({ page }) => {
+  test('should show bookmarked property in favorites page', async ({ page }) => {
     // First bookmark a property
     await page.goto('/properties');
     const firstCard = page.locator('a[href*="/properties/"]').first();
@@ -47,8 +47,8 @@ test.describe('Watchlist / Favorites', () => {
     // Wait for mutation to settle
     await page.waitForTimeout(1_000);
 
-    // Navigate to profile favorites tab
-    await page.goto('/profile?tab=favorites');
+    // Navigate to standalone favorites page
+    await page.goto('/favorites');
 
     // Should see the property in favorites
     const favCards = page.locator('a[href*="/properties/"]');

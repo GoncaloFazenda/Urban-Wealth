@@ -3,22 +3,14 @@
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { ProfileForm } from './_components/ProfileForm';
 import { PasswordForm } from './_components/PasswordForm';
 import { AccountInfo } from './_components/AccountInfo';
-import { FavoritesTab } from './_components/FavoritesTab';
-
-type Tab = 'settings' | 'favorites';
 
 export default function ProfilePage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const t = useTranslations('Profile');
-  const searchParams = useSearchParams();
-  const initialTab = searchParams.get('tab') === 'favorites' ? 'favorites' : 'settings';
-  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
 
   if (isLoading) {
     return (
@@ -52,48 +44,20 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-1 border-b border-border mb-8">
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`px-4 py-2.5 text-[14px] font-semibold transition-colors border-b-2 -mb-px ${
-                activeTab === 'settings'
-                  ? 'border-primary-500 text-foreground'
-                  : 'border-transparent text-muted hover:text-foreground'
-              }`}
-            >
-              {t('settingsTab')}
-            </button>
-            <button
-              onClick={() => setActiveTab('favorites')}
-              className={`px-4 py-2.5 text-[14px] font-semibold transition-colors border-b-2 -mb-px ${
-                activeTab === 'favorites'
-                  ? 'border-primary-500 text-foreground'
-                  : 'border-transparent text-muted hover:text-foreground'
-              }`}
-            >
-              {t('favoritesTab')}
-            </button>
+          {/* Settings */}
+          <div className="max-w-2xl space-y-8">
+            <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card">
+              <ProfileForm />
+            </section>
+
+            <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card">
+              <PasswordForm />
+            </section>
+
+            <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card">
+              <AccountInfo />
+            </section>
           </div>
-
-          {/* Tab Content */}
-          {activeTab === 'settings' ? (
-            <div className="max-w-2xl space-y-8">
-              <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card">
-                <ProfileForm />
-              </section>
-
-              <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card">
-                <PasswordForm />
-              </section>
-
-              <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card">
-                <AccountInfo />
-              </section>
-            </div>
-          ) : (
-            <FavoritesTab />
-          )}
         </div>
       </div>
     </div>

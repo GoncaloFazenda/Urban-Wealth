@@ -9,14 +9,12 @@ test.describe('Profile & Account Settings', () => {
     await expect(page).toHaveURL(/\/en\/?$/, { timeout: 10_000 });
   });
 
-  test('should display profile page with settings tab', async ({ page }) => {
+  test('should display profile page with settings sections', async ({ page }) => {
     await page.goto('/profile');
 
     await expect(page.locator('h1')).toContainText('Account Settings');
-    await expect(page.locator('button:has-text("Settings")')).toBeVisible();
-    await expect(page.locator('button:has-text("Favorites")')).toBeVisible();
 
-    // Settings tab content visible by default
+    // All settings sections visible
     await expect(page.locator('text=Personal Information')).toBeVisible();
     await expect(page.locator('text=Change Password')).toBeVisible();
     await expect(page.locator('text=Account Details')).toBeVisible();
@@ -29,28 +27,6 @@ test.describe('Profile & Account Settings', () => {
 
     const emailInput = page.locator('#email');
     await expect(emailInput).toHaveValue('e2e@urbanwealth.test');
-  });
-
-  test('should switch to favorites tab', async ({ page }) => {
-    await page.goto('/profile');
-
-    await page.click('button:has-text("Favorites")');
-
-    // Should show empty state or favorites grid
-    const emptyState = page.locator('text=No saved properties yet');
-    const propertyCards = page.locator('a[href*="/properties/"]');
-
-    // Either empty state or cards should be visible
-    await expect(emptyState.or(propertyCards.first())).toBeVisible({ timeout: 10_000 });
-  });
-
-  test('should open favorites tab via URL param', async ({ page }) => {
-    await page.goto('/profile?tab=favorites');
-
-    const emptyState = page.locator('text=No saved properties yet');
-    const propertyCards = page.locator('a[href*="/properties/"]');
-
-    await expect(emptyState.or(propertyCards.first())).toBeVisible({ timeout: 10_000 });
   });
 
   test('should redirect unauthenticated user to login', async ({ page, context }) => {
