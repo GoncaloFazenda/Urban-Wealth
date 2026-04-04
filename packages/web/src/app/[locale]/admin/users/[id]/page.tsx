@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 import { SummaryCard } from '../../../dashboard/_components/SummaryCard';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 interface UserDetail {
   id: string;
@@ -39,7 +40,7 @@ export default function AdminUserDetailPage() {
   const { data, isLoading, isError, refetch } = useQuery<{ user: UserDetail }>({
     queryKey: ['admin-user', params.id],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/users/${params.id}`, { credentials: 'include' });
+      const res = await fetchWithAuth(`/api/admin/users/${params.id}`);
       if (!res.ok) throw new Error('Failed to load');
       return res.json();
     },

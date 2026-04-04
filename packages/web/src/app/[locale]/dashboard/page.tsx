@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import dynamic from 'next/dynamic';
 import { SummaryCard } from './_components/SummaryCard';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 const AllocationChart = dynamic(() => import('./_components/AllocationChart').then(m => m.AllocationChart), { ssr: false });
 const TimelineChart = dynamic(() => import('./_components/TimelineChart').then(m => m.TimelineChart), { ssr: false });
@@ -52,7 +53,7 @@ export default function DashboardPage() {
   const { data, isLoading, isError, refetch } = useQuery<DashboardData>({
     queryKey: ['dashboard'],
     queryFn: async () => {
-      const res = await fetch('/api/dashboard', { credentials: 'include' });
+      const res = await fetchWithAuth('/api/dashboard');
       if (!res.ok) throw new Error('Failed to load dashboard');
       return res.json();
     },

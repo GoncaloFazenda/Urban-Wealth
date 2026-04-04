@@ -6,6 +6,7 @@ import { updateProfileSchema, type UpdateProfileInput } from '@urban-wealth/core
 import { useAuth } from '@/providers/AuthProvider';
 import { useState } from 'react';
 import { FormField } from '@/components/ui/FormField';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { useTranslations } from 'next-intl';
 
 export function ProfileForm() {
@@ -32,10 +33,9 @@ export function ProfileForm() {
     setServerError('');
     setSuccess(false);
     try {
-      const res = await fetch('/api/profile', {
+      const res = await fetchWithAuth('/api/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(data),
       });
 

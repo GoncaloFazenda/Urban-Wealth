@@ -6,6 +6,7 @@ import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { useAuth } from '@/providers/AuthProvider';
 import { Link } from '@/i18n/navigation';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 interface AdminUser {
   id: string;
@@ -24,7 +25,7 @@ export default function AdminUsersPage() {
   const { data, isLoading, isError, refetch } = useQuery<{ users: AdminUser[] }>({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      const res = await fetch('/api/admin/users', { credentials: 'include' });
+      const res = await fetchWithAuth('/api/admin/users');
       if (!res.ok) throw new Error('Failed to load');
       return res.json();
     },
@@ -32,10 +33,9 @@ export default function AdminUsersPage() {
 
   const roleMutation = useMutation({
     mutationFn: async ({ id, role }: { id: string; role: string }) => {
-      const res = await fetch(`/api/admin/users/${id}`, {
+      const res = await fetchWithAuth(`/api/admin/users/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ role }),
       });
       if (!res.ok) {

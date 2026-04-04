@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { PropertyForm } from '@/components/admin/PropertyForm';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import type { CreatePropertyInput } from '@urban-wealth/core';
 
 export default function EditPropertyPage() {
@@ -17,9 +18,7 @@ export default function EditPropertyPage() {
   }>({
     queryKey: ['admin-property', params.id],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/properties/${params.id}`, {
-        credentials: 'include',
-      });
+      const res = await fetchWithAuth(`/api/admin/properties/${params.id}`);
       if (!res.ok) throw new Error('Failed to load property');
       return res.json();
     },

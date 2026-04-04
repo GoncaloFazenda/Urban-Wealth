@@ -7,6 +7,7 @@ import { SummaryCard } from '../dashboard/_components/SummaryCard';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { Link } from '@/i18n/navigation';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 interface AdminStats {
   totalUsers: number;
@@ -40,9 +41,8 @@ export default function AdminDashboard() {
 
   const distributeMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch('/api/admin/distribute-yields', {
+      const res = await fetchWithAuth('/api/admin/distribute-yields', {
         method: 'POST',
-        credentials: 'include',
       });
       if (!res.ok) {
         const body = await res.json();
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   const { data, isLoading, isError, refetch } = useQuery<AdminStats>({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const res = await fetch('/api/admin/stats', { credentials: 'include' });
+      const res = await fetchWithAuth('/api/admin/stats');
       if (!res.ok) throw new Error('Failed to load stats');
       return res.json();
     },

@@ -36,3 +36,7 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Curl cookie jars — never commit auth tokens
+cookies.txt
+*.cookies.txt

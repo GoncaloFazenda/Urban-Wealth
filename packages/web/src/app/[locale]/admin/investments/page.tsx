@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { Link } from '@/i18n/navigation';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 interface AdminInvestment {
   id: string;
@@ -26,7 +27,7 @@ export default function AdminInvestmentsPage() {
   const { data, isLoading, isError, refetch } = useQuery<{ investments: AdminInvestment[] }>({
     queryKey: ['admin-investments'],
     queryFn: async () => {
-      const res = await fetch('/api/admin/investments', { credentials: 'include' });
+      const res = await fetchWithAuth('/api/admin/investments');
       if (!res.ok) throw new Error('Failed to load');
       return res.json();
     },

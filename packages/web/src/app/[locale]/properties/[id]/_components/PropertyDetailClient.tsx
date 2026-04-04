@@ -13,6 +13,7 @@ import { CheckCircle2, ChevronLeft, MapPin } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { InvestmentCalculator } from './InvestmentCalculator';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { ConfirmModal } from './ConfirmModal';
 import { Metric } from './Metric';
 
@@ -56,10 +57,9 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
   const handleConfirm = async () => {
     setIsInvesting(true);
     try {
-      const res = await fetch('/api/investments', {
+      const res = await fetchWithAuth('/api/investments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ propertyId: params.id, amount: investAmount }),
       });
       if (!res.ok) {

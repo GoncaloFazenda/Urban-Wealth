@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { FormField } from '@/components/ui/FormField';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 interface PropertyFormProps {
   initialData?: CreatePropertyInput & { id?: string };
@@ -48,10 +49,9 @@ export function PropertyForm({ initialData, mode }: PropertyFormProps) {
         ? `/api/admin/properties/${initialData.id}`
         : '/api/admin/properties';
 
-      const res = await fetch(url, {
+      const res = await fetchWithAuth(url, {
         method: mode === 'edit' ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           ...data,
           photoUrls: typeof data.photoUrls === 'string'

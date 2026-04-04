@@ -7,6 +7,7 @@ import { ErrorState } from '@/components/states/ErrorState';
 import { DashboardSkeleton } from '@/components/states/LoadingSkeleton';
 import { Modal } from '@/components/ui/Modal';
 import { useState } from 'react';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 interface AdminProperty {
   id: string;
@@ -41,7 +42,7 @@ export default function AdminPropertiesPage() {
   const { data, isLoading, isError, refetch } = useQuery<{ properties: AdminProperty[] }>({
     queryKey: ['admin-properties'],
     queryFn: async () => {
-      const res = await fetch('/api/admin/properties', { credentials: 'include' });
+      const res = await fetchWithAuth('/api/admin/properties');
       if (!res.ok) throw new Error('Failed to load');
       return res.json();
     },
@@ -49,9 +50,8 @@ export default function AdminPropertiesPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/admin/properties/${id}`, {
+      const res = await fetchWithAuth(`/api/admin/properties/${id}`, {
         method: 'DELETE',
-        credentials: 'include',
       });
       if (!res.ok) {
         const body = await res.json();

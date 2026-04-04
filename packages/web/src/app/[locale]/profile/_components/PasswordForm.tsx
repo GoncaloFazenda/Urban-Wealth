@@ -6,6 +6,7 @@ import { changePasswordSchema, type ChangePasswordInput } from '@urban-wealth/co
 import { useState } from 'react';
 import { FormField } from '@/components/ui/FormField';
 import { PasswordInput } from '@/components/ui/PasswordInput';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { useTranslations } from 'next-intl';
 
 export function PasswordForm() {
@@ -28,10 +29,9 @@ export function PasswordForm() {
     setServerError('');
     setSuccess(false);
     try {
-      const res = await fetch('/api/profile/password', {
+      const res = await fetchWithAuth('/api/profile/password', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(data),
       });
 
