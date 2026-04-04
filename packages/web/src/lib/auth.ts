@@ -44,7 +44,7 @@ export function setAuthCookieHeaders(
   return {
     'Set-Cookie': [
       `${AUTH_CONSTANTS.COOKIE_ACCESS_TOKEN}=${accessToken}; HttpOnly; Path=/; SameSite=Strict; Max-Age=${AUTH_CONSTANTS.ACCESS_TOKEN_MAX_AGE}${secure}`,
-      `${AUTH_CONSTANTS.COOKIE_REFRESH_TOKEN}=${refreshToken}; HttpOnly; Path=/api/auth/refresh; SameSite=Strict; Max-Age=${AUTH_CONSTANTS.REFRESH_TOKEN_MAX_AGE}${secure}`,
+      `${AUTH_CONSTANTS.COOKIE_REFRESH_TOKEN}=${refreshToken}; HttpOnly; Path=/api/auth; SameSite=Strict; Max-Age=${AUTH_CONSTANTS.REFRESH_TOKEN_MAX_AGE}${secure}`,
     ].join(', '),
   };
 }
@@ -56,7 +56,7 @@ export function clearAuthCookieHeaders(): Record<string, string> {
   return {
     'Set-Cookie': [
       `${AUTH_CONSTANTS.COOKIE_ACCESS_TOKEN}=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0`,
-      `${AUTH_CONSTANTS.COOKIE_REFRESH_TOKEN}=; HttpOnly; Path=/api/auth/refresh; SameSite=Strict; Max-Age=0`,
+      `${AUTH_CONSTANTS.COOKIE_REFRESH_TOKEN}=; HttpOnly; Path=/api/auth; SameSite=Strict; Max-Age=0`,
     ].join(', '),
   };
 }
