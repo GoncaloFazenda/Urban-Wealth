@@ -1,5 +1,5 @@
 import { PrismaClient, PropertyStatus } from '@prisma/client';
-import { mockProperties } from '../../core/dist/mockData.js';
+import { mockProperties } from '@urban-wealth/core';
 
 const prisma = new PrismaClient();
 

@@ -28,7 +28,7 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
   const [showModal, setShowModal] = useState(false);
   const [investAmount, setInvestAmount] = useState(0);
   const [isInvesting, setIsInvesting] = useState(false);
-  const [toast, setToast] = useState('');
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const t = useTranslations('PropertyDetail');
 
   const { data, refetch } = useQuery<{ property: Property }>({
@@ -67,14 +67,16 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
         throw new Error(d.error ?? 'Investment failed');
       }
       setShowModal(false);
-      setToast(t('successToast', { amount: investAmount.toLocaleString() }));
-      setTimeout(() => setToast(''), 4000);
+      setToast({ message: t('successToast', { amount: investAmount.toLocaleString() }), type: 'success' });
+      setTimeout(() => setToast(null), 4000);
 
       refetch();
       queryClient.invalidateQueries({ queryKey: ['properties'] });
       queryClient.invalidateQueries({ queryKey: ['properties-home'] });
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Investment failed');
+      setShowModal(false);
+      setToast({ message: err instanceof Error ? err.message : 'Investment failed', type: 'error' });
+      setTimeout(() => setToast(null), 4000);
     } finally {
       setInvestAmount(0);
       setIsInvesting(false);
@@ -95,9 +97,20 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
             initial={{ opacity: 0, y: -20, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -20, x: '-50%' }}
-            className="fixed top-20 left-1/2 z-[100] rounded-full bg-positive-400/90 backdrop-blur-md border border-positive-400 px-6 py-3 text-[14px] font-bold text-white shadow-elevated flex items-center gap-2"
+            className={`fixed top-20 left-1/2 z-[100] rounded-full backdrop-blur-md px-6 py-3 text-[14px] font-bold text-white shadow-elevated flex items-center gap-2 ${
+              toast.type === 'error'
+                ? 'bg-red-500/90 border border-red-500'
+                : 'bg-positive-400/90 border border-positive-400'
+            }`}
           >
-            <CheckCircle2 className="w-5 h-5" /> {toast}
+            {toast.type === 'error' ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            ) : (
+              <CheckCircle2 className="w-5 h-5" />
+            )}
+            {toast.message}
           </motion.div>
         )}
       </AnimatePresence>
