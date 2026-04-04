@@ -1,10 +1,8 @@
 import { Suspense } from 'react';
 import { setRequestLocale } from 'next-intl/server';
-import { prisma } from '@/lib/prisma';
-import { mapDbProperty } from '@/lib/mapProperty';
 import { HeroSection } from './_components/HeroSection';
 import { StatsSection } from './_components/StatsSection';
-import { PropertiesSection } from './_components/PropertiesSection';
+import { PropertiesLoader } from './_components/PropertiesLoader';
 
 export default async function HomePage({
   params,
@@ -13,26 +11,6 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-
-  // Server-side fetch for initial property data (default filters, 6 items)
-  const [dbProperties, total, locationRows] = await Promise.all([
-    prisma.property.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 6,
-    }),
-    prisma.property.count(),
-    prisma.property.findMany({
-      select: { location: true },
-      distinct: ['location'],
-      orderBy: { location: 'asc' },
-    }),
-  ]);
-
-  const initialData = {
-    properties: dbProperties.map(mapDbProperty),
-    total,
-    locations: locationRows.map((r) => r.location),
-  };
 
   return (
     <div className="w-full">
@@ -45,7 +23,7 @@ export default async function HomePage({
           </div>
         }
       >
-        <PropertiesSection initialData={initialData} />
+        <PropertiesLoader />
       </Suspense>
     </div>
   );
