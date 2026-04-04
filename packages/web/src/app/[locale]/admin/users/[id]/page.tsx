@@ -64,17 +64,19 @@ export default function AdminUserDetailPage() {
 
       {/* User Header */}
       <div className="mb-8 animate-enter-sm">
-        <div className="flex items-center gap-4 mb-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-hover text-xl font-bold text-foreground border border-border">
-            {user.fullName.charAt(0).toUpperCase()}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-3">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-surface-hover text-xl font-bold text-foreground border border-border">
+              {user.fullName.charAt(0).toUpperCase()}
+            </div>
+            <div className="min-w-0">
+              <h1 className="font-display text-[28px] font-bold text-foreground tracking-tight truncate">
+                {user.fullName}
+              </h1>
+              <p className="text-[14px] text-muted truncate">{user.email}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-display text-[28px] font-bold text-foreground tracking-tight">
-              {user.fullName}
-            </h1>
-            <p className="text-[14px] text-muted">{user.email}</p>
-          </div>
-          <span className="ml-auto inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold tracking-widest uppercase bg-primary-500/10 text-primary-500 border border-primary-500/20">
+          <span className="sm:ml-auto self-start inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold tracking-widest uppercase bg-primary-500/10 text-primary-500 border border-primary-500/20">
             {user.role}
           </span>
         </div>
@@ -112,16 +114,16 @@ export default function AdminUserDetailPage() {
             <p className="text-[14px] text-muted">{t('userNoInvestments')}</p>
           </div>
         ) : (
-          <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+          <div className="rounded-xl border border-border bg-card overflow-hidden overflow-x-auto shadow-sm">
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="border-b border-border bg-muted-bg">
-                  <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">{t('thDate')}</th>
-                  <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">{t('thProperty')}</th>
-                  <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thAmount')}</th>
-                  <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thEquity')}</th>
-                  <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thYield')}</th>
-                  <th className="px-5 py-3 text-center font-bold text-muted uppercase tracking-wider text-[11px]">{t('thStatus')}</th>
+                  <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thDate')}</th>
+                  <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thProperty')}</th>
+                  <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thAmount')}</th>
+                  <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thEquity')}</th>
+                  <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thYield')}</th>
+                  <th className="px-5 py-3 text-center font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thStatus')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">

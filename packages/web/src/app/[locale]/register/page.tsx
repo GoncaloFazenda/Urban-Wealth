@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import { Link } from '@/i18n/navigation';
 import { FormField } from '@/components/ui/FormField';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { useTranslations } from 'next-intl';
 import { getSafeRedirect } from '@/lib/constants';
 
@@ -95,11 +96,9 @@ function RegisterPageContent() {
 
           <div>
             <FormField label={t('passwordLabel')} error={errors.password?.message}>
-              <input
+              <PasswordInput
                 id="password"
-                type="password"
                 {...register('password')}
-                className="input-field"
                 placeholder={t('passwordPlaceholder')}
               />
             </FormField>
@@ -119,11 +118,9 @@ function RegisterPageContent() {
           </div>
 
           <FormField label={t('confirmPasswordLabel')} error={errors.confirmPassword?.message}>
-            <input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               {...register('confirmPassword')}
-              className="input-field"
               placeholder={t('confirmPasswordPlaceholder')}
             />
           </FormField>

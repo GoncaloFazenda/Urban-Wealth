@@ -89,9 +89,9 @@ function MonthRow({ month }: { month: PayoutMonth }) {
               key={idx}
               className="flex items-center justify-between py-2.5 border-b border-border last:border-b-0"
             >
-              <div>
-                <p className="text-[13px] font-medium text-foreground">{prop.title}</p>
-                <p className="text-[11px] text-muted">{prop.location}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-medium text-foreground truncate">{prop.title}</p>
+                <p className="text-[11px] text-muted truncate">{prop.location}</p>
               </div>
               <span className="text-[13px] font-semibold text-positive-400">
                 +€{prop.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

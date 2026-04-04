@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { changePasswordSchema, type ChangePasswordInput } from '@urban-wealth/core';
 import { useState } from 'react';
 import { FormField } from '@/components/ui/FormField';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { useTranslations } from 'next-intl';
 
 export function PasswordForm() {
@@ -67,31 +68,25 @@ export function PasswordForm() {
       )}
 
       <FormField label={t('currentPasswordLabel')} error={errors.currentPassword?.message}>
-        <input
+        <PasswordInput
           id="currentPassword"
-          type="password"
           {...register('currentPassword')}
-          className="input-field"
           placeholder="••••••••"
         />
       </FormField>
 
       <FormField label={t('newPasswordLabel')} error={errors.newPassword?.message}>
-        <input
+        <PasswordInput
           id="newPassword"
-          type="password"
           {...register('newPassword')}
-          className="input-field"
           placeholder="••••••••"
         />
       </FormField>
 
       <FormField label={t('confirmNewPasswordLabel')} error={errors.confirmNewPassword?.message}>
-        <input
+        <PasswordInput
           id="confirmNewPassword"
-          type="password"
           {...register('confirmNewPassword')}
-          className="input-field"
           placeholder="••••••••"
         />
       </FormField>

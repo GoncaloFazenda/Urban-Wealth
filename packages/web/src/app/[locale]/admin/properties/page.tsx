@@ -69,7 +69,7 @@ export default function AdminPropertiesPage() {
 
   return (
     <div className="max-w-5xl">
-      <div className="flex items-center justify-between mb-8 animate-enter-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-enter-sm">
         <div>
           <h1 className="font-display text-[28px] font-bold text-foreground tracking-tight">
             {t('propertiesTitle')}
@@ -80,22 +80,22 @@ export default function AdminPropertiesPage() {
         </div>
         <Link
           href="/admin/properties/new"
-          className="rounded-md bg-primary-500 px-5 py-2.5 text-[13px] font-bold text-white transition-all hover:bg-primary-400 shadow-sm"
+          className="rounded-md bg-primary-500 px-5 py-2.5 text-[13px] font-bold text-white transition-all hover:bg-primary-400 shadow-sm text-center whitespace-nowrap"
         >
           {t('addProperty')}
         </Link>
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+      <div className="rounded-xl border border-border bg-card overflow-hidden overflow-x-auto shadow-sm">
         <table className="w-full text-[13px]">
           <thead>
             <tr className="border-b border-border bg-muted-bg">
-              <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">{t('thProperty')}</th>
-              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thValue')}</th>
-              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thYield')}</th>
-              <th className="px-5 py-3 text-center font-bold text-muted uppercase tracking-wider text-[11px]">{t('thStatus')}</th>
-              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thFunded')}</th>
-              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thActions')}</th>
+              <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thProperty')}</th>
+              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thValue')}</th>
+              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thYield')}</th>
+              <th className="px-5 py-3 text-center font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thStatus')}</th>
+              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thFunded')}</th>
+              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thActions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">

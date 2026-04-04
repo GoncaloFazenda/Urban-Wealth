@@ -62,15 +62,15 @@ export default function AdminUsersPage() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+      <div className="rounded-xl border border-border bg-card overflow-hidden overflow-x-auto shadow-sm">
         <table className="w-full text-[13px]">
           <thead>
             <tr className="border-b border-border bg-muted-bg">
-              <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">{t('thUser')}</th>
-              <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">{t('thEmail')}</th>
-              <th className="px-5 py-3 text-center font-bold text-muted uppercase tracking-wider text-[11px]">{t('thRole')}</th>
-              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thInvestments')}</th>
-              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thJoined')}</th>
+              <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thUser')}</th>
+              <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thEmail')}</th>
+              <th className="px-5 py-3 text-center font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thRole')}</th>
+              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thInvestments')}</th>
+              <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thJoined')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">

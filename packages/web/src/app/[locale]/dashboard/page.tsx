@@ -160,14 +160,14 @@ export default function DashboardPage() {
             {data.investments.length > 0 && (
               <>
                 <h2 className="text-[18px] font-display font-bold text-foreground mb-4">{t('transactionHistory')}</h2>
-                <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+                <div className="rounded-xl border border-border bg-card overflow-hidden overflow-x-auto shadow-sm">
                   <table className="w-full text-[13px]">
                     <thead>
                       <tr className="border-b border-border bg-muted-bg">
-                        <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">{t('thDate')}</th>
-                        <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px]">{t('thAsset')}</th>
-                        <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thAmount')}</th>
-                        <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px]">{t('thStatus')}</th>
+                        <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thDate')}</th>
+                        <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thAsset')}</th>
+                        <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thAmount')}</th>
+                        <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thStatus')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
