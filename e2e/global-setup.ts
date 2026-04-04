@@ -1,3 +1,5 @@
+import { execSync } from 'child_process';
+
 /**
  * Playwright global setup — seeds the database with known test data
  * before the E2E test suite runs. Truncates and re-inserts to avoid
@@ -5,6 +7,14 @@
  */
 async function globalSetup() {
   const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
+
+  // Seed properties into the DB (idempotent upsert)
+  try {
+    execSync('yarn workspace @urban-wealth/web prisma:seed', { stdio: 'inherit' });
+    console.log('[e2e] Properties seeded');
+  } catch (err) {
+    console.error('[e2e] Failed to seed properties:', err);
+  }
 
   // Register a known test user via the API (idempotent — if user exists, that's fine)
   try {

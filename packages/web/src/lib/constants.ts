@@ -12,7 +12,7 @@ export const AUTH_CONSTANTS = {
   RATE_LIMIT_INVEST_MAX: 10,
   RATE_LIMIT_INVEST_WINDOW_MS: 15 * 60 * 1000,
   COOKIE_ACCESS_TOKEN: 'access_token',
-  COOKIE_REFRESH_TOKEN: 'refresh_token',
+  COOKIE_REFRESH_TOKEN: 'refresh_token_v2',
   COOKIE_CSRF_TOKEN: 'csrf_token',
 } as const;
 
@@ -21,4 +21,17 @@ export const REDIRECT_ALLOWLIST = [
   '/dashboard',
   '/properties',
   '/how-it-works',
+  '/profile',
+  '/earnings',
+  '/favorites',
 ] as const;
+
+export function getSafeRedirect(value: string | null): string {
+  if (!value) return '/';
+  const path = value.split('?')[0] ?? '/';
+  return REDIRECT_ALLOWLIST.some(
+    (allowed) => path === allowed || path.startsWith(`${allowed}/`)
+  )
+    ? value
+    : '/';
+}

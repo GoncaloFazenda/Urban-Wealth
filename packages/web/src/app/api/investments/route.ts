@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  investmentSchema,
-  mockProperties,
-  PLATFORM_FEE_RATE,
-} from '@urban-wealth/core';
+import { investmentSchema, PLATFORM_FEE_RATE } from '@urban-wealth/core';
 import { getSession } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { AUTH_CONSTANTS } from '@/lib/constants';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,8 +48,10 @@ export async function POST(request: NextRequest) {
 
     const { propertyId, amount } = parsed.data;
 
-    // Find property
-    const property = mockProperties.find((p) => p.id === propertyId);
+    // Find property from DB
+    const property = await prisma.property.findUnique({
+      where: { id: propertyId },
+    });
     if (!property) {
       return NextResponse.json(
         { error: 'Property not found' },
@@ -61,19 +60,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Check property status
-    if (property.status !== 'open') {
+    if (property.status !== 'OPEN') {
       return NextResponse.json(
         { error: 'This property is not currently open for investment' },
-        { status: 400 }
-      );
-    }
-
-    // Check remaining value
-    const remainingValue =
-      property.totalValue * ((100 - property.funded) / 100);
-    if (amount > remainingValue) {
-      return NextResponse.json(
-        { error: 'Investment amount exceeds remaining available value' },
         { status: 400 }
       );
     }
@@ -90,25 +79,75 @@ export async function POST(request: NextRequest) {
       (ownershipPercentage / 100);
     const platformFee = amount * PLATFORM_FEE_RATE;
 
-    // In production, this would be a Prisma transaction.
-    // For mock data, we just return the calculated result.
-    const investment = {
-      id: crypto.randomUUID(),
-      userId: session.userId,
-      propertyId,
-      amount,
-      ownershipPercentage,
-      estimatedAnnualIncome,
-      estimatedAppreciationGain,
-      platformFee,
-      status: 'completed' as const,
-      createdAt: new Date().toISOString(),
-      propertyTitle: property.title,
-      propertyPhotoUrl: property.photoUrls[0] ?? '',
-    };
+    // Lock the property row so concurrent requests queue rather than race
+    const investment = await prisma.$transaction(async (tx) => {
+      // Lock and read fresh property state inside transaction
+      const [lockedProperty] = await tx.$queryRaw<Array<{
+        available_shares: number;
+        total_value: number;
+        funded: number;
+      }>>`
+        SELECT available_shares, total_value, funded FROM properties WHERE id = ${property.id} FOR UPDATE
+      `;
+
+      const currentShares = lockedProperty?.available_shares ?? property.availableShares;
+      const currentFunded = lockedProperty?.funded ?? property.funded;
+      const totalValue = lockedProperty?.total_value ?? property.totalValue;
+
+      // Remaining capacity based on the stored funded %, not investment records
+      const remainingValue = totalValue * ((100 - currentFunded) / 100);
+
+      if (amount > remainingValue) {
+        throw Object.assign(
+          new Error('Investment amount exceeds remaining available value'),
+          { code: 'CAPACITY_EXCEEDED' }
+        );
+      }
+
+      // Increment funded % by the proportion this investment represents
+      const fundedIncrement = (amount / totalValue) * 100;
+      const newFunded = Math.min(100, currentFunded + fundedIncrement);
+
+      // Shares consumed proportional to how much of the remaining capacity was used
+      const sharesUsed = remainingValue > 0
+        ? Math.max(1, Math.round(currentShares * (amount / remainingValue)))
+        : 0;
+      const newAvailableShares = Math.max(0, currentShares - sharesUsed);
+
+      // Yield starts on the 1st of next month
+      const now = new Date();
+      const yieldStartDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+      const inv = await tx.investment.create({
+        data: {
+          userId: session.userId,
+          propertyId: property.id,
+          amount,
+          ownershipPercentage,
+          estimatedAnnualIncome,
+          estimatedAppreciationGain,
+          platformFee,
+          status: 'COMPLETED',
+          yieldStartDate,
+        },
+      });
+
+      await tx.property.update({
+        where: { id: property.id },
+        data: {
+          funded: newFunded,
+          availableShares: newAvailableShares,
+        },
+      });
+
+      return inv;
+    });
 
     return NextResponse.json({ investment }, { status: 201 });
   } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'CAPACITY_EXCEEDED') {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     console.error('Investment error:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(
       { error: 'Failed to process investment' },
