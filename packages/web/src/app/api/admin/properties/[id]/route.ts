@@ -83,6 +83,11 @@ export async function PUT(
       );
     }
 
+    const oldProperty = await prisma.property.findUnique({ where: { id } });
+    if (!oldProperty) {
+      return NextResponse.json({ error: 'Property not found' }, { status: 404 });
+    }
+
     const property = await prisma.property.update({
       where: { id },
       data: {
@@ -99,6 +104,31 @@ export async function PUT(
         platformFee: parsed.data.platformFee,
       },
     });
+
+    // Fire YIELD_ABOVE alerts if yield changed
+    if (parsed.data.annualYield !== oldProperty.annualYield) {
+      const yieldAlerts = await prisma.alert.findMany({
+        where: {
+          propertyId: id,
+          triggerType: 'YIELD_ABOVE',
+          active: true,
+          conditionValue: { lte: parsed.data.annualYield }, // User's threshold <= new yield = match
+        },
+        select: { userId: true },
+      });
+
+      if (yieldAlerts.length > 0) {
+        await prisma.notification.createMany({
+          data: yieldAlerts.map((a) => ({
+            userId: a.userId,
+            type: 'ALERT_TRIGGERED' as const,
+            title: 'Yield alert triggered',
+            message: `${property.title} yield updated to ${parsed.data.annualYield}% (was ${oldProperty.annualYield}%).`,
+            data: { propertyId: id, newYield: parsed.data.annualYield, oldYield: oldProperty.annualYield },
+          })),
+        });
+      }
+    }
 
     return NextResponse.json({ property: { id: property.id } });
   } catch (error) {

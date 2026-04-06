@@ -4,3 +4,4 @@ export type { Investment, InvestmentWithProperty, InvestmentStatus } from './Inv
 export type { Listing, ListingWithDetails, ListingStatus } from './Listing';
 export type { Trade, TradeWithDetails, TradeStatus } from './Trade';
 export type { Notification, NotificationType } from './Notification';
+export type { Alert, AlertWithProperty, AlertTriggerType } from './Alert';

@@ -93,7 +93,9 @@
     "fundingStatus": "Estado do Financiamento",
     "sharesRemaining": "{count} frações restantes",
     "propertyNotFound": "Propriedade não encontrada",
-    "successToast": "Alocação de €{amount} realizada com sucesso"
+    "successToast": "Alocação de €{amount} realizada com sucesso",
+    "setAlert": "Criar Alerta",
+    "manageAlerts": "Alerta Ativo"
   },
   "InvestmentCalculator": {
     "title": "Projeção de Investimento",
@@ -390,6 +392,17 @@
     "annualYield": "Rendimento Anual",
     "propertyValue": "Valor da Propriedade"
   },
+  "MyListings": {
+    "title": "Os Meus Anúncios",
+    "thProperty": "Propriedade",
+    "thAmount": "Listado",
+    "thOwnership": "Propriedade %",
+    "thAskPrice": "Preço Pedido",
+    "thStatus": "Estado",
+    "thDate": "Data",
+    "cancel": "Cancelar anúncio",
+    "soldFor": "Líquido €{value}"
+  },
   "SellModal": {
     "title": "Listar Posição para Venda",
     "currentPosition": "Posição Atual",
@@ -405,6 +418,8 @@
     "discountIndicator": "{value}% desconto",
     "platformFee": "Taxa da Plataforma (1,5%)",
     "netProceeds": "Receita Líquida",
+    "pctLabel": "% de Propriedade a Vender",
+    "pctAvailable": "{value}% disponível",
     "listForSale": "Listar para Venda",
     "listing": "A listar…",
     "cancel": "Cancelar",
@@ -414,10 +429,48 @@
   "Notifications": {
     "title": "Notificações",
     "subtitle": "Mantenha-se atualizado com a atividade do mercado e da sua lista de favoritos.",
+    "tabNotifications": "Notificações",
+    "tabAlerts": "Os Meus Alertas",
     "emptyTitle": "Sem notificações",
     "emptyMessage": "Está tudo em dia! As notificações aparecerão aqui quando houver atividade nos seus anúncios ou propriedades favoritas.",
     "markAllRead": "Marcar tudo como lido",
     "viewAll": "Ver todas as notificações",
     "errorTitle": "Falha ao carregar notificações"
+  },
+  "AlertsPanel": {
+    "emptyTitle": "Sem alertas definidos",
+    "emptyMessage": "Ainda não criou nenhum alerta. Abra uma página de propriedade e toque em \"Definir Alerta\" para ser notificado sobre quedas de preço, novos anúncios ou alterações de rendimento.",
+    "summary": "{active} ativos · {total} no total",
+    "triggerNewListing": "Notificar em novo anúncio",
+    "triggerYieldAbove": "Rendimento acima de",
+    "triggerPriceBelow": "Preço abaixo de",
+    "yieldThreshold": "Rendimento mín. (%)",
+    "priceThreshold": "Preço máx. (€)",
+    "edit": "Editar limite",
+    "pause": "Pausar alerta",
+    "resume": "Retomar alerta",
+    "delete": "Eliminar alerta",
+    "errorTitle": "Falha ao carregar alertas"
+  },
+  "Alerts": {
+    "title": "Criar Alerta",
+    "activeAlerts": "Alertas Ativos",
+    "selectTrigger": "Escolha o Tipo de Alerta",
+    "triggerNewListing": "Novo Anúncio",
+    "triggerNewListingDesc": "Seja notificado quando alguém listar uma posição para venda nesta propriedade.",
+    "triggerYieldAbove": "Rendimento Acima",
+    "triggerYieldAboveDesc": "Seja notificado quando o rendimento anual ultrapassar o seu limite. Rendimento atual: {current}%.",
+    "triggerPriceBelow": "Preço Abaixo",
+    "triggerPriceBelowDesc": "Seja notificado quando um anúncio no mercado aparecer a um preço igual ou inferior ao seu objetivo.",
+    "yieldThreshold": "Rendimento Mínimo (%)",
+    "priceThreshold": "Preço Máximo (€)",
+    "currentYield": "Rendimento atual: {value}%",
+    "createAlert": "Criar Alerta",
+    "updateAlert": "Atualizar Alerta",
+    "saving": "A guardar…",
+    "close": "Fechar",
+    "remove": "Remover",
+    "alertCreated": "Alerta criado com sucesso",
+    "alertUpdated": "Alerta atualizado com sucesso"
   }
 }

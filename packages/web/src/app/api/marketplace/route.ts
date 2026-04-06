@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createListingSchema } from '@urban-wealth/core';
+import { createBulkListingSchema } from '@urban-wealth/core';
 import { getSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
@@ -47,26 +47,40 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const result = listings.map((l) => ({
-      id: l.id,
-      sellerId: l.sellerId,
-      investmentId: l.investmentId,
-      propertyId: l.propertyId,
-      sharesAmount: l.sharesAmount,
-      ownershipPct: l.ownershipPct,
-      askPrice: l.askPrice,
-      pricePerPercent: l.pricePerPercent,
-      status: l.status.toLowerCase(),
-      createdAt: l.createdAt.toISOString(),
-      updatedAt: l.updatedAt.toISOString(),
-      propertyTitle: l.property.title,
-      propertyLocation: l.property.location,
-      propertyPhotoUrl: l.property.photoUrls[0] ?? '',
-      propertyTotalValue: l.property.totalValue,
-      propertyAnnualYield: l.property.annualYield,
-      sellerName: l.seller.fullName,
-    }));
+    // Group sub-listings by groupId so buyers see one card per sell action.
+    // Listings without a groupId are their own group.
+    type RawListing = typeof listings[number];
+    const groupMap = new Map<string, RawListing[]>();
+    for (const l of listings) {
+      const key = l.groupId ?? l.id;
+      if (!groupMap.has(key)) groupMap.set(key, []);
+      groupMap.get(key)!.push(l);
+    }
 
+    const result = Array.from(groupMap.values()).map((group) => {
+      const first = group[0]!;
+      return {
+        // Buyers use this id to purchase; the purchase handler resolves the group
+        id: first.groupId ?? first.id,
+        sellerId: first.sellerId,
+        propertyId: first.propertyId,
+        sharesAmount: group.reduce((s, l) => s + l.sharesAmount, 0),
+        ownershipPct: group.reduce((s, l) => s + l.ownershipPct, 0),
+        askPrice: group.reduce((s, l) => s + l.askPrice, 0),
+        pricePerPercent: first.pricePerPercent,
+        status: first.status.toLowerCase(),
+        createdAt: first.createdAt.toISOString(),
+        updatedAt: first.updatedAt.toISOString(),
+        propertyTitle: first.property.title,
+        propertyLocation: first.property.location,
+        propertyPhotoUrl: first.property.photoUrls[0] ?? '',
+        propertyTotalValue: first.property.totalValue,
+        propertyAnnualYield: first.property.annualYield,
+        sellerName: first.seller.fullName,
+      };
+    });
+
+    // Re-sort after grouping (Map ordering is insertion-order which matches DB orderBy)
     return NextResponse.json({ listings: result });
   } catch (error) {
     console.error('Marketplace list error:', error instanceof Error ? error.message : 'Unknown error');
@@ -74,7 +88,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/marketplace — create a new listing
+// POST /api/marketplace — create one or more listings atomically
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
@@ -83,7 +97,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const parsed = createListingSchema.safeParse(body);
+    const parsed = createBulkListingSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
@@ -91,76 +105,91 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { investmentId, sharesAmount, askPrice } = parsed.data;
+    const { slices, groupId } = parsed.data;
 
-    // Verify investment ownership
-    const investment = await prisma.investment.findUnique({
-      where: { id: investmentId },
-      include: { property: true },
-    });
+    // Validate all slices up-front before touching the DB
+    const resolved = await Promise.all(
+      slices.map(async (slice) => {
+        const investment = await prisma.investment.findUnique({
+          where: { id: slice.investmentId },
+          include: { property: true },
+        });
+        return { slice, investment };
+      })
+    );
 
-    if (!investment || investment.userId !== session.userId) {
-      return NextResponse.json({ error: 'Investment not found or not owned by you' }, { status: 404 });
+    for (const { slice, investment } of resolved) {
+      if (!investment || investment.userId !== session.userId) {
+        return NextResponse.json({ error: 'Investment not found or not owned by you' }, { status: 404 });
+      }
+      if ((investment.status as string) === 'SOLD') {
+        return NextResponse.json({ error: 'One of the investments has already been fully sold' }, { status: 400 });
+      }
+      const agg = await prisma.listing.aggregate({
+        where: { investmentId: slice.investmentId, status: 'ACTIVE' },
+        _sum: { sharesAmount: true },
+      });
+      const available = investment.amount - (agg._sum.sharesAmount ?? 0);
+      if (slice.sharesAmount > available + 0.01) {
+        return NextResponse.json(
+          { error: `Cannot list more than your available position (€${available.toLocaleString()} available)` },
+          { status: 400 }
+        );
+      }
     }
 
-    if (investment.status === 'SOLD') {
-      return NextResponse.json({ error: 'This investment has already been fully sold' }, { status: 400 });
-    }
+    // Create all listings in a single transaction — all succeed or none do
+    const listings = await prisma.$transaction(
+      resolved.map(({ slice, investment }) => {
+        const inv = investment!;
+        const ownershipPct = (slice.sharesAmount / inv.amount) * inv.ownershipPercentage;
+        const pricePerPercent = ownershipPct > 0 ? slice.askPrice / ownershipPct : 0;
+        return prisma.listing.create({
+          data: {
+            groupId: groupId ?? null,
+            sellerId: session.userId,
+            investmentId: slice.investmentId,
+            propertyId: inv.propertyId,
+            sharesAmount: slice.sharesAmount,
+            ownershipPct,
+            askPrice: slice.askPrice,
+            pricePerPercent,
+            status: 'ACTIVE',
+          },
+        });
+      })
+    );
 
-    // Check available position (investment amount minus active listings total)
-    const activeListings = await prisma.listing.aggregate({
-      where: { investmentId, status: 'ACTIVE' },
-      _sum: { sharesAmount: true },
-    });
-    const activeTotal = activeListings._sum.sharesAmount ?? 0;
-    const availableAmount = investment.amount - activeTotal;
+    // Fire alerts once using the first slice's property (all slices are for the same property)
+    const firstInv = resolved[0]!.investment!;
+    const totalAskPrice = slices.reduce((s, sl) => s + sl.askPrice, 0);
+    const totalOwnershipPct = listings.reduce((s: number, l: { ownershipPct: number }) => s + l.ownershipPct, 0);
 
-    if (sharesAmount > availableAmount) {
-      return NextResponse.json(
-        { error: `Cannot list more than your available position (€${availableAmount.toLocaleString()} available)` },
-        { status: 400 }
-      );
-    }
+    const [newListingAlerts, priceAlerts] = await Promise.all([
+      prisma.alert.findMany({
+        where: { propertyId: firstInv.propertyId, triggerType: 'NEW_LISTING', active: true, userId: { not: session.userId } },
+        select: { userId: true },
+      }),
+      prisma.alert.findMany({
+        where: { propertyId: firstInv.propertyId, triggerType: 'LISTING_PRICE_BELOW', active: true, conditionValue: { gte: totalAskPrice }, userId: { not: session.userId } },
+        select: { userId: true },
+      }),
+    ]);
 
-    // Calculate derived fields
-    const ownershipPct = (sharesAmount / investment.amount) * investment.ownershipPercentage;
-    const pricePerPercent = askPrice / ownershipPct;
-
-    const listing = await prisma.listing.create({
-      data: {
-        sellerId: session.userId,
-        investmentId,
-        propertyId: investment.propertyId,
-        sharesAmount,
-        ownershipPct,
-        askPrice,
-        pricePerPercent,
-        status: 'ACTIVE',
-      },
-    });
-
-    // Notify users who have this property on their watchlist
-    const watchlistUsers = await prisma.watchlist.findMany({
-      where: {
-        propertyId: investment.propertyId,
-        userId: { not: session.userId },
-      },
-      select: { userId: true },
-    });
-
-    if (watchlistUsers.length > 0) {
+    const notifyUserIds = [...new Set([...newListingAlerts.map((a: { userId: string }) => a.userId), ...priceAlerts.map((a: { userId: string }) => a.userId)])];
+    if (notifyUserIds.length > 0) {
       await prisma.notification.createMany({
-        data: watchlistUsers.map((w) => ({
-          userId: w.userId,
-          type: 'WATCHLIST_LISTING' as const,
-          title: 'New listing for watched property',
-          message: `A ${ownershipPct.toFixed(2)}% stake in ${investment.property.title} is now available for €${askPrice.toLocaleString()}.`,
-          data: { listingId: listing.id, propertyId: investment.propertyId },
+        data: notifyUserIds.map((userId: string) => ({
+          userId,
+          type: 'ALERT_TRIGGERED' as const,
+          title: 'New marketplace listing',
+          message: `A ${totalOwnershipPct.toFixed(2)}% stake in ${firstInv.property.title} is now available for €${totalAskPrice.toLocaleString()}.`,
+          data: { listingId: listings[0]!.id, propertyId: firstInv.propertyId },
         })),
       });
     }
 
-    return NextResponse.json({ listing }, { status: 201 });
+    return NextResponse.json({ listings }, { status: 201 });
   } catch (error) {
     console.error('Create listing error:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json({ error: 'Failed to create listing' }, { status: 500 });

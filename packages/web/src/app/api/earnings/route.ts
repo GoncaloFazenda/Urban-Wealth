@@ -24,28 +24,30 @@ export async function GET() {
       }),
     ]);
 
-    // Group payouts by month for the history view
-    const monthlyPayouts = new Map<string, { month: string; total: number; properties: Array<{ title: string; location: string; amount: number }> }>();
+    // Group payouts by month, then by property within each month
+    type PropertyEntry = { title: string; location: string; amount: number };
+    type MonthEntry = { month: string; total: number; properties: PropertyEntry[] };
+    const monthlyPayouts = new Map<string, MonthEntry>();
 
     for (const payout of payouts) {
       const monthKey = payout.month.toISOString().slice(0, 7); // YYYY-MM
-      const existing = monthlyPayouts.get(monthKey);
-      if (existing) {
-        existing.total += payout.amount;
-        existing.properties.push({
+      const propertyId = payout.investment.propertyId;
+
+      if (!monthlyPayouts.has(monthKey)) {
+        monthlyPayouts.set(monthKey, { month: monthKey, total: 0, properties: [] });
+      }
+      const monthEntry = monthlyPayouts.get(monthKey)!;
+      monthEntry.total += payout.amount;
+
+      // Merge into existing property entry for this month if one exists
+      const propEntry = monthEntry.properties.find((p) => p.title === payout.investment.property.title);
+      if (propEntry) {
+        propEntry.amount += payout.amount;
+      } else {
+        monthEntry.properties.push({
           title: payout.investment.property.title,
           location: payout.investment.property.location,
           amount: payout.amount,
-        });
-      } else {
-        monthlyPayouts.set(monthKey, {
-          month: monthKey,
-          total: payout.amount,
-          properties: [{
-            title: payout.investment.property.title,
-            location: payout.investment.property.location,
-            amount: payout.amount,
-          }],
         });
       }
     }

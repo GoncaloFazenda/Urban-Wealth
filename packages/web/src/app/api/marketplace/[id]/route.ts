@@ -65,7 +65,8 @@ export async function GET(
   }
 }
 
-// DELETE /api/marketplace/[id] — cancel a listing (seller only)
+// DELETE /api/marketplace/[id] — cancel a listing or group (seller only)
+// [id] may be a groupId (cancels all sub-listings) or a single listing id
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -78,21 +79,23 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const listing = await prisma.listing.findUnique({ where: { id } });
-    if (!listing) {
+    // Find all active listings belonging to this group or this single listing
+    const listings = await prisma.listing.findMany({
+      where: {
+        AND: [
+          { sellerId: session.userId },
+          { status: 'ACTIVE' },
+          { OR: [{ groupId: id }, { id }] },
+        ],
+      },
+    });
+
+    if (listings.length === 0) {
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
     }
 
-    if (listing.sellerId !== session.userId) {
-      return NextResponse.json({ error: 'You can only cancel your own listings' }, { status: 403 });
-    }
-
-    if (listing.status !== 'ACTIVE') {
-      return NextResponse.json({ error: 'Only active listings can be cancelled' }, { status: 400 });
-    }
-
-    await prisma.listing.update({
-      where: { id },
+    await prisma.listing.updateMany({
+      where: { id: { in: listings.map((l) => l.id) } },
       data: { status: 'CANCELLED' },
     });
 

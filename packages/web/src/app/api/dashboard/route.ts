@@ -31,6 +31,7 @@ export async function GET() {
       estimatedAnnualIncome: number;
       status: string;
       investmentIds: string[];
+      investments: { id: string; amount: number }[];
     }>();
     for (const inv of dbInvestments) {
       if (inv.status === 'SOLD') continue; // Skip fully sold investments
@@ -40,6 +41,7 @@ export async function GET() {
         existing.ownershipPercentage += inv.ownershipPercentage;
         existing.estimatedAnnualIncome += inv.estimatedAnnualIncome;
         existing.investmentIds.push(inv.id);
+        existing.investments.push({ id: inv.id, amount: inv.amount });
         // Any PENDING investment makes the whole holding PENDING
         if (inv.status === 'PENDING') existing.status = 'Pending';
       } else {
@@ -51,6 +53,7 @@ export async function GET() {
           estimatedAnnualIncome: inv.estimatedAnnualIncome,
           status: inv.status === 'COMPLETED' || inv.status === 'PARTIALLY_SOLD' ? 'Completed' : 'Pending',
           investmentIds: [inv.id],
+          investments: [{ id: inv.id, amount: inv.amount }],
         });
       }
     }
@@ -59,6 +62,7 @@ export async function GET() {
     const investmentTransactions = dbInvestments.map((inv) => ({
       id: inv.id,
       type: 'Investment' as const,
+      propertyId: inv.propertyId,
       propertyTitle: inv.property.title,
       amount: inv.amount,
       status: inv.status === 'COMPLETED' || inv.status === 'PARTIALLY_SOLD' ? 'Completed' : 'Pending',
@@ -82,6 +86,7 @@ export async function GET() {
     const purchaseTransactions = purchases.map((t) => ({
       id: t.id,
       type: 'Purchase' as const,
+      propertyId: t.propertyId,
       propertyTitle: t.property.title,
       amount: t.amount,
       status: 'Completed',
@@ -91,6 +96,7 @@ export async function GET() {
     const saleTransactions = sales.map((t) => ({
       id: t.id,
       type: 'Sale' as const,
+      propertyId: t.propertyId,
       propertyTitle: t.property.title,
       amount: t.amount - t.platformFee,
       status: 'Completed',

@@ -93,7 +93,9 @@
     "fundingStatus": "Funding Status",
     "sharesRemaining": "{count} shares remaining",
     "propertyNotFound": "Property not found",
-    "successToast": "Successfully allocated €{amount}"
+    "successToast": "Successfully allocated €{amount}",
+    "setAlert": "Set Alert",
+    "manageAlerts": "Alert Active"
   },
   "InvestmentCalculator": {
     "title": "Investment Projection",
@@ -390,6 +392,17 @@
     "annualYield": "Annual Yield",
     "propertyValue": "Property Value"
   },
+  "MyListings": {
+    "title": "My Listings",
+    "thProperty": "Property",
+    "thAmount": "Listed",
+    "thOwnership": "Ownership",
+    "thAskPrice": "Ask Price",
+    "thStatus": "Status",
+    "thDate": "Listed",
+    "cancel": "Cancel listing",
+    "soldFor": "Net €{value}"
+  },
   "SellModal": {
     "title": "List Position for Sale",
     "currentPosition": "Current Position",
@@ -405,6 +418,8 @@
     "discountIndicator": "{value}% discount",
     "platformFee": "Platform Fee (1.5%)",
     "netProceeds": "Net Proceeds",
+    "pctLabel": "Ownership % to Sell",
+    "pctAvailable": "{value}% available",
     "listForSale": "List for Sale",
     "listing": "Listing…",
     "cancel": "Cancel",
@@ -414,10 +429,48 @@
   "Notifications": {
     "title": "Notifications",
     "subtitle": "Stay up to date with your marketplace activity and watchlist.",
+    "tabNotifications": "Notifications",
+    "tabAlerts": "My Alerts",
     "emptyTitle": "No notifications",
     "emptyMessage": "You're all caught up! Notifications will appear here when there's activity on your listings or watchlisted properties.",
     "markAllRead": "Mark all as read",
     "viewAll": "View all notifications",
     "errorTitle": "Failed to load notifications"
+  },
+  "AlertsPanel": {
+    "emptyTitle": "No alerts set",
+    "emptyMessage": "You haven't created any alerts yet. Open a property page and tap \"Set Alert\" to get notified about price drops, new listings, or yield changes.",
+    "summary": "{active} active · {total} total",
+    "triggerNewListing": "Notify on new listing",
+    "triggerYieldAbove": "Yield above",
+    "triggerPriceBelow": "Price below",
+    "yieldThreshold": "Min yield (%)",
+    "priceThreshold": "Max price (€)",
+    "edit": "Edit threshold",
+    "pause": "Pause alert",
+    "resume": "Resume alert",
+    "delete": "Delete alert",
+    "errorTitle": "Failed to load alerts"
+  },
+  "Alerts": {
+    "title": "Set Alert",
+    "activeAlerts": "Active Alerts",
+    "selectTrigger": "Choose Alert Type",
+    "triggerNewListing": "New Listing",
+    "triggerNewListingDesc": "Get notified when anyone lists a position for sale on this property.",
+    "triggerYieldAbove": "Yield Above",
+    "triggerYieldAboveDesc": "Get notified when the annual yield goes above your threshold. Current yield: {current}%.",
+    "triggerPriceBelow": "Price Below",
+    "triggerPriceBelowDesc": "Get notified when a marketplace listing appears at or below your target price.",
+    "yieldThreshold": "Minimum Yield (%)",
+    "priceThreshold": "Maximum Price (€)",
+    "currentYield": "Current yield: {value}%",
+    "createAlert": "Create Alert",
+    "updateAlert": "Update Alert",
+    "saving": "Saving…",
+    "close": "Close",
+    "remove": "Remove",
+    "alertCreated": "Alert created successfully",
+    "alertUpdated": "Alert updated successfully"
   }
 }

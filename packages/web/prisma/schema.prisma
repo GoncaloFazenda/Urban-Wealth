@@ -24,6 +24,7 @@ model User {
   purchases     Trade[]         @relation("UserPurchases")
   sales         Trade[]         @relation("UserSales")
   notifications Notification[]
+  alerts        Alert[]
 
   @@map("users")
 }
@@ -46,6 +47,7 @@ model Property {
   watchlist             Watchlist[]
   listings              Listing[]
   trades                Trade[]
+  alerts                Alert[]
 
   @@map("properties")
 }
@@ -140,6 +142,7 @@ enum InvestmentStatus {
 
 model Listing {
   id              String        @id @default(uuid())
+  groupId         String?       @map("group_id")
   sellerId        String        @map("seller_id")
   investmentId    String        @map("investment_id")
   propertyId      String        @map("property_id")
@@ -156,6 +159,7 @@ model Listing {
   property   Property   @relation(fields: [propertyId], references: [id])
   trade      Trade?
 
+  @@index([groupId])
   @@map("listings")
 }
 
@@ -209,4 +213,28 @@ enum TradeStatus {
 enum NotificationType {
   LISTING_PURCHASED
   WATCHLIST_LISTING
+  ALERT_TRIGGERED
+}
+
+model Alert {
+  id             String           @id @default(uuid())
+  userId         String           @map("user_id")
+  propertyId     String           @map("property_id")
+  triggerType    AlertTriggerType @map("trigger_type")
+  conditionValue Float?           @map("condition_value")
+  active         Boolean          @default(true)
+  createdAt      DateTime         @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@index([propertyId, triggerType, active])
+  @@index([userId])
+  @@map("alerts")
+}
+
+enum AlertTriggerType {
+  NEW_LISTING
+  YIELD_ABOVE
+  LISTING_PRICE_BELOW
 }

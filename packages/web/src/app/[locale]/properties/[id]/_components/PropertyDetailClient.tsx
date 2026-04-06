@@ -9,13 +9,15 @@ import type { Property } from '@urban-wealth/core';
 import { useAuth } from '@/providers/AuthProvider';
 import { StatusBadge } from '@/components/property/StatusBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, ChevronLeft, MapPin } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, MapPin, BellRing } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { InvestmentCalculator } from './InvestmentCalculator';
+import { AlertModal } from './AlertModal';
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { ConfirmModal } from './ConfirmModal';
 import { Metric } from './Metric';
+import { SecondaryOffers } from './SecondaryOffers';
 
 interface PropertyDetailClientProps {
   initialData: Property;
@@ -30,7 +32,20 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
   const [investAmount, setInvestAmount] = useState(0);
   const [isInvesting, setIsInvesting] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [showAlertModal, setShowAlertModal] = useState(false);
   const t = useTranslations('PropertyDetail');
+
+  const { data: alertsData } = useQuery<{ alerts: { id: string; active: boolean }[] }>({
+    queryKey: ['alerts', params.id],
+    queryFn: async () => {
+      const res = await fetchWithAuth(`/api/alerts?propertyId=${params.id as string}`);
+      if (!res.ok) return { alerts: [] };
+      return res.json();
+    },
+    enabled: !!user,
+  });
+
+  const hasActiveAlert = (alertsData?.alerts ?? []).some((a) => a.active);
 
   const { data, refetch } = useQuery<{ property: Property }>({
     queryKey: ['property', params.id],
@@ -149,6 +164,19 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
             <div className="flex items-center gap-1 text-[13px] font-medium text-muted">
               <MapPin className="w-3.5 h-3.5" /> {p.location}
             </div>
+            {user && (
+              <button
+                onClick={() => setShowAlertModal(true)}
+                className={`ml-auto flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[12px] font-semibold transition-all ${
+                  hasActiveAlert
+                    ? 'border-primary-500/40 bg-primary-500/10 text-primary-500 hover:bg-primary-500/15'
+                    : 'border-border text-muted hover:text-foreground hover:bg-surface-hover hover:border-primary-500/30'
+                }`}
+              >
+                <BellRing className={`w-3.5 h-3.5 ${hasActiveAlert ? 'text-primary-500' : ''}`} />
+                {hasActiveAlert ? t('manageAlerts') : t('setAlert')}
+              </button>
+            )}
           </div>
 
           <h1 className="font-display text-[32px] sm:text-[40px] font-bold text-foreground tracking-tight mb-2 leading-tight">
@@ -200,6 +228,8 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
         </div>
       </div>
 
+      <SecondaryOffers propertyId={p.id} />
+
       {/* Modal */}
       <AnimatePresence>
         {showModal && (
@@ -212,6 +242,16 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
           />
         )}
       </AnimatePresence>
+
+      {/* Alert Modal */}
+      {showAlertModal && (
+        <AlertModal
+          propertyId={p.id}
+          propertyTitle={p.title}
+          currentYield={p.annualYield}
+          onClose={() => setShowAlertModal(false)}
+        />
+      )}
     </div>
   );
 }

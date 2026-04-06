@@ -28,180 +28,156 @@ export async function POST(
       );
     }
 
-    const { id: listingId } = await params;
+    // [id] is either a groupId (multi-investment sell) or a single listing id
+    const { id } = await params;
 
     const result = await prisma.$transaction(async (tx) => {
-      // Lock listing row
-      const [lockedListing] = await tx.$queryRaw<
-        Array<{
-          id: string;
-          seller_id: string;
-          investment_id: string;
-          property_id: string;
-          shares_amount: number;
-          ownership_pct: number;
-          ask_price: number;
-          price_per_percent: number;
-          status: string;
-        }>
-      >`SELECT * FROM listings WHERE id = ${listingId} FOR UPDATE`;
+      // Lock all sub-listings belonging to the group (or the single listing)
+      type LockedRow = {
+        id: string;
+        group_id: string | null;
+        seller_id: string;
+        investment_id: string;
+        property_id: string;
+        shares_amount: number;
+        ownership_pct: number;
+        ask_price: number;
+        status: string;
+      };
+      const lockedListings = await tx.$queryRaw<LockedRow[]>`
+        SELECT * FROM listings
+        WHERE (group_id = ${id} OR id = ${id})
+          AND status = 'ACTIVE'
+        FOR UPDATE
+      `;
 
-      if (!lockedListing) {
+      if (lockedListings.length === 0) {
         throw Object.assign(new Error('Listing not found'), { code: 'NOT_FOUND' });
       }
 
-      if (lockedListing.status !== 'ACTIVE') {
-        throw Object.assign(new Error('This listing is no longer available'), { code: 'NOT_ACTIVE' });
-      }
+      const first = lockedListings[0]!;
 
-      if (lockedListing.seller_id === session.userId) {
+      if (first.seller_id === session.userId) {
         throw Object.assign(new Error('You cannot purchase your own listing'), { code: 'SELF_PURCHASE' });
       }
 
-      const askPrice = lockedListing.ask_price;
-      const platformFee = askPrice * PLATFORM_FEE_RATE;
+      const totalAskPrice = lockedListings.reduce((s, l) => s + l.ask_price, 0);
+      const totalPlatformFee = totalAskPrice * PLATFORM_FEE_RATE;
+      const sellerProceeds = totalAskPrice - totalPlatformFee;
 
       // Check buyer wallet balance
-      const buyerWallet = await tx.wallet.findUnique({
-        where: { userId: session.userId },
-      });
-
-      if (!buyerWallet || buyerWallet.balance < askPrice) {
+      const buyerWallet = await tx.wallet.findUnique({ where: { userId: session.userId } });
+      if (!buyerWallet || buyerWallet.balance < totalAskPrice) {
         throw Object.assign(
-          new Error(`Insufficient wallet balance. You need €${askPrice.toLocaleString()} but have €${(buyerWallet?.balance ?? 0).toLocaleString()}`),
+          new Error(`Insufficient wallet balance. You need €${totalAskPrice.toLocaleString()} but have €${(buyerWallet?.balance ?? 0).toLocaleString()}`),
           { code: 'INSUFFICIENT_BALANCE' }
         );
       }
 
-      // Deduct from buyer wallet
+      // Deduct from buyer, credit seller
       await tx.wallet.update({
         where: { userId: session.userId },
-        data: { balance: { decrement: askPrice } },
+        data: { balance: { decrement: totalAskPrice } },
       });
-
-      // Credit seller wallet (ask price minus platform fee)
-      const sellerProceeds = askPrice - platformFee;
       await tx.wallet.upsert({
-        where: { userId: lockedListing.seller_id },
+        where: { userId: first.seller_id },
         update: { balance: { increment: sellerProceeds } },
-        create: { userId: lockedListing.seller_id, balance: sellerProceeds },
+        create: { userId: first.seller_id, balance: sellerProceeds },
       });
 
-      // Get the property for recalculating buyer's investment estimates
-      const property = await tx.property.findUniqueOrThrow({
-        where: { id: lockedListing.property_id },
-      });
-
-      // Get seller's investment to reduce it
-      const sellerInvestment = await tx.investment.findUniqueOrThrow({
-        where: { id: lockedListing.investment_id },
-      });
-
-      // Create new investment for buyer
-      const buyerOwnershipPct = lockedListing.ownership_pct;
-      const estimatedAnnualIncome =
-        property.totalValue * (property.annualYield / 100) * (buyerOwnershipPct / 100);
-      const estimatedAppreciationGain =
-        property.totalValue * (property.projectedAppreciation / 100) * (buyerOwnershipPct / 100);
-
-      // Yield starts on the 1st of next month
+      const property = await tx.property.findUniqueOrThrow({ where: { id: first.property_id } });
       const now = new Date();
       const yieldStartDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
-      await tx.investment.create({
-        data: {
-          userId: session.userId,
-          propertyId: lockedListing.property_id,
-          amount: lockedListing.shares_amount,
-          ownershipPercentage: buyerOwnershipPct,
-          estimatedAnnualIncome,
-          estimatedAppreciationGain,
-          platformFee: 0, // No additional platform fee on the buyer's new investment record
-          status: 'COMPLETED',
-          yieldStartDate,
-        },
-      });
+      // Process each sub-listing independently
+      const trades = [];
+      for (const listing of lockedListings) {
+        const sellerInvestment = await tx.investment.findUniqueOrThrow({
+          where: { id: listing.investment_id },
+        });
 
-      // Reduce seller's investment
-      const newSellerAmount = sellerInvestment.amount - lockedListing.shares_amount;
-      const newSellerOwnership = sellerInvestment.ownershipPercentage - lockedListing.ownership_pct;
+        // Create buyer investment for this slice
+        const estimatedAnnualIncome =
+          property.totalValue * (property.annualYield / 100) * (listing.ownership_pct / 100);
+        const estimatedAppreciationGain =
+          property.totalValue * (property.projectedAppreciation / 100) * (listing.ownership_pct / 100);
 
-      if (newSellerAmount <= 0.01) {
-        // Fully sold — mark investment as SOLD
-        await tx.investment.update({
-          where: { id: sellerInvestment.id },
+        await tx.investment.create({
           data: {
-            amount: 0,
-            ownershipPercentage: 0,
-            estimatedAnnualIncome: 0,
-            estimatedAppreciationGain: 0,
-            status: 'SOLD',
+            userId: session.userId,
+            propertyId: listing.property_id,
+            amount: listing.shares_amount,
+            ownershipPercentage: listing.ownership_pct,
+            estimatedAnnualIncome,
+            estimatedAppreciationGain,
+            platformFee: 0,
+            status: 'COMPLETED',
+            yieldStartDate,
           },
         });
-      } else {
-        // Partially sold — reduce proportionally and recalculate estimates
-        const newEstimatedAnnualIncome =
-          property.totalValue * (property.annualYield / 100) * (newSellerOwnership / 100);
-        const newEstimatedAppreciationGain =
-          property.totalValue * (property.projectedAppreciation / 100) * (newSellerOwnership / 100);
 
-        await tx.investment.update({
-          where: { id: sellerInvestment.id },
+        // Reduce seller investment
+        const newAmount = sellerInvestment.amount - listing.shares_amount;
+        const newOwnership = sellerInvestment.ownershipPercentage - listing.ownership_pct;
+
+        if (newAmount <= 0.01) {
+          await tx.investment.update({
+            where: { id: sellerInvestment.id },
+            data: { amount: 0, ownershipPercentage: 0, estimatedAnnualIncome: 0, estimatedAppreciationGain: 0, status: 'SOLD' },
+          });
+        } else {
+          await tx.investment.update({
+            where: { id: sellerInvestment.id },
+            data: {
+              amount: newAmount,
+              ownershipPercentage: newOwnership,
+              estimatedAnnualIncome: property.totalValue * (property.annualYield / 100) * (newOwnership / 100),
+              estimatedAppreciationGain: property.totalValue * (property.projectedAppreciation / 100) * (newOwnership / 100),
+              status: 'PARTIALLY_SOLD',
+            },
+          });
+        }
+
+        // Trade record per sub-listing
+        const sliceFee = listing.ask_price * PLATFORM_FEE_RATE;
+        const trade = await tx.trade.create({
           data: {
-            amount: newSellerAmount,
-            ownershipPercentage: newSellerOwnership,
-            estimatedAnnualIncome: newEstimatedAnnualIncome,
-            estimatedAppreciationGain: newEstimatedAppreciationGain,
-            status: 'PARTIALLY_SOLD',
+            listingId: listing.id,
+            buyerId: session.userId,
+            sellerId: listing.seller_id,
+            propertyId: listing.property_id,
+            amount: listing.ask_price,
+            platformFee: sliceFee,
+            status: 'COMPLETED',
           },
         });
+        trades.push(trade);
+
+        // Mark sub-listing SOLD
+        await tx.listing.update({ where: { id: listing.id }, data: { status: 'SOLD' } });
+
+        // Cancel any remaining active listings for this investment that are now overhang
+        if (newAmount <= 0.01) {
+          await tx.listing.updateMany({
+            where: { investmentId: listing.investment_id, status: 'ACTIVE' },
+            data: { status: 'CANCELLED' },
+          });
+        }
       }
 
-      // Create trade record
-      const trade = await tx.trade.create({
-        data: {
-          listingId,
-          buyerId: session.userId,
-          sellerId: lockedListing.seller_id,
-          propertyId: lockedListing.property_id,
-          amount: askPrice,
-          platformFee,
-          status: 'COMPLETED',
-        },
-      });
-
-      // Mark listing as SOLD
-      await tx.listing.update({
-        where: { id: listingId },
-        data: { status: 'SOLD' },
-      });
-
-      // Cancel any other active listings from this seller for the same investment
-      // that would exceed the remaining position
-      const remainingAmount = newSellerAmount <= 0.01 ? 0 : newSellerAmount;
-      if (remainingAmount <= 0) {
-        // Cancel all remaining active listings for this investment
-        await tx.listing.updateMany({
-          where: {
-            investmentId: lockedListing.investment_id,
-            status: 'ACTIVE',
-          },
-          data: { status: 'CANCELLED' },
-        });
-      }
-
-      // Notify the seller
+      // Single notification to seller summarising the whole group
+      const totalOwnership = lockedListings.reduce((s, l) => s + l.ownership_pct, 0);
       await tx.notification.create({
         data: {
-          userId: lockedListing.seller_id,
+          userId: first.seller_id,
           type: 'LISTING_PURCHASED',
           title: 'Your listing was purchased',
-          message: `Your ${lockedListing.ownership_pct.toFixed(2)}% stake in ${property.title} was purchased for €${askPrice.toLocaleString()}. You received €${sellerProceeds.toLocaleString()} after fees.`,
-          data: { tradeId: trade.id, listingId, propertyId: property.id },
+          message: `Your ${totalOwnership.toFixed(2)}% stake in ${property.title} was purchased for €${totalAskPrice.toLocaleString()}. You received €${sellerProceeds.toLocaleString()} after fees.`,
+          data: { tradeIds: trades.map((t) => t.id), propertyId: property.id },
         },
       });
 
-      return trade;
+      return trades[0]!;
     });
 
     return NextResponse.json({ trade: result }, { status: 201 });

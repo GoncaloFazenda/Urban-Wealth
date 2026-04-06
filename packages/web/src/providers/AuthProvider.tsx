@@ -46,10 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = await res.json();
         setUser(data.user);
       } else {
+        // Refresh failed — clear any stale cookies so middleware stops
+        // blocking the login page due to a leftover access_token.
         setUser(null);
+        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
       }
     } catch {
-      // Not authenticated — that's fine
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -60,16 +63,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, [checkSession]);
 
-  // Re-check session when user returns to the tab (access token may have expired)
+  // When fetchWithAuth detects that the refresh token has expired, clear state
+  // and call logout to remove stale cookies so the login page becomes accessible.
   useEffect(() => {
-    function handleVisibilityChange() {
-      if (document.visibilityState === 'visible') {
-        checkSession();
-      }
+    async function handleSessionExpired() {
+      setUser(null);
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
     }
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [checkSession]);
+    window.addEventListener('auth:session-expired', handleSessionExpired);
+    return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
+  }, []);
 
   const login = useCallback(
     async (email: string, password: string) => {

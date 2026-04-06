@@ -1,11 +1,12 @@
 'use client';
 
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import type { Property } from '@urban-wealth/core';
 import { useTranslations } from 'next-intl';
 import { useWatchlist } from '@/hooks/useWatchlist';
 import { useAuth } from '@/providers/AuthProvider';
+import { useState, useEffect, useRef } from 'react';
 
 interface PropertyCardProps {
   property: Property;
@@ -45,30 +46,62 @@ function StatusBadge({ status }: { status: Property['status'] }) {
 function BookmarkButton({ propertyId }: { propertyId: string }) {
   const { user } = useAuth();
   const { watchlistIds, toggle } = useWatchlist();
+  const router = useRouter();
   const isSaved = watchlistIds.has(propertyId);
+  const [showPopover, setShowPopover] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  if (!user) return null;
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) {
+      setShowPopover(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setShowPopover(false), 3000);
+      return;
+    }
+    toggle(propertyId);
+  };
 
   return (
-    <button
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggle(propertyId);
-      }}
-      className="flex h-8 w-8 items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 transition-all hover:bg-black/60 hover:scale-110"
-      aria-label={isSaved ? 'Remove from watchlist' : 'Add to watchlist'}
-    >
-      <svg
-        className={`h-4 w-4 transition-colors ${isSaved ? 'text-primary-500 fill-primary-500' : 'text-white'}`}
-        fill={isSaved ? 'currentColor' : 'none'}
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
+    <div className="relative">
+      <button
+        onClick={handleClick}
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 transition-all hover:bg-black/60 hover:scale-110"
+        aria-label={isSaved ? 'Remove from watchlist' : 'Add to watchlist'}
       >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-      </svg>
-    </button>
+        <svg
+          className={`h-4 w-4 transition-colors ${isSaved ? 'text-primary-500 fill-primary-500' : 'text-white'}`}
+          fill={isSaved ? 'currentColor' : 'none'}
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+        </svg>
+      </button>
+
+      {showPopover && (
+        <div
+          className="absolute right-0 top-10 z-10 w-max rounded-lg border border-border bg-card shadow-elevated px-3 py-2 text-[12px] font-medium text-foreground animate-fade-in"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        >
+          <button
+            className="text-primary-500 font-semibold hover:text-primary-400 transition-colors"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push('/login'); }}
+          >
+            Sign in
+          </button>
+          {' '}to save properties
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -93,7 +126,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <div className="absolute bottom-3 left-3">
           <StatusBadge status={property.status} />
         </div>
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-3 right-3 transition-opacity opacity-0 group-hover:opacity-100">
           <BookmarkButton propertyId={property.id} />
         </div>
       </div>

@@ -27,7 +27,9 @@ export {
 
 export {
   createListingSchema,
+  createBulkListingSchema,
   purchaseListingSchema,
   type CreateListingInput,
+  type CreateBulkListingInput,
   type PurchaseListingInput,
 } from './listingSchema';

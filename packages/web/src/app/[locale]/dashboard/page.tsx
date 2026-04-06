@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { SummaryCard } from './_components/SummaryCard';
 import { SellModal } from './_components/SellModal';
+import { MyListings } from './_components/MyListings';
+import { HoldingRow } from './_components/HoldingRow';
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 const AllocationChart = dynamic(() => import('./_components/AllocationChart').then(m => m.AllocationChart), { ssr: false });
@@ -29,10 +31,12 @@ interface DashboardData {
     estimatedAnnualIncome: number;
     status: string;
     investmentIds: string[];
+    investments: { id: string; amount: number }[];
   }>;
   investments: Array<{
     id: string;
     type?: string;
+    propertyId?: string;
     propertyTitle?: string;
     amount: number;
     status: string;
@@ -53,12 +57,15 @@ interface DashboardData {
 export default function DashboardPage() {
   const { user } = useAuth();
   const t = useTranslations('Dashboard');
+  const [txPage, setTxPage] = useState(1);
+  const TX_PAGE_SIZE = 10;
+
   const [sellHolding, setSellHolding] = useState<{
     propertyId: string;
     propertyTitle: string;
     amount: number;
     ownershipPercentage: number;
-    investmentId: string;
+    investments: { id: string; amount: number }[];
   } | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery<DashboardData>({
@@ -152,40 +159,22 @@ export default function DashboardPage() {
             <h2 className="text-[18px] font-display font-bold text-foreground mb-4">{t('currentHoldings')}</h2>
             <div className="grid gap-3 mb-12">
               {data.holdings.map((holding) => (
-                <Link
+                <HoldingRow
                   key={holding.propertyId}
-                  href={`/properties/${holding.propertyId}`}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card px-5 py-4 shadow-sm hover:shadow-md hover:border-primary-500/30 transition-all"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-bold text-foreground truncate mb-0.5">{holding.propertyTitle}</p>
-                    <p className="text-[13px] font-medium text-muted">{t('equityOwnership', { value: holding.ownershipPercentage.toFixed(2) })}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <p className="text-[16px] font-bold text-foreground">€{holding.amount.toLocaleString()}</p>
-                      <p className="text-[12px] font-semibold text-primary-500 uppercase tracking-widest mt-0.5">{holding.status}</p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setSellHolding({
-                          propertyId: holding.propertyId,
-                          propertyTitle: holding.propertyTitle,
-                          amount: holding.amount,
-                          ownershipPercentage: holding.ownershipPercentage,
-                          investmentId: holding.investmentIds?.[0] ?? holding.propertyId,
-                        });
-                      }}
-                      className="rounded-md border border-border px-3 py-1.5 text-[12px] font-semibold text-muted hover:text-foreground hover:bg-surface-hover hover:border-primary-500/30 transition-all"
-                    >
-                      {t('sellPosition')}
-                    </button>
-                  </div>
-                </Link>
+                  holding={holding}
+                  transactions={data.investments}
+                  onSell={() => setSellHolding({
+                    propertyId: holding.propertyId,
+                    propertyTitle: holding.propertyTitle,
+                    amount: holding.amount,
+                    ownershipPercentage: holding.ownershipPercentage,
+                    investments: holding.investments,
+                  })}
+                />
               ))}
             </div>
+
+            <MyListings />
 
             {data.investments.length > 0 && (
               <>
@@ -202,7 +191,7 @@ export default function DashboardPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                      {data.investments.map((inv) => (
+                      {data.investments.slice((txPage - 1) * TX_PAGE_SIZE, txPage * TX_PAGE_SIZE).map((inv) => (
                         <tr key={inv.id} className="hover:bg-surface-hover/50 transition-colors">
                           <td className="px-5 py-3.5 text-muted font-medium">{new Date(inv.createdAt).toLocaleDateString()}</td>
                           <td className="px-5 py-3.5">
@@ -230,6 +219,29 @@ export default function DashboardPage() {
                     </tbody>
                   </table>
                 </div>
+                {data.investments.length > TX_PAGE_SIZE && (
+                  <div className="flex items-center justify-between mt-3 px-1">
+                    <p className="text-[12px] text-muted">
+                      {(txPage - 1) * TX_PAGE_SIZE + 1}–{Math.min(txPage * TX_PAGE_SIZE, data.investments.length)} of {data.investments.length}
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setTxPage((p) => Math.max(1, p - 1))}
+                        disabled={txPage === 1}
+                        className="rounded-md border border-border px-3 py-1.5 text-[12px] font-semibold text-muted hover:text-foreground hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Previous
+                      </button>
+                      <button
+                        onClick={() => setTxPage((p) => Math.min(Math.ceil(data.investments.length / TX_PAGE_SIZE), p + 1))}
+                        disabled={txPage >= Math.ceil(data.investments.length / TX_PAGE_SIZE)}
+                        className="rounded-md border border-border px-3 py-1.5 text-[12px] font-semibold text-muted hover:text-foreground hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
 
@@ -254,7 +266,6 @@ export default function DashboardPage() {
       {sellHolding && (
         <SellModal
           holding={sellHolding}
-          investmentId={sellHolding.investmentId}
           onClose={() => setSellHolding(null)}
           onSuccess={() => {
             setSellHolding(null);

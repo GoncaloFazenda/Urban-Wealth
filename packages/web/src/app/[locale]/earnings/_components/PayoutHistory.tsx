@@ -77,29 +77,38 @@ function MonthRow({ month }: { month: PayoutMonth }) {
             +€{month.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
           <ChevronDown
-            className={`w-4 h-4 text-muted transition-transform ${expanded ? 'rotate-180' : ''}`}
+            className="w-4 h-4 text-muted transition-transform duration-300"
+            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </div>
       </button>
 
-      {expanded && (
-        <div className="border-t border-border px-5 py-3 bg-muted-bg/50">
-          {month.properties.map((prop, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-between py-2.5 border-b border-border last:border-b-0"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-medium text-foreground truncate">{prop.title}</p>
-                <p className="text-[11px] text-muted truncate">{prop.location}</p>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateRows: expanded ? '1fr' : '0fr',
+          transition: 'grid-template-rows 0.3s ease',
+        }}
+      >
+        <div style={{ overflow: 'hidden' }}>
+          <div className="border-t border-border px-5 py-3 bg-muted-bg/50">
+            {month.properties.map((prop, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between py-2.5 border-b border-border last:border-b-0"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium text-foreground truncate">{prop.title}</p>
+                  <p className="text-[11px] text-muted truncate">{prop.location}</p>
+                </div>
+                <span className="text-[13px] font-semibold text-positive-400">
+                  +€{prop.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
               </div>
-              <span className="text-[13px] font-semibold text-positive-400">
-                +€{prop.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
