@@ -9,7 +9,7 @@ const AUTH_PAGES = ['/login', '/register'];
 
 const intlMiddleware = createMiddleware(routing);
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip API routes entirely — no locale prefix, no auth redirect
@@ -23,8 +23,7 @@ export async function middleware(request: NextRequest) {
   const localePattern = new RegExp(`^/(${routing.locales.join('|')})(/|$)`);
   const logicalPath = pathname.replace(localePattern, '/').replace(/\/+$/, '') || '/';
 
-  let accessToken = request.cookies.get(AUTH_CONSTANTS.COOKIE_ACCESS_TOKEN)?.value;
-  const refreshToken = request.cookies.get(AUTH_CONSTANTS.COOKIE_REFRESH_TOKEN)?.value;
+  const accessToken = request.cookies.get(AUTH_CONSTANTS.COOKIE_ACCESS_TOKEN)?.value;
 
   const isProtected = PROTECTED_PATHS.some(
     (p) => logicalPath === p || logicalPath.startsWith(`${p}/`)
@@ -32,31 +31,6 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = AUTH_PAGES.some(
     (p) => logicalPath === p || logicalPath.startsWith(`${p}/`)
   );
-
-  // If accessing a protected page with no access token but a valid refresh token,
-  // try to refresh before redirecting to login
-  if (isProtected && !accessToken && refreshToken) {
-    try {
-      const refreshUrl = new URL('/api/auth/refresh', request.url);
-      const refreshRes = await fetch(refreshUrl.toString(), {
-        method: 'POST',
-        headers: { Cookie: `${AUTH_CONSTANTS.COOKIE_REFRESH_TOKEN}=${refreshToken}` },
-      });
-
-      if (refreshRes.ok) {
-        // Extract the new cookies from the refresh response
-        const setCookies = refreshRes.headers.getSetCookie();
-        const response = intlMiddleware(request);
-        addSecurityHeaders(response);
-        for (const cookie of setCookies) {
-          response.headers.append('Set-Cookie', cookie);
-        }
-        return response;
-      }
-    } catch {
-      // Refresh failed — fall through to login redirect
-    }
-  }
 
   // Redirect unauthenticated users from protected pages
   if (isProtected && !accessToken) {
@@ -102,7 +76,7 @@ function addSecurityHeaders(response: NextResponse) {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline'",
-      "font-src 'self'",
+      "font-src 'self' data:",
       "img-src 'self' https://picsum.photos https://*.picsum.photos data: blob:",
       "connect-src 'self'",
       "frame-ancestors 'none'",

@@ -6,7 +6,7 @@ import { registerSchema, type RegisterInput } from '@urban-wealth/core';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Link } from '@/i18n/navigation';
 import { FormField } from '@/components/ui/FormField';
 import { PasswordInput } from '@/components/ui/PasswordInput';
@@ -14,9 +14,16 @@ import { useTranslations } from 'next-intl';
 import { getSafeRedirect } from '@/lib/constants';
 
 function RegisterPageContent() {
-  const { register: authRegister } = useAuth();
+  const { register: authRegister, user, isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // If session was silently restored, redirect away from the register page.
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.replace(getSafeRedirect(searchParams.get('redirect')));
+    }
+  }, [user, isLoading, router, searchParams]);
   const [serverError, setServerError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const t = useTranslations('Register');
