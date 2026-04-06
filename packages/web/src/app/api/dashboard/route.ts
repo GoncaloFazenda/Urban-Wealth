@@ -30,13 +30,16 @@ export async function GET() {
       ownershipPercentage: number;
       estimatedAnnualIncome: number;
       status: string;
+      investmentIds: string[];
     }>();
     for (const inv of dbInvestments) {
+      if (inv.status === 'SOLD') continue; // Skip fully sold investments
       const existing = holdingsMap.get(inv.propertyId);
       if (existing) {
         existing.amount += inv.amount;
         existing.ownershipPercentage += inv.ownershipPercentage;
         existing.estimatedAnnualIncome += inv.estimatedAnnualIncome;
+        existing.investmentIds.push(inv.id);
         // Any PENDING investment makes the whole holding PENDING
         if (inv.status === 'PENDING') existing.status = 'Pending';
       } else {
@@ -46,19 +49,59 @@ export async function GET() {
           amount: inv.amount,
           ownershipPercentage: inv.ownershipPercentage,
           estimatedAnnualIncome: inv.estimatedAnnualIncome,
-          status: inv.status === 'COMPLETED' ? 'Completed' : 'Pending',
+          status: inv.status === 'COMPLETED' || inv.status === 'PARTIALLY_SOLD' ? 'Completed' : 'Pending',
+          investmentIds: [inv.id],
         });
       }
     }
 
-    // Raw event log for the transaction history
-    const investments = dbInvestments.map((inv) => ({
+    // Raw event log for the transaction history (primary investments)
+    const investmentTransactions = dbInvestments.map((inv) => ({
       id: inv.id,
+      type: 'Investment' as const,
       propertyTitle: inv.property.title,
       amount: inv.amount,
-      status: inv.status === 'COMPLETED' ? 'Completed' : 'Pending',
+      status: inv.status === 'COMPLETED' || inv.status === 'PARTIALLY_SOLD' ? 'Completed' : 'Pending',
       createdAt: inv.createdAt.toISOString(),
     }));
+
+    // Secondary market trades (purchases & sales)
+    const [purchases, sales] = await Promise.all([
+      prisma.trade.findMany({
+        where: { buyerId: session.userId },
+        include: { property: { select: { title: true } } },
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.trade.findMany({
+        where: { sellerId: session.userId },
+        include: { property: { select: { title: true } } },
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+
+    const purchaseTransactions = purchases.map((t) => ({
+      id: t.id,
+      type: 'Purchase' as const,
+      propertyTitle: t.property.title,
+      amount: t.amount,
+      status: 'Completed',
+      createdAt: t.createdAt.toISOString(),
+    }));
+
+    const saleTransactions = sales.map((t) => ({
+      id: t.id,
+      type: 'Sale' as const,
+      propertyTitle: t.property.title,
+      amount: t.amount - t.platformFee,
+      status: 'Completed',
+      createdAt: t.createdAt.toISOString(),
+    }));
+
+    const investments = [
+      ...investmentTransactions,
+      ...purchaseTransactions,
+      ...saleTransactions,
+    ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     // --- Analytics ---
 

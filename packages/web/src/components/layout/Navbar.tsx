@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { NotificationBell } from '@/components/layout/NotificationBell';
 import { routing } from '@/i18n/routing';
 
 export function Navbar() {
@@ -78,6 +79,9 @@ export function Navbar() {
                 <NavLink href="/dashboard" active={isActive('/dashboard')}>
                   {t('dashboard')}
                 </NavLink>
+                <NavLink href="/marketplace" active={isActive('/marketplace')}>
+                  {t('marketplace')}
+                </NavLink>
                
               </>
             )}
@@ -91,6 +95,9 @@ export function Navbar() {
           {/* Auth, Theme & Language */}
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
+
+            {/* Notification Bell */}
+            {user && <NotificationBell />}
 
             {/* Language Switcher */}
             <div className="flex items-center rounded-md border border-border overflow-hidden text-[12px] font-semibold">
@@ -160,8 +167,10 @@ export function Navbar() {
             {user && (
               <>
                 <MobileLink href="/dashboard" onClick={() => setMobileOpen(false)} active={isActive('/dashboard')}>{t('dashboard')}</MobileLink>
+                <MobileLink href="/marketplace" onClick={() => setMobileOpen(false)} active={isActive('/marketplace')}>{t('marketplace')}</MobileLink>
                 <MobileLink href="/earnings" onClick={() => setMobileOpen(false)} active={isActive('/earnings')}>{t('earnings')}</MobileLink>
                 <MobileLink href="/favorites" onClick={() => setMobileOpen(false)} active={isActive('/favorites')}>{t('favorites')}</MobileLink>
+                <MobileLink href="/notifications" onClick={() => setMobileOpen(false)} active={isActive('/notifications')}>{t('notifications')}</MobileLink>
                 <MobileLink href="/profile" onClick={() => setMobileOpen(false)} active={isActive('/profile')}>{t('profile')}</MobileLink>
               </>
             )}
@@ -273,6 +282,7 @@ function UserDropdown({ user, onLogout }: { user: { fullName: string }; onLogout
         <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl border border-border bg-card shadow-elevated py-1.5 z-50 animate-fade-in">
           <DropdownLink href="/earnings" onClick={() => setOpen(false)}>{t('earnings')}</DropdownLink>
           <DropdownLink href="/favorites" onClick={() => setOpen(false)}>{t('favorites')}</DropdownLink>
+          <DropdownLink href="/notifications" onClick={() => setOpen(false)}>{t('notifications')}</DropdownLink>
           <DropdownLink href="/profile" onClick={() => setOpen(false)}>{t('profile')}</DropdownLink>
           <div className="my-1.5 border-t border-border" />
           <button

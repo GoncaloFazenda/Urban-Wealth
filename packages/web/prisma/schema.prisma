@@ -20,6 +20,10 @@ model User {
   watchlist    Watchlist[]
   wallet       Wallet?
   yieldPayouts YieldPayout[]
+  listings      Listing[]       @relation("UserListings")
+  purchases     Trade[]         @relation("UserPurchases")
+  sales         Trade[]         @relation("UserSales")
+  notifications Notification[]
 
   @@map("users")
 }
@@ -40,6 +44,8 @@ model Property {
   createdAt             DateTime       @default(now()) @map("created_at")
   investments           Investment[]
   watchlist             Watchlist[]
+  listings              Listing[]
+  trades                Trade[]
 
   @@map("properties")
 }
@@ -60,6 +66,7 @@ model Investment {
   user     User     @relation(fields: [userId], references: [id])
   property Property @relation(fields: [propertyId], references: [id])
   payouts  YieldPayout[]
+  listings Listing[]
 
   @@map("investments")
 }
@@ -127,4 +134,79 @@ model YieldPayout {
 enum InvestmentStatus {
   COMPLETED
   PENDING
+  PARTIALLY_SOLD
+  SOLD
+}
+
+model Listing {
+  id              String        @id @default(uuid())
+  sellerId        String        @map("seller_id")
+  investmentId    String        @map("investment_id")
+  propertyId      String        @map("property_id")
+  sharesAmount    Float         @map("shares_amount")
+  ownershipPct    Float         @map("ownership_pct")
+  askPrice        Float         @map("ask_price")
+  pricePerPercent Float         @map("price_per_percent")
+  status          ListingStatus @default(ACTIVE)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  seller     User       @relation("UserListings", fields: [sellerId], references: [id])
+  investment Investment @relation(fields: [investmentId], references: [id])
+  property   Property   @relation(fields: [propertyId], references: [id])
+  trade      Trade?
+
+  @@map("listings")
+}
+
+model Trade {
+  id          String      @id @default(uuid())
+  listingId   String      @unique @map("listing_id")
+  buyerId     String      @map("buyer_id")
+  sellerId    String      @map("seller_id")
+  propertyId  String      @map("property_id")
+  amount      Float
+  platformFee Float       @map("platform_fee")
+  status      TradeStatus @default(COMPLETED)
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  listing  Listing  @relation(fields: [listingId], references: [id])
+  buyer    User     @relation("UserPurchases", fields: [buyerId], references: [id])
+  seller   User     @relation("UserSales", fields: [sellerId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@map("trades")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  CANCELLED
+}
+
+enum TradeStatus {
+  COMPLETED
+  PENDING
+}
+
+enum NotificationType {
+  LISTING_PURCHASED
+  WATCHLIST_LISTING
 }

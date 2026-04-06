@@ -1,4 +1,4 @@
-export type InvestmentStatus = 'completed' | 'pending';
+export type InvestmentStatus = 'completed' | 'pending' | 'partially_sold' | 'sold';
 
 export interface Investment {
   id: string;

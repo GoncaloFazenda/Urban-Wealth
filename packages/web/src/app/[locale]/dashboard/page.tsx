@@ -7,7 +7,9 @@ import { ErrorState } from '@/components/states/ErrorState';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import dynamic from 'next/dynamic';
+import { useState } from 'react';
 import { SummaryCard } from './_components/SummaryCard';
+import { SellModal } from './_components/SellModal';
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 const AllocationChart = dynamic(() => import('./_components/AllocationChart').then(m => m.AllocationChart), { ssr: false });
@@ -26,9 +28,11 @@ interface DashboardData {
     ownershipPercentage: number;
     estimatedAnnualIncome: number;
     status: string;
+    investmentIds: string[];
   }>;
   investments: Array<{
     id: string;
+    type?: string;
     propertyTitle?: string;
     amount: number;
     status: string;
@@ -49,6 +53,13 @@ interface DashboardData {
 export default function DashboardPage() {
   const { user } = useAuth();
   const t = useTranslations('Dashboard');
+  const [sellHolding, setSellHolding] = useState<{
+    propertyId: string;
+    propertyTitle: string;
+    amount: number;
+    ownershipPercentage: number;
+    investmentId: string;
+  } | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery<DashboardData>({
     queryKey: ['dashboard'],
@@ -150,9 +161,27 @@ export default function DashboardPage() {
                     <p className="text-[15px] font-bold text-foreground truncate mb-0.5">{holding.propertyTitle}</p>
                     <p className="text-[13px] font-medium text-muted">{t('equityOwnership', { value: holding.ownershipPercentage.toFixed(2) })}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[16px] font-bold text-foreground">€{holding.amount.toLocaleString()}</p>
-                    <p className="text-[12px] font-semibold text-primary-500 uppercase tracking-widest mt-0.5">{holding.status}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <p className="text-[16px] font-bold text-foreground">€{holding.amount.toLocaleString()}</p>
+                      <p className="text-[12px] font-semibold text-primary-500 uppercase tracking-widest mt-0.5">{holding.status}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSellHolding({
+                          propertyId: holding.propertyId,
+                          propertyTitle: holding.propertyTitle,
+                          amount: holding.amount,
+                          ownershipPercentage: holding.ownershipPercentage,
+                          investmentId: holding.investmentIds?.[0] ?? holding.propertyId,
+                        });
+                      }}
+                      className="rounded-md border border-border px-3 py-1.5 text-[12px] font-semibold text-muted hover:text-foreground hover:bg-surface-hover hover:border-primary-500/30 transition-all"
+                    >
+                      {t('sellPosition')}
+                    </button>
                   </div>
                 </Link>
               ))}
@@ -166,6 +195,7 @@ export default function DashboardPage() {
                     <thead>
                       <tr className="border-b border-border bg-muted-bg">
                         <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thDate')}</th>
+                        <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thType')}</th>
                         <th className="px-5 py-3 text-left font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thAsset')}</th>
                         <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thAmount')}</th>
                         <th className="px-5 py-3 text-right font-bold text-muted uppercase tracking-wider text-[11px] whitespace-nowrap">{t('thStatus')}</th>
@@ -175,6 +205,17 @@ export default function DashboardPage() {
                       {data.investments.map((inv) => (
                         <tr key={inv.id} className="hover:bg-surface-hover/50 transition-colors">
                           <td className="px-5 py-3.5 text-muted font-medium">{new Date(inv.createdAt).toLocaleDateString()}</td>
+                          <td className="px-5 py-3.5">
+                            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold tracking-wider uppercase ${
+                              inv.type === 'Sale'
+                                ? 'bg-warning-400/10 text-warning-400 border border-warning-400/20'
+                                : inv.type === 'Purchase'
+                                  ? 'bg-blue-400/10 text-blue-400 border border-blue-400/20'
+                                  : 'bg-muted-bg text-muted border border-border'
+                            }`}>
+                              {inv.type === 'Sale' ? t('typeSale') : inv.type === 'Purchase' ? t('typePurchase') : t('typeInvestment')}
+                            </span>
+                          </td>
                           <td className="px-5 py-3.5 text-foreground font-semibold">{inv.propertyTitle ?? 'Property'}</td>
                           <td className="px-5 py-3.5 text-right text-foreground font-bold">€{inv.amount.toLocaleString()}</td>
                           <td className="px-5 py-3.5 text-right">
@@ -208,6 +249,19 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+
+      {/* Sell Modal */}
+      {sellHolding && (
+        <SellModal
+          holding={sellHolding}
+          investmentId={sellHolding.investmentId}
+          onClose={() => setSellHolding(null)}
+          onSuccess={() => {
+            setSellHolding(null);
+            refetch();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -24,6 +24,8 @@ export const REDIRECT_ALLOWLIST = [
   '/profile',
   '/earnings',
   '/favorites',
+  '/marketplace',
+  '/notifications',
 ] as const;
 
 export function getSafeRedirect(value: string | null): string {
