@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
 import { verifyAccessToken, type JwtPayload } from './jwt';
 import { AUTH_CONSTANTS } from './constants';
 
@@ -27,6 +28,33 @@ export async function getSession(): Promise<AuthSession | null> {
     };
   } catch {
     return null;
+  }
+}
+
+/**
+ * Extract the real client IP from request headers.
+ */
+export function getClientIp(request: NextRequest): string {
+  return (
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    request.headers.get('x-real-ip') ??
+    'unknown'
+  );
+}
+
+/**
+ * Apply Set-Cookie headers from setAuthCookieHeaders / clearAuthCookieHeaders
+ * onto an existing NextResponse, handling the joined-string format.
+ */
+export function applyCookies(
+  response: NextResponse,
+  cookieHeaders: Record<string, string>
+): void {
+  const value = cookieHeaders['Set-Cookie'];
+  if (typeof value === 'string') {
+    for (const cookie of value.split(', ')) {
+      response.headers.append('Set-Cookie', cookie);
+    }
   }
 }
 

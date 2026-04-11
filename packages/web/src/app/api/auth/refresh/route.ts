@@ -1,17 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyRefreshToken, signAccessToken, signRefreshToken } from '@/lib/jwt';
-import { setAuthCookieHeaders } from '@/lib/auth';
+import { setAuthCookieHeaders, getClientIp, applyCookies } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { AUTH_CONSTANTS } from '@/lib/constants';
 
-function getClientIp(request: NextRequest): string {
-  return (
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    request.headers.get('x-real-ip') ??
-    'unknown'
-  );
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -96,17 +89,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Set new auth cookies
-    const cookieHeaders = setAuthCookieHeaders(
-      newAccessToken,
-      newRefreshToken
-    );
-    const setCookieValue = cookieHeaders['Set-Cookie'];
-    if (typeof setCookieValue === 'string') {
-      for (const cookie of setCookieValue.split(', ')) {
-        response.headers.append('Set-Cookie', cookie);
-      }
-    }
+    applyCookies(response, setAuthCookieHeaders(newAccessToken, newRefreshToken));
 
     return response;
   } catch (error) {

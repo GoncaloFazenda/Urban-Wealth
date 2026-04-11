@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { clearAuthCookieHeaders } from '@/lib/auth';
+import { clearAuthCookieHeaders, applyCookies } from '@/lib/auth';
 import { AUTH_CONSTANTS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
@@ -32,13 +32,7 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
 
-    const cookieHeaders = clearAuthCookieHeaders();
-    const setCookieValue = cookieHeaders['Set-Cookie'];
-    if (typeof setCookieValue === 'string') {
-      for (const cookie of setCookieValue.split(', ')) {
-        response.headers.append('Set-Cookie', cookie);
-      }
-    }
+    applyCookies(response, clearAuthCookieHeaders());
 
     return response;
   } catch (error) {

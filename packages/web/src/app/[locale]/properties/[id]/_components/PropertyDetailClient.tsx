@@ -6,6 +6,7 @@ import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Property } from '@urban-wealth/core';
+import { PLATFORM_FEE_RATE } from '@urban-wealth/core';
 import { useAuth } from '@/providers/AuthProvider';
 import { StatusBadge } from '@/components/property/StatusBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -199,7 +200,7 @@ export function PropertyDetailClient({ initialData }: PropertyDetailClientProps)
             <Metric label={t('targetYield')} value={`${p.annualYield}%`} positive />
             <Metric label={t('estGrowth')} value={`${p.projectedAppreciation}%`} />
             <Metric label={t('totalReturn')} value={`${totalReturn.toFixed(1)}%`} positive />
-            <Metric label={t('platformFee')} value="1.5%" />
+            <Metric label={t('platformFee')} value={`${(PLATFORM_FEE_RATE * 100).toFixed(1)}%`} />
           </div>
 
           {/* Funding progress */}

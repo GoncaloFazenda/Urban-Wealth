@@ -1,21 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import type { Prisma } from '@prisma/client';
+import { coreToDb as dbStatusMap, dbToCore as coreStatusMap } from '@/lib/propertyStatus';
 
 const DEFAULT_PAGE_SIZE = 9;
 const MAX_PAGE_SIZE = 50;
-
-const dbStatusMap: Record<string, string> = {
-  open: 'OPEN',
-  coming_soon: 'COMING_SOON',
-  funded: 'FUNDED',
-};
-
-const coreStatusMap: Record<string, string> = {
-  OPEN: 'open',
-  COMING_SOON: 'coming_soon',
-  FUNDED: 'funded',
-};
 
 export async function GET(request: NextRequest) {
   try {

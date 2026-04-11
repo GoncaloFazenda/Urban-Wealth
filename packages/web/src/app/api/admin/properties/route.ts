@@ -2,18 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createPropertySchema } from '@urban-wealth/core';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
-
-const statusToDb: Record<string, string> = {
-  open: 'OPEN',
-  coming_soon: 'COMING_SOON',
-  funded: 'FUNDED',
-};
-
-const statusToCore: Record<string, string> = {
-  OPEN: 'open',
-  COMING_SOON: 'coming_soon',
-  FUNDED: 'funded',
-};
+import { coreToDb as statusToDb, dbToCore as statusToCore } from '@/lib/propertyStatus';
 
 export async function GET() {
   try {

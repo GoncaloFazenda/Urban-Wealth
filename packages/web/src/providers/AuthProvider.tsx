@@ -132,12 +132,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
-  const updateUser = useCallback(
-    (updates: Partial<Pick<AuthUser, 'fullName' | 'email'>>) => {
-      setUser((prev) => (prev ? { ...prev, ...updates } : null));
-    },
-    []
-  );
+  const updateUser = useCallback((updates: Partial<Pick<AuthUser, 'fullName' | 'email'>>) => {
+    setUser((prev) => (prev ? { ...prev, ...updates } : null));
+  }, []);
 
   return (
     <AuthContext.Provider

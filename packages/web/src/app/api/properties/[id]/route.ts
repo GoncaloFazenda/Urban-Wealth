@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
-
-const coreStatusMap: Record<string, string> = {
-  OPEN: 'open',
-  COMING_SOON: 'coming_soon',
-  FUNDED: 'funded',
-};
+import { dbToCore as coreStatusMap } from '@/lib/propertyStatus';
 
 const paramsSchema = z.object({
   id: z.string().uuid(),

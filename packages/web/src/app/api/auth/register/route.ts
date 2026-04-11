@@ -3,7 +3,7 @@ import { hash } from 'bcryptjs';
 import { registerSchema } from '@urban-wealth/core';
 import { prisma } from '@/lib/prisma';
 import { signAccessToken, signRefreshToken } from '@/lib/jwt';
-import { setAuthCookieHeaders } from '@/lib/auth';
+import { setAuthCookieHeaders, applyCookies } from '@/lib/auth';
 import { AUTH_CONSTANTS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
@@ -68,14 +68,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
 
-    // Set HttpOnly, Secure, SameSite=Strict cookies
-    const cookieHeaders = setAuthCookieHeaders(accessToken, refreshToken);
-    const setCookieValue = cookieHeaders['Set-Cookie'];
-    if (typeof setCookieValue === 'string') {
-      for (const cookie of setCookieValue.split(', ')) {
-        response.headers.append('Set-Cookie', cookie);
-      }
-    }
+    applyCookies(response, setAuthCookieHeaders(accessToken, refreshToken));
 
     return response;
   } catch (error) {
