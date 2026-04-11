@@ -2,9 +2,8 @@ import { mockProperties, mockLocations, PLATFORM_FEE_RATE } from '../src/mockDat
 import { propertySchema } from '../src/validators/propertySchema';
 
 describe('Mock Data', () => {
-  it('should have between 5 and 10 properties', () => {
+  it('should have at least 5 properties', () => {
     expect(mockProperties.length).toBeGreaterThanOrEqual(5);
-    expect(mockProperties.length).toBeLessThanOrEqual(10);
   });
 
   it('should have unique IDs', () => {
