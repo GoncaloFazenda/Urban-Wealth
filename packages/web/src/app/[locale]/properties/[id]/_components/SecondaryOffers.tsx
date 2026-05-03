@@ -149,8 +149,6 @@ function OfferRow({
 }
 
 export function SecondaryOffers({ propertyId }: { propertyId: string }) {
-  const { user } = useAuth();
-
   const { data, isLoading } = useQuery<{ listings: Listing[] }>({
     queryKey: ['marketplace', 'property', propertyId],
     queryFn: async () => {
