@@ -31,7 +31,6 @@ export async function GET() {
 
     for (const payout of payouts) {
       const monthKey = payout.month.toISOString().slice(0, 7); // YYYY-MM
-      const propertyId = payout.investment.propertyId;
 
       if (!monthlyPayouts.has(monthKey)) {
         monthlyPayouts.set(monthKey, { month: monthKey, total: 0, properties: [] });
